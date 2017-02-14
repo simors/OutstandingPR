@@ -60,6 +60,9 @@ class TabIcon extends Component {
         imageSource = selected ? require("../../assets/images/home_select.png"): require("../../assets/images/home_unselect.png")
         break
       case 1:
+        imageSource = selected ? require("../../assets/images/add.png"): require("../../assets/images/add.png")
+        break
+      case 2:
         imageSource = selected ? require("../../assets/images/mine_select.png"): require("../../assets/images/mine_unselect.png")
         break
       default:
@@ -78,6 +81,8 @@ class TabIcon extends Component {
       case 0:
         return <View />
       case 1:
+        return <View />
+      case 2:
         return <View />
       default:
     }

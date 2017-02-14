@@ -11,6 +11,7 @@ import Login from '../components/Login'
 import Regist from '../components/Login/Regist'
 import ForgetPassword from '../components/Login/ForgetPassword'
 import ResetPassword from '../components/Login/ResetPassword'
+import Publish from '../components/Publish'
 
 const styles = StyleSheet.create({
   container: {
@@ -40,7 +41,10 @@ export const scenes = Actions.create(
         <Scene key="HOME_INDEX" title="首页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
           <Scene key="PR" component={Home}/>
         </Scene>
-        <Scene key="MINE" title="我的" number={1} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
+        <Scene key="PUBLISH" title="" number={1} icom={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
+          <Scene key="PUBLISH_INDEX" component={Publish}/>
+        </Scene>
+        <Scene key="MINE" title="我的" number={2} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
           <Scene key="MINE_INDEX" component={Mine}/>
         </Scene>
       </Scene>
@@ -55,6 +59,10 @@ function tapActions(props) {
       break
     }
     case 1: {
+      Actions.PUBLISH_INDEX()
+      break
+    }
+    case 2: {
       Actions.LOGIN()
       break
     }

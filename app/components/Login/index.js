@@ -18,7 +18,9 @@ import Header from '../common/Header'
 import PhoneInput from '../common/Input/PhoneInput'
 import PasswordInput from '../common/Input/PasswordInput'
 import CommonButton from '../common/CommonButton'
+import * as Toast from '../common/Toast'
 import {normalizeH, normalizeW} from '../../util/Responsive'
+import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../action/authActions'
 import THEME from '../../constants/theme'
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -41,8 +43,21 @@ class Login extends Component {
   constructor(props) {
     super(props)
   }
+  submitSuccessCallback(userInfos) {
+    Toast.show('登录成功!')
+    Actions.pop()
+  }
 
+  submitErrorCallback(error) {
+    Toast.show(error.message)
+  }
   onButtonPress = () => {
+    this.props.submitFormData({
+      formKey: loginForm,
+      submitType: INPUT_FORM_SUBMIT_TYPE.LOGIN_WITH_PWD,
+      success: this.submitSuccessCallback,
+      error: this.submitErrorCallback,
+    })
 
   }
 
@@ -86,7 +101,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-
+  submitFormData,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

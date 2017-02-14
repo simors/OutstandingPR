@@ -5,6 +5,7 @@ import React, {Component} from 'react'
 import {
   StyleSheet,
   View,
+  Image,
   Text,
 } from 'react-native'
 import {connect} from 'react-redux'
@@ -18,7 +19,9 @@ class Home extends Component {
   render() {
     return (
       <View>
-        <Text>非凡公关</Text>
+        <Image
+          source={require('../../assets/images/banner.png')}
+        />
       </View>
     )
   }
@@ -26,7 +29,6 @@ class Home extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-
   }
 }
 
