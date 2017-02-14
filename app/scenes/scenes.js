@@ -8,6 +8,9 @@ import Launch from '../components/Launch'
 import Home from '../components/Home'
 import Mine from '../components/Mine'
 import Login from '../components/Login'
+import Regist from '../components/Login/Regist'
+import ForgetPassword from '../components/Login/ForgetPassword'
+import ResetPassword from '../components/Login/ResetPassword'
 
 const styles = StyleSheet.create({
   container: {
@@ -29,6 +32,9 @@ export const scenes = Actions.create(
     <Scene key="root" hideNavBar={true}>
       <Scene key="LAUNCH" component={Launch} hideTabBar hideNavBar initial={true}/>
       <Scene key="LOGIN" component={Login} />
+      <Scene key="REGIST" component={Regist} />
+      <Scene key="FORGETPWD" component={ForgetPassword} />
+      <Scene key="RESETPWD" component={ResetPassword} />
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="首页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>

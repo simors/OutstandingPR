@@ -1,5 +1,5 @@
 /**
- * Created by wanpeng on 2017/2/13.
+ * Created by wanpeng on 2017/2/14.
  */
 import React, {Component} from 'react'
 import {
@@ -16,34 +16,35 @@ import {Actions} from 'react-native-router-flux'
 import Symbol from 'es6-symbol'
 import Header from '../common/Header'
 import PhoneInput from '../common/Input/PhoneInput'
-import PasswordInput from '../common/Input/PasswordInput'
+import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
 import CommonButton from '../common/CommonButton'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import THEME from '../../constants/theme'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
-let loginForm = Symbol('loginForm')
+let forgetPwdForm = Symbol('forgetPwdForm')
 
 const phoneInput = {
-  formKey: loginForm,
+  formKey: forgetPwdForm,
   stateKey: Symbol('phoneInput'),
   type: "phoneInput"
 }
 
-const passwordInput = {
-  formKey: loginForm,
-  stateKey: Symbol('passwordInput'),
-  type: "passwordInput"
+const smsAuthCodeInput = {
+  formKey: forgetPwdForm,
+  stateKey: Symbol('smsAuthCodeInput'),
+  type: "smsAuthCodeInput",
+
 }
 
-class Login extends Component {
+class ForgetPassword extends Component {
   constructor(props) {
     super(props)
   }
 
   onButtonPress = () => {
-
+    Actions.RESETPWD()
   }
 
   render() {
@@ -53,28 +54,24 @@ class Login extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="登 录"
-          rightType="text"
-          rightText="快速注册"
-          rightPress={() => Actions.REGIST()}
+          title="忘记密码"
         />
         <View style={styles.body}>
-          <View style={styles.logo}>
-            <Image source={require('../../assets/images/logo.png')}/>
+          <View style={styles.hint}>
+            <Text style={styles.hintText}>填写注册时的手机号并验证</Text>
           </View>
           <View style={styles.phone}>
             <PhoneInput {...phoneInput}/>
           </View>
-          <View style={styles.password}>
-            <PasswordInput {...passwordInput}/>
+          <View style={styles.smsAuthCode}>
+            <SmsAuthCodeInput {...smsAuthCodeInput}/>
           </View>
-          <View style={styles.loginIn}>
+          <View style={styles.next}>
             <CommonButton
-              title="登 录"
+              title="下一步"
               onPress={() => this.onButtonPress()}
             />
           </View>
-          <Text style={styles.forgetPwd} onPress={() => Actions.FORGETPWD()}>忘记密码？</Text>
         </View>
       </View>
     )
@@ -89,7 +86,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login)
+export default connect(mapStateToProps, mapDispatchToProps)(ForgetPassword)
 
 const styles = StyleSheet.create({
   container: {
@@ -106,24 +103,22 @@ const styles = StyleSheet.create({
       }
     }),
   },
-  logo: {
-    marginTop: normalizeH(45),
-    alignSelf: 'center',
+  hint: {
+    marginTop: normalizeH(27),
+    paddingLeft: normalizeW(17),
+  },
+  hintText: {
+    fontSize: 18,
+    color: THEME.colors.yellow,
   },
   phone: {
-    marginTop: normalizeH(40),
+    marginTop: normalizeH(26),
     width: PAGE_WIDTH,
   },
-  password: {
+  smsAuthCode: {
     marginTop: normalizeH(25)
   },
-  loginIn: {
+  next: {
     marginTop: normalizeH(45)
   },
-  forgetPwd: {
-    marginTop: normalizeH(17),
-    fontSize: 15,
-    color: THEME.colors.yellow,
-    alignSelf: 'center',
-  }
 })

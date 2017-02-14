@@ -18,32 +18,36 @@ import Header from '../common/Header'
 import PhoneInput from '../common/Input/PhoneInput'
 import PasswordInput from '../common/Input/PasswordInput'
 import CommonButton from '../common/CommonButton'
-import {normalizeH, normalizeW} from '../../util/Responsive'
+import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
+import {normalizeH} from '../../util/Responsive'
 import THEME from '../../constants/theme'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
-let loginForm = Symbol('loginForm')
+let registForm = Symbol('registForm')
 
 const phoneInput = {
-  formKey: loginForm,
+  formKey: registForm,
   stateKey: Symbol('phoneInput'),
   type: "phoneInput"
 }
 
+const smsAuthCodeInput = {
+  formKey: registForm,
+  stateKey: Symbol('smsAuthCodeInput'),
+  type: "smsAuthCodeInput",
+
+}
+
 const passwordInput = {
-  formKey: loginForm,
+  formKey: registForm,
   stateKey: Symbol('passwordInput'),
   type: "passwordInput"
 }
 
-class Login extends Component {
+class Regist extends Component {
   constructor(props) {
     super(props)
-  }
-
-  onButtonPress = () => {
-
   }
 
   render() {
@@ -53,10 +57,7 @@ class Login extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="登 录"
-          rightType="text"
-          rightText="快速注册"
-          rightPress={() => Actions.REGIST()}
+          title="注 册"
         />
         <View style={styles.body}>
           <View style={styles.logo}>
@@ -65,20 +66,31 @@ class Login extends Component {
           <View style={styles.phone}>
             <PhoneInput {...phoneInput}/>
           </View>
+          <View style={styles.smsAuthCode}>
+            <SmsAuthCodeInput {...smsAuthCodeInput}/>
+          </View>
           <View style={styles.password}>
             <PasswordInput {...passwordInput}/>
           </View>
           <View style={styles.loginIn}>
             <CommonButton
-              title="登 录"
+              title="注 册"
               onPress={() => this.onButtonPress()}
             />
           </View>
-          <Text style={styles.forgetPwd} onPress={() => Actions.FORGETPWD()}>忘记密码？</Text>
+          <View style={styles.agreementView}>
+            <Image
+              style={{marginRight: 6}}
+              source={require('../../assets/images/select.png')}
+            />
+            <Text style={styles.agreement} onPress={() => {}}>服务条款及协议</Text>
+          </View>
         </View>
+
       </View>
     )
   }
+
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -89,7 +101,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
 
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login)
+export default connect(mapStateToProps, mapDispatchToProps)(Regist)
 
 const styles = StyleSheet.create({
   container: {
@@ -114,16 +126,24 @@ const styles = StyleSheet.create({
     marginTop: normalizeH(40),
     width: PAGE_WIDTH,
   },
+  smsAuthCode: {
+    marginTop: normalizeH(25)
+  },
   password: {
     marginTop: normalizeH(25)
   },
   loginIn: {
     marginTop: normalizeH(45)
   },
-  forgetPwd: {
+  agreementView: {
+    flexDirection: 'row',
     marginTop: normalizeH(17),
+    alignSelf: 'center',
+    alignItems: 'flex-end'
+
+  },
+  agreement: {
     fontSize: 15,
     color: THEME.colors.yellow,
-    alignSelf: 'center',
   }
 })
