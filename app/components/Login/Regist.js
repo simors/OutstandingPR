@@ -21,6 +21,12 @@ import CommonButton from '../common/CommonButton'
 import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
 import {normalizeH} from '../../util/Responsive'
 import THEME from '../../constants/theme'
+import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../action/authActions'
+import * as Toast from '../common/Toast'
+import {isInputValid} from '../selector/inputFormSelector'
+
+
+
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -50,6 +56,36 @@ class Regist extends Component {
     super(props)
   }
 
+  onButtonPress = () => {
+    this.props.submitFormData({
+      formKey: registForm,
+      submitType: INPUT_FORM_SUBMIT_TYPE.REGISTER,
+      success:this.submitSuccessCallback,
+      error: this.submitErrorCallback
+    })
+  }
+
+  submitSuccessCallback() {
+    Toast.show('注册成功, 请登录')
+    Actions.LOGIN()
+  }
+
+  submitErrorCallback(error) {
+    Toast.show(error.message)
+  }
+
+  smsCode = () => {
+    this.props.submitInputData({
+      formKey: registForm,
+      stateKey: phoneInput.stateKey,
+      submitType: INPUT_FORM_SUBMIT_TYPE.GET_SMS_CODE,
+      success: () => {},
+      error: (error) => {
+        Toast.show(error.message)
+      }
+    })
+  }
+
   render() {
     return (
       <View style={styles.container} >
@@ -67,7 +103,10 @@ class Regist extends Component {
             <PhoneInput {...phoneInput}/>
           </View>
           <View style={styles.smsAuthCode}>
-            <SmsAuthCodeInput {...smsAuthCodeInput}/>
+            <SmsAuthCodeInput {...smsAuthCodeInput}
+                              getSmsAuCode={this.smsCode()}
+                              reset={this.props.phoneValid}
+            />
           </View>
           <View style={styles.password}>
             <PasswordInput {...passwordInput}/>
@@ -75,7 +114,7 @@ class Regist extends Component {
           <View style={styles.loginIn}>
             <CommonButton
               title="注 册"
-              onPress={() => this.onButtonPress()}
+              onPress={this.onButtonPress}
             />
           </View>
           <View style={styles.agreementView}>
@@ -94,11 +133,19 @@ class Regist extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
+  let newProps = {}
+  let isValid = isInputValid(state, registForm, phoneInput.stateKey)
+  if (!isValid.isValid) {
+    newProps.phoneValid = false
+  } else {
+    newProps.phoneValid = true
+  }
+  return newProps
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-
+  submitInputData,
+  submitFormData
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Regist)

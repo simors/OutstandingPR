@@ -60,7 +60,7 @@ class TabIcon extends Component {
         imageSource = selected ? require("../../assets/images/home_select.png"): require("../../assets/images/home_unselect.png")
         break
       case 1:
-        imageSource = selected ? require("../../assets/images/add.png"): require("../../assets/images/add.png")
+        imageSource = require("../../assets/images/add.png")
         break
       case 2:
         imageSource = selected ? require("../../assets/images/mine_select.png"): require("../../assets/images/mine_unselect.png")

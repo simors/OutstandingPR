@@ -36,14 +36,16 @@ export const scenes = Actions.create(
       <Scene key="REGIST" component={Regist} />
       <Scene key="FORGETPWD" component={ForgetPassword} />
       <Scene key="RESETPWD" component={ResetPassword} />
+      <Scene key="PUBLISH_ENTER" component={Publish} />
+
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
         <Scene key="HOME_INDEX" title="首页" number={0} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
           <Scene key="PR" component={Home}/>
         </Scene>
-        <Scene key="PUBLISH" title="" number={1} icom={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
-          <Scene key="PUBLISH_INDEX" component={Publish}/>
+        <Scene key="PUBLISH"  number={1} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
         </Scene>
+
         <Scene key="MINE" title="我的" number={2} icon={TabIcon} hideNavBar onPress={(props) => {tapActions(props)}}>
           <Scene key="MINE_INDEX" component={Mine}/>
         </Scene>
@@ -59,7 +61,7 @@ function tapActions(props) {
       break
     }
     case 1: {
-      Actions.PUBLISH_INDEX()
+      Actions.PUBLISH_ENTER()
       break
     }
     case 2: {

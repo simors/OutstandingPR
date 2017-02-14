@@ -58,7 +58,6 @@ class Login extends Component {
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback,
     })
-
   }
 
   render() {
