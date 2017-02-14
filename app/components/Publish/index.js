@@ -65,7 +65,7 @@ class Publish extends Component {
               <Text style={styles.serviceText}>发布公关需求</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity style={{alignSelf: 'center', marginTop: normalizeH(12)}}>
+          <TouchableOpacity style={styles.close} onPress={() => Actions.pop()}>
             <Image
               source={require('../../assets/images/add_close.png')}
             />
@@ -125,6 +125,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingTop: normalizeH(34)
+  },
+  close: {
+    alignSelf: 'center',
+    marginTop: normalizeH(12),
   }
 
 

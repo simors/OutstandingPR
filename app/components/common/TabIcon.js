@@ -44,13 +44,15 @@ class TabIcon extends Component {
   }
 
   getTitle=(title, selected) =>{
-    return (
-      <Text
-        style={{color: selected ? '#F56A23' : '#AAAAAA', fontSize: 10, marginTop: 4}}
-      >
-        {title}
-      </Text>
-    )
+    if(title =! '发布') {
+      return (
+        <Text
+          style={{color: selected ? '#F56A23' : '#AAAAAA', fontSize: 10, marginTop: 4}}
+        >
+          {title}
+        </Text>
+      )
+    }
   }
 
   getImage=(index, selected)=> {
