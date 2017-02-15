@@ -12,6 +12,8 @@ import {
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+import {Actions} from 'react-native-router-flux'
+
 import {normalizeH, normalizeW} from '../../util/Responsive'
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -74,7 +76,7 @@ class Mine extends Component {
             source={require('../../assets/images/PinLeft_gray.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity style={styles.item} onPress={() => Actions.SETTING()}>
           <View style={{flex: 1, marginLeft: normalizeW(20)}}>
             <Text style={styles.itemText}>系统设置</Text>
           </View>

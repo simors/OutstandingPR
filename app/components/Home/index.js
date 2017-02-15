@@ -9,10 +9,12 @@ import {
   TouchableOpacity,
   Platform,
   Dimensions,
+  InteractionManager,
   Text,
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+import {TabScrollView} from '../common/TabScrollView'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import THEME from '../../constants/theme'
 
@@ -22,6 +24,16 @@ const PAGE_WIDTH=Dimensions.get('window').width
 class Home extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      selectedTab: 0,
+    }
+  }
+
+  getSelectedTab(index) {
+    this.setState({selectedTab: index})
+    InteractionManager.runAfterInteractions(() => {
+
+    })
   }
 
   render() {
@@ -43,6 +55,10 @@ class Home extends Component {
         <Image
           source={require('../../assets/images/banner.png')}
         />
+        {/*<TabScrollView topics={this.props.topicCategories}*/}
+                       {/*topicId={this.props.topicId}*/}
+                       {/*renderTopics={() => this.renderTopics()}*/}
+                       {/*onSelected={(index) => this.getSelectedTab(index)}/>*/}
       </View>
     )
   }
@@ -76,8 +92,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   search: {
+    flex: 1,
     flexDirection: 'row',
-    width: normalizeW(219),
+    marginRight: normalizeW(41),
     height: normalizeH(30),
     backgroundColor: 'rgba(170,170,170,0.1)',
     borderRadius: 15,
@@ -85,6 +102,6 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   notice: {
-    marginLeft: normalizeW(41),
-  }
+    marginRight: normalizeW(12),
+  },
 })

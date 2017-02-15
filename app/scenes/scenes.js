@@ -12,6 +12,7 @@ import Regist from '../components/Login/Regist'
 import ForgetPassword from '../components/Login/ForgetPassword'
 import ResetPassword from '../components/Login/ResetPassword'
 import Publish from '../components/Publish'
+import Setting from '../components/Mine/Setting'
 
 const styles = StyleSheet.create({
   container: {
@@ -38,6 +39,7 @@ export const scenes = Actions.create(
       <Scene key="RESETPWD" component={ResetPassword} />
       <Scene key="PUBLISH_ENTER" component={Publish} />
       <Scene key="MINE" component={Mine} />
+      <Scene key="SETTING" component={Setting} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
@@ -66,11 +68,28 @@ function tapActions(props) {
       break
     }
     case 2: {
-      Actions.MINE()
+      AsyncStorage.getItem("reduxPersist:AUTH").then((data) => {
+        let jsonData = JSON.parse(data)
+        console.log('User Auth:', jsonData)
+        if (!jsonData)
+          return false
+        let activeUser = jsonData.token
+        return activeUser ? true : false
+      }).then((result) => {
+        if (!result) {
+          Actions.LOGIN()
+        } else {
+          Actions.MINE()
+        }
+      }).catch((error) => {
+        console.log("AsyncStorage error:", error)
+      })
       break
     }
+    default: {
+      Actions.HOME()
+    }
   }
-
 }
 
 
