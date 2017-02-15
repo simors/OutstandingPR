@@ -44,7 +44,7 @@ class TabIcon extends Component {
   }
 
   getTitle=(title, selected) =>{
-    if(title =! '发布') {
+    if(title != "发布") {
       return (
         <Text
           style={{color: selected ? '#F56A23' : '#AAAAAA', fontSize: 10, marginTop: 4}}
