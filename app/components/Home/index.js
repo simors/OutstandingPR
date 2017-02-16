@@ -28,6 +28,12 @@ class Home extends Component {
       selectedTab: 0,
     }
   }
+  renderTip() {
+    if (this.props.hasNotice) {
+      return <View style={styles.noticeTip}></View>
+    }
+    return <View/>
+  }
 
   getSelectedTab(index) {
     this.setState({selectedTab: index})
@@ -50,6 +56,7 @@ class Home extends Component {
           </TouchableOpacity>
           <TouchableOpacity style={styles.notice}>
             <Image source={require('../../assets/images/notice.png')}/>
+            {this.renderTip()}
           </TouchableOpacity>
         </View>
         <Image
@@ -65,8 +72,11 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {
-  }
+  let newProps = {}
+  let newMsg = 1
+  let newNotice = 0
+  newProps.hasNotice = newMsg || newNotice
+  return newProps
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
@@ -102,6 +112,16 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   notice: {
+    padding: 5,
     marginRight: normalizeW(12),
+  },
+  noticeTip: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: 'red',
   },
 })

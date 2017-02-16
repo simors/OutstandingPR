@@ -340,10 +340,11 @@ export function updateAnnouncement(payload) {
 }
 
 export function requestSmsAuthCode(payload) {
+  console.log("requestSmsAuthCode payload: ", payload)
     let phone = payload.phone
     return AV.Cloud.requestSmsCode({
       mobilePhoneNumber:phone,
-      name: '吾爱',
+      name: '非凡公关',
       op: '注册',
       ttl: 10}).then(function () {
       // do nothing
