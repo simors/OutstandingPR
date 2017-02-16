@@ -52,7 +52,7 @@ class Publish extends Component {
             <Image source={require('../../assets/images/logo&slogan.png')}/>
           </View>
           <View style={styles.services}>
-            <TouchableOpacity style={styles.item}>
+            <TouchableOpacity style={styles.item} onPress={() => Actions.PR_SERVICE()}>
               <Image
                 source={require('../../assets/images/add_service.png')}
               />

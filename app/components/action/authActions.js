@@ -126,7 +126,6 @@ function handleLoginWithPwd(payload, formData) {
       }
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
       dispatch(loginAction({...userInfo}))
-      dispatch(initMessageClient(payload))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)

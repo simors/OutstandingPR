@@ -26,6 +26,36 @@ class Setting extends Component {
     super(props)
   }
 
+  clearApplication() {
+    // persistor.purge()
+    // Toast.show('清除成功')
+    // setTimeout(() => {
+    //   Actions.HOME_INDEX()
+    //   if (Platform.OS == 'ios') {
+    //     reactInvokeMethod.reload()
+    //   } else {
+    //     RNRestart.Restart()
+    //   }
+    // }, 2000)
+
+    Actions.POPUP({
+      title: '提示',
+      content: ['确认清除缓存？'],
+      comfirmAction: () => {
+        Actions.pop()
+        persistor.purge()
+        Toast.show('清除成功')
+        setTimeout(() => {
+          if (Platform.OS == 'ios') {
+            reactInvokeMethod.reload()
+          } else {
+            RNRestart.Restart()
+          }
+        }, 2000)
+      }
+    })
+  }
+
   onButtonPress = () => {
     persistor.purge(['AUTH'])
     Toast.show('清除成功')
@@ -44,7 +74,7 @@ class Setting extends Component {
           title="系统设置"
         />
         <View style={styles.body}>
-          <TouchableOpacity style={styles.item}>
+          <TouchableOpacity style={styles.item} onPress={() => Actions.RESET_PHONE()}>
             <View style={{flex: 1, marginLeft: normalizeW(20)}}>
               <Text style={styles.itemText}>手机号码</Text>
             </View>
@@ -86,7 +116,7 @@ class Setting extends Component {
               source={require('../../assets/images/PinLeft_gray.png')}
             />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
+          <TouchableOpacity style={styles.item} onPress={() => this.clearApplication()}>
             <View style={{flex: 1, marginLeft: normalizeW(20)}}>
               <Text style={styles.itemText}>清除缓存</Text>
             </View>

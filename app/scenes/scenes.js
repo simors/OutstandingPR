@@ -13,6 +13,9 @@ import ForgetPassword from '../components/Login/ForgetPassword'
 import ResetPassword from '../components/Login/ResetPassword'
 import Publish from '../components/Publish'
 import Setting from '../components/Mine/Setting'
+import ResetPhone from '../components/Mine/ResetPhone'
+import PrService from '../components/Publish/PrService'
+import Popup from '../components/common/Popup'
 
 const styles = StyleSheet.create({
   container: {
@@ -38,8 +41,9 @@ export const scenes = Actions.create(
       <Scene key="FORGETPWD" component={ForgetPassword} />
       <Scene key="RESETPWD" component={ResetPassword} />
       <Scene key="PUBLISH_ENTER" component={Publish} />
-      <Scene key="MINE" component={Mine} />
       <Scene key="SETTING" component={Setting} />
+      <Scene key="RESET_PHONE" component={ResetPhone} />
+      <Scene key="PR_SERVICE" component={PrService} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
@@ -53,6 +57,9 @@ export const scenes = Actions.create(
           <Scene key="MINE_INDEX" component={Mine}/>
         </Scene>
       </Scene>
+
+      <Scene key="POPUP" component={Popup} />
+
     </Scene>
   </Scene>
 )
@@ -77,7 +84,7 @@ function tapActions(props) {
         return activeUser ? true : false
       }).then((result) => {
         if (!result) {
-          Actions.LOGIN()
+          Actions.MINE()
         } else {
           Actions.MINE()
         }
