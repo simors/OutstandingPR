@@ -104,7 +104,7 @@ class Regist extends Component {
           </View>
           <View style={styles.smsAuthCode}>
             <SmsAuthCodeInput {...smsAuthCodeInput}
-                              getSmsAuCode={this.smsCode()}
+                              getSmsAuCode={this.smsCode}
                               reset={this.props.phoneValid}
             />
           </View>

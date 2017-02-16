@@ -17,9 +17,14 @@ import Symbol from 'es6-symbol'
 import Header from '../common/Header'
 import PhoneInput from '../common/Input/PhoneInput'
 import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
+import PasswordInput from '../common/Input/PasswordInput'
 import CommonButton from '../common/CommonButton'
 import {normalizeH, normalizeW} from '../../util/Responsive'
+import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../action/authActions'
 import THEME from '../../constants/theme'
+import {isInputValid} from '../../selector/inputFormSelector'
+import * as Toast from '../common/Toast'
+
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -35,7 +40,12 @@ const smsAuthCodeInput = {
   formKey: forgetPwdForm,
   stateKey: Symbol('smsAuthCodeInput'),
   type: "smsAuthCodeInput",
+}
 
+const passwordInput = {
+  formKey: forgetPwdForm,
+  stateKey: Symbol('passwordInput'),
+  type: "passwordInput"
 }
 
 class ForgetPassword extends Component {
@@ -44,7 +54,26 @@ class ForgetPassword extends Component {
   }
 
   onButtonPress = () => {
-    Actions.RESETPWD()
+    this.props.submitFormData({
+      formKey: forgetPwdForm,
+      submitType: INPUT_FORM_SUBMIT_TYPE.MODIFY_PASSWORD,
+      success:() => {
+        Actions.LOGIN()
+      },
+      error: (error) => {Toast.show(error.message)}
+    })
+  }
+
+  smsCode = () => {
+    this.props.submitInputData({
+      formKey: forgetPwdForm,
+      stateKey:phoneInput.stateKey,
+      submitType: INPUT_FORM_SUBMIT_TYPE.RESET_PWD_SMS_CODE,
+      success:() => {},
+      error: (error) => {
+        Toast.show(error.message)
+      }
+    })
   }
 
   render() {
@@ -64,8 +93,16 @@ class ForgetPassword extends Component {
             <PhoneInput {...phoneInput}/>
           </View>
           <View style={styles.smsAuthCode}>
-            <SmsAuthCodeInput {...smsAuthCodeInput}/>
+            <SmsAuthCodeInput {...smsAuthCodeInput}
+                              getSmsAuCode={this.smsCode}
+                              reset={!this.props.phoneValid}
+            />
           </View>
+          <View style={styles.password}>
+            <PasswordInput {...passwordInput}
+                           placeholder="新密码(6-16位数字或字母)"/>
+          </View>
+
           <View style={styles.next}>
             <CommonButton
               title="下一步"
@@ -79,11 +116,18 @@ class ForgetPassword extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
-}
+  let newProps = {}
+  let isValid = isInputValid(state, forgetPwdForm, phoneInput.stateKey)
+  if (!isValid.isValid) {
+    newProps.phoneValid = false
+  } else {
+    newProps.phoneValid = true
+  }
+  return newProps}
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-
+  submitInputData,
+  submitFormData,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ForgetPassword)
@@ -117,6 +161,10 @@ const styles = StyleSheet.create({
   },
   smsAuthCode: {
     marginTop: normalizeH(25)
+  },
+  password: {
+    marginTop: normalizeH(25),
+    width: PAGE_WIDTH,
   },
   next: {
     marginTop: normalizeH(45)

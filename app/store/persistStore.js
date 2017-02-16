@@ -2,6 +2,7 @@ import {AsyncStorage} from 'react-native'
 import {persistStore} from 'redux-persist'
 import configureStore from '../store/configureStore'
 import * as authSelectors from '../selector/authSelector'
+import {become} from '../api/leancloud/auth'
 
 
 export default function persist(store) {
@@ -35,7 +36,7 @@ function verifyToken() {
     }
 
     become(payload).then(() => {
-      return dispatch(initMessageClient())
+      // return dispatch(initMessageClient())
     }).then(() => {
       // Actions.HOME()
     }).catch((error) => {

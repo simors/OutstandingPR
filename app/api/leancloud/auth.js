@@ -370,6 +370,7 @@ export function requestResetPwdSmsCode(payload) {
   return AV.User.requestPasswordResetBySmsCode(phone).then((success) => {
     // do nothing
   }, (err) => {
+    console.log("requestPasswordResetBySmsCode err code:", err.code)
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
     throw err
   })

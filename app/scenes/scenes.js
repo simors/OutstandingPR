@@ -10,11 +10,11 @@ import Mine from '../components/Mine'
 import Login from '../components/Login'
 import Regist from '../components/Login/Regist'
 import ForgetPassword from '../components/Login/ForgetPassword'
-import ResetPassword from '../components/Login/ResetPassword'
 import Publish from '../components/Publish'
 import Setting from '../components/Mine/Setting'
 import ResetPhone from '../components/Mine/ResetPhone'
 import PrService from '../components/Publish/PrService'
+import PrHelp from '../components/Publish/PrHelp'
 import Popup from '../components/common/Popup'
 import Profile from '../components/Mine/Profile'
 import EditProfile from '../components/Mine/EditProfile'
@@ -45,11 +45,11 @@ export const scenes = Actions.create(
       <Scene key="LOGIN" component={Login} />
       <Scene key="REGIST" component={Regist} />
       <Scene key="FORGETPWD" component={ForgetPassword} />
-      <Scene key="RESETPWD" component={ResetPassword} />
       <Scene key="PUBLISH_ENTER" component={Publish} />
       <Scene key="SETTING" component={Setting} />
       <Scene key="RESET_PHONE" component={ResetPhone} />
       <Scene key="PR_SERVICE" component={PrService} />
+      <Scene key="PR_HELP" component={PrHelp} />
       <Scene key="PROFILE" component={Profile} />
       <Scene key="EDIT_PROFILE" component={EditProfile} />
       <Scene key="SUGGESTION" component={Suggestion} />

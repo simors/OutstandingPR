@@ -160,17 +160,14 @@ function handleRegister(payload, formData) {
       phone: formData.phoneInput.text,
       smsAuthCode: formData.smsAuthCodeInput.text,
     }
-    if (__DEV__) {// in android and ios simulator ,__DEV__ is true
+
+    lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
       dispatch(registerWithPhoneNum(payload, formData))
-    } else {
-      lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
-        dispatch(registerWithPhoneNum(payload, formData))
-      }).catch((error) => {
-        if (payload.error) {
-          payload.error(error)
-        }
-      })
-    }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
   }
 }
 
@@ -568,142 +565,6 @@ export function getUserInfoById(payload) {
   }
 }
 
-export function fetchUsers(payload) {
-  return (dispatch, getState) => {
-    lcAuth.getUsers(payload).then((user) => {
-      let code = user.error
-      if (0 != code) {
-        return
-      }
-      user.users.forEach((lcUser) => {
-        let userInfo = UserInfo.fromLeancloudApi(lcUser)
-        const addUserProfile = createAction(AuthTypes.ADD_USER_PROFILE)
-        dispatch(addUserProfile({userInfo}))
-      })
-    }).catch(error => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
-/**
- * 查询自己关注的用户列表
- * @param payload
- * @returns {function()}
- */
-export function fetchUserFollowees(payload) {
-  return (dispatch, getState) => {
-    lcAuth.fetchUserFollowees(payload).then((result)=> {
-      let updateAction = createAction(AuthTypes.FETCH_USER_FOLLOWEES_SUCCESS)
-      dispatch(updateAction(result))
-      if (payload.success) {
-        payload.success(result)
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
-/**
- * 查询指定用户的粉丝列表
- * @param payload
- * @returns {function()}
- */
-export function fetchOtherUserFollowers(payload) {
-  return (dispatch, getState) => {
-    lcAuth.fetchOtherUserFollowers(payload).then((result)=> {
-      let updateAction = createAction(AuthTypes.FETCH_USER_FOLLOWERS_SUCCESS)
-      dispatch(updateAction(result))
-      if (payload.success) {
-        payload.success(result)
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
-/**
- * 查询指定用户的粉丝总数
- * @param payload
- * @returns {function()}
- */
-export function fetchOtherUserFollowersTotalCount(payload) {
-  return (dispatch, getState) => {
-    lcAuth.fetchOtherUserFollowersTotalCount(payload).then((result)=> {
-      let updateAction = createAction(AuthTypes.FETCH_USER_FOLLOWERS_TOTAL_COUNT_SUCCESS)
-      dispatch(updateAction(result))
-      if (payload.success) {
-        payload.success(result)
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
-/**
- * 查询自己的粉丝
- * @param payload
- * @returns {function()}
- */
-export function fetchUserFollowers(payload) {
-  return (dispatch, getState) => {
-    lcAuth.fetchUserFollowers(payload).then((result)=> {
-      let updateAction = createAction(AuthTypes.FETCH_USER_FOLLOWERS_SUCCESS)
-      dispatch(updateAction(result))
-      if (payload.success) {
-        payload.success(result)
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
-export function fetchUserFollowersTotalCount(payload) {
-  return (dispatch, getState) => {
-    lcAuth.fetchUserFollowersTotalCount(payload).then((result)=> {
-      let updateAction = createAction(AuthTypes.FETCH_USER_FOLLOWERS_TOTAL_COUNT_SUCCESS)
-      dispatch(updateAction(result))
-      if (payload.success) {
-        payload.success(result)
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
-
-export function userIsFollowedTheUser(payload) {
-  return (dispatch, getState) => {
-    lcAuth.userIsFollowedTheUser(payload).then((result)=> {
-      if (payload.success) {
-        payload.success(result)
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
-
 export function handleHealthProfileSubmit(payload, formData) {
   console.log("handleHealthProfileSubmit payload", payload)
   console.log("handleHealthProfileSubmit formData", formData)
@@ -726,20 +587,5 @@ export function handleHealthProfileSubmit(payload, formData) {
   }
 }
 
-export function fetchFavoriteArticles(payload) {
-  //console.log('columnId======>')
-  return (dispatch, getState) => {
-   // console.log('columnId======>---------------------')
-    lcAuth.getFavoriteArticles(payload).then((result) => {
-        //console.log('result======>',result)
-      let updateAction = createAction(AuthTypes.FETCH_USER_FAVORITEARTICLE_SUCCESS)
-      dispatch(updateAction(result))
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
 
 

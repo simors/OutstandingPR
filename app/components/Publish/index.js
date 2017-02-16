@@ -18,6 +18,7 @@ import Symbol from 'es6-symbol'
 import CommonButton from '../common/CommonButton'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import THEME from '../../constants/theme'
+import * as authSelector from '../../selector/authSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -52,13 +53,13 @@ class Publish extends Component {
             <Image source={require('../../assets/images/logo&slogan.png')}/>
           </View>
           <View style={styles.services}>
-            <TouchableOpacity style={styles.item} onPress={() => Actions.PR_SERVICE()}>
+            <TouchableOpacity style={styles.item} onPress={() => {this.props.isUserLogined? Actions.PR_SERVICE() : Actions.LOGIN()}}>
               <Image
                 source={require('../../assets/images/add_service.png')}
               />
               <Text style={styles.serviceText}>提供公关服务</Text>
             </TouchableOpacity >
-            <TouchableOpacity style={styles.item}>
+            <TouchableOpacity style={styles.item} onPress={() => {this.props.isUserLogined? Actions.PR_HELP() : Actions.LOGIN()}}>
               <Image
                 source={require('../../assets/images/add_need.png')}
               />
@@ -77,7 +78,10 @@ class Publish extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
+  const isUserLogined = authSelector.isUserLogined(state)
+  return {
+    isUserLogined: isUserLogined
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
