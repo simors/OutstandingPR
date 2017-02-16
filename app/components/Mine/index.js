@@ -27,7 +27,7 @@ class Mine extends Component {
   render() {
     return (
       <View style={styles.container}>
-          <TouchableOpacity style={styles.info}>
+          <TouchableOpacity style={styles.info} onPress={() => Actions.PROFILE()}>
             <Image
               style={{width: 72, height: 72, borderRadius: 36, overflow: 'hidden', marginLeft: normalizeW(31)}}
               source={require('../../assets/images/mine_select.png')}
@@ -40,7 +40,7 @@ class Mine extends Component {
               source={require('../../assets/images/PinLeft.png')}
             />
           </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity style={styles.item} onPress={() => Actions.PUBLISHED()}>
           <View style={{flex: 1, marginLeft: normalizeW(20)}}>
             <Text style={styles.itemText}>我的发布</Text>
           </View>
@@ -49,7 +49,7 @@ class Mine extends Component {
             source={require('../../assets/images/PinLeft_gray.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity style={styles.item} onPress={() => Actions.FOCUS()}>
           <View style={{flex: 1, marginLeft: normalizeW(20)}}>
             <Text style={styles.itemText}>我的关注</Text>
           </View>
@@ -58,7 +58,7 @@ class Mine extends Component {
             source={require('../../assets/images/PinLeft_gray.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity style={styles.item} onPress={() => Actions.COLLECTION()}>
           <View style={{flex: 1, marginLeft: normalizeW(20)}}>
             <Text style={styles.itemText}>我的收藏</Text>
           </View>
@@ -67,7 +67,7 @@ class Mine extends Component {
             source={require('../../assets/images/PinLeft_gray.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity style={styles.item} onPress={() => Actions.SUGGESTION()}>
           <View style={{flex: 1, marginLeft: normalizeW(20)}}>
             <Text style={styles.itemText}>用户反馈</Text>
           </View>

@@ -16,6 +16,12 @@ import Setting from '../components/Mine/Setting'
 import ResetPhone from '../components/Mine/ResetPhone'
 import PrService from '../components/Publish/PrService'
 import Popup from '../components/common/Popup'
+import Profile from '../components/Mine/Profile'
+import EditProfile from '../components/Mine/EditProfile'
+import Suggestion from '../components/Mine/Suggestion'
+import Collection from '../components/Mine/Collection'
+import Focus from '../components/Mine/Focus'
+import Published from '../components/Mine/Published'
 
 const styles = StyleSheet.create({
   container: {
@@ -44,6 +50,12 @@ export const scenes = Actions.create(
       <Scene key="SETTING" component={Setting} />
       <Scene key="RESET_PHONE" component={ResetPhone} />
       <Scene key="PR_SERVICE" component={PrService} />
+      <Scene key="PROFILE" component={Profile} />
+      <Scene key="EDIT_PROFILE" component={EditProfile} />
+      <Scene key="SUGGESTION" component={Suggestion} />
+      <Scene key="COLLECTION" component={Collection} />
+      <Scene key="FOCUS" component={Focus} />
+      <Scene key="PUBLISHED" component={Published} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
@@ -84,7 +96,7 @@ function tapActions(props) {
         return activeUser ? true : false
       }).then((result) => {
         if (!result) {
-          Actions.MINE()
+          Actions.LOGIN()
         } else {
           Actions.MINE()
         }

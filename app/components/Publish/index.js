@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   close: {
     alignSelf: 'center',
-    marginTop: normalizeH(12),
+    padding: normalizeH(12),
   }
 
 
