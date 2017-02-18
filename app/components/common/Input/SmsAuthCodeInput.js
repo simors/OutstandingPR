@@ -16,7 +16,7 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {initInputForm, inputFormUpdate} from '../../action/inputFormActions'
-import {getInputData} from '../../selector/inputFormSelector'
+import {getInputData} from '../../../selector/inputFormSelector'
 import {normalizeW, normalizeH} from '../../../util/Responsive'
 import THEME from '../../../constants/theme'
 

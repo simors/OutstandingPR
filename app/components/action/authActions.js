@@ -1,7 +1,7 @@
 import {createAction} from 'redux-actions'
 import * as AuthTypes from '../../constants/authActionTypes'
 import * as uiTypes from '../../constants/uiActionTypes'
-import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
+import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../../selector/inputFormSelector'
 import * as lcAuth from '../../api/leancloud/auth'
 
 

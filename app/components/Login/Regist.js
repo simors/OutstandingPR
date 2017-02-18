@@ -23,7 +23,8 @@ import {normalizeH} from '../../util/Responsive'
 import THEME from '../../constants/theme'
 import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../action/authActions'
 import * as Toast from '../common/Toast'
-import {isInputValid} from '../selector/inputFormSelector'
+import {isInputValid} from '../../selector/inputFormSelector'
+
 
 
 

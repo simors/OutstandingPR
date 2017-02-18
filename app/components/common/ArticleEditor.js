@@ -24,7 +24,7 @@ import {selectPhotoTapped} from '../../util/ImageSelector'
 import * as ImageUtil from '../../util/ImageUtil'
 import {uploadFile} from '../../api/leancloud/fileUploader'
 import {initInputForm, inputFormUpdate} from '../action/inputFormActions'
-import {getInputData} from '../selector/inputFormSelector'
+import {getInputData} from '../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import ActionSheet from 'react-native-actionsheet'
 
@@ -102,6 +102,7 @@ class ArticleEditor extends Component {
   }
 
   componentWillReceiveProps(newProps) {
+    console.log("componentWillReceiveProps newProps", newProps)
     if (this.props.data != newProps.data) {
       this.comp = []
       if (!newProps.data) {
@@ -342,6 +343,7 @@ class ArticleEditor extends Component {
         value={content}
         onChangeText={(text) => this.updateTextInput(index, text)}
         onFocus={() => {
+          this.props.onFocus()
           this.setState({cursor: index})
           if (Platform.OS != 'ios') {
             this.inputFocused("content_" + index)

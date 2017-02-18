@@ -8,6 +8,7 @@ import {
   Text,
   Image,
   Dimensions,
+  TouchableOpacity,
   Platform
 } from 'react-native'
 import {connect} from 'react-redux'
@@ -21,6 +22,8 @@ import {normalizeH, normalizeW} from '../../util/Responsive'
 import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../action/authActions'
 import THEME from '../../constants/theme'
 import ArticleEditor from '../common/ArticleEditor'
+import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
+import CommonButton from '../common/CommonButton'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -55,6 +58,42 @@ const contentHeight = {
 class PrHelp extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      ArticleFocused: true,
+    }
+  }
+
+  onFocusChanged = () => {
+    this.setState({
+      ArticleFocused: true,
+    })
+  }
+
+  onFocusLost = () => {
+    this.setState({
+      ArticleFocused: false
+    })
+  }
+
+  renderKeyboardAwareToolBar() {
+    return (
+      <KeyboardAwareToolBar
+        show={this.state.ArticleFocused}
+        initKeyboardHeight={-50}
+      >
+        <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center',alignItems: 'center',height: normalizeH(40), backgroundColor: '#F5F5F5'}}>
+          <Image
+            style={{marginRight: normalizeW(10)}}
+            source={require('../../assets/images/add_picture.png')}
+          />
+          <Text style={{fontSize: 15, color: '#AAAAAA'}}>添加图片</Text>
+        </TouchableOpacity>
+        <CommonButton title="发布"
+                      buttonStyle={{width: normalizeW(64), height: normalizeH(40)}}
+                      titleStyle={{fontSize: 15}}
+                      onPress={() => this.onButtonPress()}/>
+      </KeyboardAwareToolBar>
+    )
   }
 
   render() {
@@ -89,11 +128,12 @@ class PrHelp extends Component {
               {...serviceContent}
               wrapHeight={contentHeight.height}
               placeholder="正文"
+              onFocus={this.onFocusChanged}
             />
 
           </View>
-
         </View>
+        {this.renderKeyboardAwareToolBar()}
       </View>
 
     )

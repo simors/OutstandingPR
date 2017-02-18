@@ -8,6 +8,7 @@ import {
   Text,
   Image,
   Dimensions,
+  TouchableOpacity,
   Platform
 } from 'react-native'
 import {connect} from 'react-redux'
@@ -18,9 +19,13 @@ import Header from '../common/Header'
 import * as Toast from '../common/Toast'
 import CommonTextInput from '../common/CommonTextInput'
 import {normalizeH, normalizeW} from '../../util/Responsive'
-import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../action/authActions'
+import {publishFormData, PUBLISH_FORM_SUBMIT_TYPE} from '../action/publishAction'
 import THEME from '../../constants/theme'
 import ArticleEditor from '../common/ArticleEditor'
+import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
+import CommonButton from '../common/CommonButton'
+import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
+
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -55,6 +60,68 @@ const contentHeight = {
 class PrService extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      ArticleFocused: true,
+    }
+    this.insertImages = []
+  }
+
+  submitSuccessCallback() {
+    Toast.show('发布成功')
+    Actions.pop()
+  }
+
+  submitErrorCallback(error) {
+    Toast.show(error.message)
+  }
+
+  onButtonPress() {
+    this.props.publishFormData({
+      formKey: serviceForm,
+      submitType: PUBLISH_FORM_SUBMIT_TYPE.PUBLISH_SERVICE,
+      userId: this.props.userInfo.id,
+      images: this.insertImages,
+      success: this.submitSuccessCallback,
+      error: this.submitErrorCallback
+    })
+  }
+
+  getRichTextImages(images) {
+    this.insertImages = images
+    console.log('images list', this.insertImages)
+  }
+
+  onFocusChanged = () => {
+    this.setState({
+      ArticleFocused: true,
+    })
+  }
+
+  onFocusLost = () => {
+    this.setState({
+      ArticleFocused: false
+    })
+  }
+
+  renderKeyboardAwareToolBar() {
+    return (
+      <KeyboardAwareToolBar
+        show={this.state.ArticleFocused}
+        initKeyboardHeight={-50}
+      >
+        <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center',alignItems: 'center',height: normalizeH(40), backgroundColor: '#F5F5F5'}}>
+          <Image
+            style={{marginRight: normalizeW(10)}}
+            source={require('../../assets/images/add_picture.png')}
+          />
+          <Text style={{fontSize: 15, color: '#AAAAAA'}}>添加图片</Text>
+        </TouchableOpacity>
+        <CommonButton title="发布"
+                      buttonStyle={{width: normalizeW(64), height: normalizeH(40)}}
+                      titleStyle={{fontSize: 15}}
+                      onPress={() => this.onButtonPress()}/>
+      </KeyboardAwareToolBar>
+    )
   }
 
   render() {
@@ -72,7 +139,9 @@ class PrService extends Component {
                              {...serviceName}
                              containerStyle={styles.titleContainerStyle}
                              inputStyle={styles.titleInputStyle}
-                             placeholder="输入标题"/>
+                             placeholder="输入标题"
+                             initValue="就读雅丽中学"
+                             onFocus={this.onFocusLost}/>
           </View>
           <View style={styles.price}>
             <Text style={{fontSize: 17, color: '#AAAAAA', paddingLeft: normalizeW(20)}}>价格</Text>
@@ -82,18 +151,24 @@ class PrService extends Component {
                              containerStyle={styles.priceContainerStyle}
                              inputStyle={styles.priceInputStyle}
                              placeholder="10000"
-                             keyboardType='numeric'/>
+                             initValue="10000"
+                             keyboardType='numeric'
+                             onFocus={this.onFocusLost}/>
           </View>
           <View>
             <ArticleEditor
               {...serviceContent}
               wrapHeight={contentHeight.height}
+              onFocus={this.onFocusChanged}
               placeholder="正文"
+              getImages={(images) => this.getRichTextImages(images)}
+              initValue={[{type: 'COMP_TEXT', text: "亲爱的家长朋友，还在为孩子的读书问题烦恼吗？请联系138-8888-8888！"}, {width: 360, height: 240, type: 'COMP_IMG', url: 'https://dn-1BOFhd4c.qbox.me/1b44e365621221d5f45b.jpg', }]}
             />
 
           </View>
-
         </View>
+        {this.renderKeyboardAwareToolBar()}
+
       </View>
 
     )
@@ -101,11 +176,16 @@ class PrService extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
+  const isLogin = isUserLogined(state)
+  const userInfo = activeUserInfo(state)
+  return {
+    isLogin: isLogin,
+    userInfo: userInfo
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  submitFormData,
+  publishFormData,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PrService)

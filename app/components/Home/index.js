@@ -14,7 +14,6 @@ import {
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {TabScrollView} from '../common/TabScrollView'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import THEME from '../../constants/theme'
 
@@ -25,7 +24,7 @@ class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectedTab: 0,
+      selectedItem: 'service'
     }
   }
   renderTip() {
@@ -35,11 +34,37 @@ class Home extends Component {
     return <View/>
   }
 
-  getSelectedTab(index) {
-    this.setState({selectedTab: index})
-    InteractionManager.runAfterInteractions(() => {
 
-    })
+  renderServiceBar() {
+    if (this.state.selectedItem == 'service') {
+      return(
+        <TouchableOpacity style={[styles.item, {borderBottomColor: THEME.colors.yellow, borderBottomWidth: 3}]} onPress={this.setService}>
+          <Text style={[styles.itemText, {color: THEME.colors.yellow}]}>公关服务</Text>
+        </TouchableOpacity>
+      )
+    } else if (this.state.selectedItem == 'help') {
+      return(
+        <TouchableOpacity style={styles.item} onPress={this.setService}>
+          <Text style={styles.itemText}>公关服务</Text>
+        </TouchableOpacity>
+      )
+    }
+  }
+
+  renderHelpBar() {
+    if (this.state.selectedItem == 'help') {
+      return(
+        <TouchableOpacity style={[styles.item, {borderBottomColor: THEME.colors.yellow, borderBottomWidth: 3}]} onPress={this.setHelp}>
+          <Text style={[styles.itemText, {color: THEME.colors.yellow}]}>公关需求</Text>
+        </TouchableOpacity>
+      )
+    } else if (this.state.selectedItem == 'service') {
+      return(
+        <TouchableOpacity style={styles.item} onPress={this.setHelp}>
+          <Text style={styles.itemText}>公关服务</Text>
+        </TouchableOpacity>
+      )
+    }
   }
 
   render() {
@@ -62,10 +87,15 @@ class Home extends Component {
         <Image
           source={require('../../assets/images/banner.png')}
         />
-        {/*<TabScrollView topics={this.props.topicCategories}*/}
-                       {/*topicId={this.props.topicId}*/}
-                       {/*renderTopics={() => this.renderTopics()}*/}
-                       {/*onSelected={(index) => this.getSelectedTab(index)}/>*/}
+        <View style={styles.itemHeader}>
+          <View style={{flex: 1, paddingLeft: normalizeW(75)}}>
+            {this.renderServiceBar()}
+          </View>
+          <View style={{flex: 1, paddingRight: normalizeW(75)}}>
+            {this.renderHelpBar()}
+          </View>
+        </View>
+
       </View>
     )
   }
@@ -123,5 +153,23 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     backgroundColor: 'red',
+  },
+  itemHeader: {
+    width: PAGE_WIDTH,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F5F5F5'
+  },
+  item: {
+    height: normalizeH(45),
+    width: normalizeW(80),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  itemText: {
+    fontSize: 17,
+    color: '#AAAAAA'
   },
 })

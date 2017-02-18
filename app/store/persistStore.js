@@ -8,7 +8,7 @@ import {become} from '../api/leancloud/auth'
 export default function persist(store) {
   return persistStore(store, {
     storage: AsyncStorage,
-    whitelist: ['AUTH', 'CONFIG'],
+    whitelist: ['AUTH', 'CONFIG', 'PUBLISH'],
   }, () => {
     store.dispatch(restoreFromPersistence())
   })
