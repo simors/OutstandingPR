@@ -50,17 +50,24 @@ class Publish extends Component {
       <View style={styles.container} >
         <View style={styles.body}>
           <View style={styles.logo}>
-            <Image source={require('../../assets/images/logo&slogan.png')}/>
+            <Image
+              resizeMode="contain"
+              style={{width: normalizeW(291), height: normalizeH(203)}}
+              source={require('../../assets/images/logo&slogan.png')}/>
           </View>
           <View style={styles.services}>
             <TouchableOpacity style={styles.item} onPress={() => {this.props.isUserLogined? Actions.PR_SERVICE() : Actions.LOGIN()}}>
               <Image
+                resizeMode="contain"
+                style={{width: normalizeW(60), height: normalizeH(60)}}
                 source={require('../../assets/images/add_service.png')}
               />
               <Text style={styles.serviceText}>提供公关服务</Text>
             </TouchableOpacity >
             <TouchableOpacity style={styles.item} onPress={() => {this.props.isUserLogined? Actions.PR_HELP() : Actions.LOGIN()}}>
               <Image
+                resizeMode="contain"
+                style={{width: normalizeW(60), height: normalizeH(60)}}
                 source={require('../../assets/images/add_need.png')}
               />
               <Text style={styles.serviceText}>发布公关需求</Text>

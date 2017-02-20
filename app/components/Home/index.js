@@ -14,6 +14,8 @@ import {
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+import CommonBanner from '../common/CommonBanner'
+import {getBanner} from '../../selector/configSelector'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import THEME from '../../constants/theme'
 
@@ -61,7 +63,7 @@ class Home extends Component {
     } else if (this.state.selectedItem == 'service') {
       return(
         <TouchableOpacity style={styles.item} onPress={this.setHelp}>
-          <Text style={styles.itemText}>公关服务</Text>
+          <Text style={styles.itemText}>公关需求</Text>
         </TouchableOpacity>
       )
     }
@@ -87,6 +89,11 @@ class Home extends Component {
         <Image
           source={require('../../assets/images/banner.png')}
         />
+        <View>
+          {/*<CommonBanner*/}
+            {/*banners={this.props.banner}*/}
+          {/*/>*/}
+        </View>
         <View style={styles.itemHeader}>
           <View style={{flex: 1, paddingLeft: normalizeW(75)}}>
             {this.renderServiceBar()}
@@ -106,6 +113,8 @@ const mapStateToProps = (state, ownProps) => {
   let newMsg = 1
   let newNotice = 0
   newProps.hasNotice = newMsg || newNotice
+  const banner = getBanner(state, 0)
+  newProps.banner = banner
   return newProps
 }
 
@@ -164,7 +173,7 @@ const styles = StyleSheet.create({
   },
   item: {
     height: normalizeH(45),
-    width: normalizeW(80),
+    width: 80,
     alignItems: 'center',
     justifyContent: 'center',
   },

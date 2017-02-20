@@ -31,7 +31,10 @@ function handleAddPublish(state, action) {
 
 function onRehydrate(state, action) {
   console.log("onRehydrate: payload", action.payload)
-
+  var incoming = action.payload.PUBLISH
+  if (incoming) {
+    state = state.set('iPublishes', List(incoming.iPublishes))
+  }
   return state
 }
 

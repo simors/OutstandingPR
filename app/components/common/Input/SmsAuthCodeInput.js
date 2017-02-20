@@ -18,7 +18,6 @@ import {connect} from 'react-redux'
 import {initInputForm, inputFormUpdate} from '../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {normalizeW, normalizeH} from '../../../util/Responsive'
-import THEME from '../../../constants/theme'
 
 class SmsAuthCodeInput extends Component {
 
@@ -84,7 +83,7 @@ class SmsAuthCodeInput extends Component {
   requestSmsCode = () => { this.props.getSmsAuCode() }
 
   getSmsAuthCode = () => {
-    if (this.props.reset) {
+    if (!this.props.reset) {
       this.setState({countDown: 0})
     } else {
       this.setState({countDown: this.props.countTimes})
@@ -194,7 +193,7 @@ const smsStyles = StyleSheet.create({
     backgroundColor: '#B2B2B2',
   },
   smsCodeText: {
-    fontSize: 16,
+    fontSize: 12,
     color: '#ffffff',
     backgroundColor: 'transparent',
   }

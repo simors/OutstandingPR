@@ -1,0 +1,5 @@
+platform :ios, '8.0'
+target "OutstandingPR" do
+	pod 'RSKImageCropper'
+	pod 'QBImagePickerController'
+end

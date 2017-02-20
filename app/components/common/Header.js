@@ -111,7 +111,7 @@ export default class Header extends Component {
         <View style={styles.rightWrap}>
           <TouchableOpacity style={[styles.rightContainer, this.props.rightContainerStyle]}
                             onPress={() => this.props.rightPress()}>
-            <Text style={[styles.right, this.props.rightStyle]}>{this.props.rightText}</Text>
+            <Text numberOfLines={1} style={[styles.right, this.props.rightStyle]}>{this.props.rightText}</Text>
           </TouchableOpacity>
         </View>
       )
@@ -167,13 +167,12 @@ const styles = StyleSheet.create({
     borderBottomColor: '#B2B2B2',
   },
   leftWrap: {
-    flex: 1,
+    flex: 1.5,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
   leftContainer: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -204,13 +203,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   rightWrap: {
-    flex: 1,
+    flex: 1.5,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
   rightContainer: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',

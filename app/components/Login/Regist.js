@@ -75,7 +75,7 @@ class Regist extends Component {
     Toast.show(error.message)
   }
 
-  smsCode = () => {
+  smsCode() {
     this.props.submitInputData({
       formKey: registForm,
       stateKey: phoneInput.stateKey,
@@ -105,7 +105,7 @@ class Regist extends Component {
           </View>
           <View style={styles.smsAuthCode}>
             <SmsAuthCodeInput {...smsAuthCodeInput}
-                              getSmsAuCode={this.smsCode}
+                              getSmsAuCode={() => {return this.smsCode()}}
                               reset={this.props.phoneValid}
             />
           </View>
