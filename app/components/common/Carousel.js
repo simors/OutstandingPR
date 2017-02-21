@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 20,
-    backgroundColor: 'green',
+    backgroundColor: '#F56A23',
   },
   bullet: {
     margin: 10,

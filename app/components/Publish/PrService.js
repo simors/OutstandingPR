@@ -62,8 +62,10 @@ class PrService extends Component {
     super(props)
     this.state = {
       ArticleFocused: true,
+      shouldUploadImgComponent: false,
     }
     this.insertImages = []
+    this.leanImgUrls = []
   }
 
   submitSuccessCallback() {
@@ -75,16 +77,42 @@ class PrService extends Component {
     Toast.show(error.message)
   }
 
-  onButtonPress() {
+  uploadImgComponentCallback(leanImgUrls) {
+    this.leanImgUrls = leanImgUrls
+    this.onPublish()
+  }
+
+  onPublish() {
     this.props.publishFormData({
       formKey: serviceForm,
       submitType: PUBLISH_FORM_SUBMIT_TYPE.PUBLISH_SERVICE,
       userId: this.props.userInfo.id,
-      images: this.insertImages,
+      images: this.leanImgUrls,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback
     })
   }
+
+  onButtonPress() {
+    if (this.insertImages && this.insertImages.length) {
+      Toast.show('开始发布...', {
+        duration: 1000,
+        onHidden: ()=> {
+          this.setState({
+            shouldUploadImgComponent: true
+          })
+        }
+      })
+    } else {
+      Toast.show('开始发布...', {
+        duration: 1000,
+        onHidden: ()=> {
+          this.onPublish()
+        }
+      })
+    }
+  }
+
 
   getRichTextImages(images) {
     this.insertImages = images
@@ -161,6 +189,8 @@ class PrService extends Component {
               wrapHeight={contentHeight.height}
               onFocus={this.onFocusChanged}
               placeholder="正文"
+              shouldUploadImgComponent={this.state.shouldUploadImgComponent}
+              uploadImgComponentCallback={(leanImgUrls) => {this.uploadImgComponentCallback(leanImgUrls)}}
               getImages={(images) => this.getRichTextImages(images)}
               initValue={[{type: 'COMP_TEXT', text: "亲爱的家长朋友，还在为孩子的读书问题烦恼吗？请联系138-8888-8888！"}, {width: 360, height: 240, type: 'COMP_IMG', url: 'https://dn-1BOFhd4c.qbox.me/1b44e365621221d5f45b.jpg', }]}
             />
