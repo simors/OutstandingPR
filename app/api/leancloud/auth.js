@@ -40,6 +40,8 @@ export function loginWithPwd(payload) {
  * @returns {IPromise<U>|*|AV.Promise}
  */
 export function register(payload) {
+  console.log("register entry")
+
   let user = new AV.User()
   user.set('type', 'normal')
   user.setUsername(payload.phone)
@@ -61,6 +63,8 @@ export function register(payload) {
         },
         increArgs: {}
       }
+      console.log("register updatePayload", updatePayload)
+
       oPrs.updateObj(updatePayload)
     })
     let userInfo = UserInfo.fromLeancloudObject(loginedUser)
@@ -349,6 +353,7 @@ export function requestSmsAuthCode(payload) {
       ttl: 10}).then(function () {
       // do nothing
     }, function (err) {
+      console.log("requestSmsCode errorCode:", err.code)
       err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
       throw err
     })

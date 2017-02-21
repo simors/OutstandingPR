@@ -45,7 +45,7 @@ class Login extends Component {
   }
   submitSuccessCallback(userInfos) {
     Toast.show('登录成功!')
-    Actions.pop()
+    Actions.HOME()
   }
 
   submitErrorCallback(error) {

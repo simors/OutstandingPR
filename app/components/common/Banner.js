@@ -16,7 +16,6 @@ import {
 } from 'react-native'
 
 import Carousel from './Carousel'
-import THEME from '../../constants/theme'
 
 const { width, height } = Dimensions.get('window')
 
@@ -36,6 +35,7 @@ export default class Banner extends React.Component {
 
   constructor(props) {
     super(props)
+    console.log("Banner props", props)
 
     if(props.banners) {
       this.images = props.banners.map((banner) => banner.image)
@@ -86,7 +86,6 @@ export default class Banner extends React.Component {
       </View>
     )
   }
-
 }
 
 const styles = StyleSheet.create({

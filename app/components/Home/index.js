@@ -15,6 +15,7 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import CommonBanner from '../common/CommonBanner'
+import {fetchBanner} from '../action/configAction'
 import {getBanner} from '../../selector/configSelector'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import THEME from '../../constants/theme'
@@ -29,6 +30,12 @@ class Home extends Component {
       selectedItem: 'service'
     }
   }
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchBanner({type: 0})
+    })
+  }
+
   renderTip() {
     if (this.props.hasNotice) {
       return <View style={styles.noticeTip}></View>
@@ -86,13 +93,12 @@ class Home extends Component {
             {this.renderTip()}
           </TouchableOpacity>
         </View>
-        <Image
-          source={require('../../assets/images/banner.png')}
-        />
-        <View>
-          {/*<CommonBanner*/}
-            {/*banners={this.props.banner}*/}
-          {/*/>*/}
+        <View style={styles.advertisementModule}>
+          {this.props.banner &&
+            <CommonBanner
+              banners={this.props.banner}
+            />
+          }
         </View>
         <View style={styles.itemHeader}>
           <View style={{flex: 1, paddingLeft: normalizeW(75)}}>
@@ -114,13 +120,14 @@ const mapStateToProps = (state, ownProps) => {
   let newNotice = 0
   newProps.hasNotice = newMsg || newNotice
   const banner = getBanner(state, 0)
+  console.log("getBanner", banner)
   newProps.banner = banner
   return newProps
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-
-})
+  fetchBanner,
+}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)
 
@@ -181,4 +188,9 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: '#AAAAAA'
   },
+  advertisementModule: {
+    height: normalizeH(154),
+    backgroundColor: '#fff', //必须加上,否则android机器无法显示banner
+  },
+
 })

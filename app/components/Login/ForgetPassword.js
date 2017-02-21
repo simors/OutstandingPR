@@ -95,7 +95,7 @@ class ForgetPassword extends Component {
           <View style={styles.smsAuthCode}>
             <SmsAuthCodeInput {...smsAuthCodeInput}
                               getSmsAuCode={this.smsCode}
-                              reset={!this.props.phoneValid}
+                              reset={this.props.phoneValid}
             />
           </View>
           <View style={styles.password}>

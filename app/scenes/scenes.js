@@ -22,6 +22,7 @@ import Suggestion from '../components/Mine/Suggestion'
 import Collection from '../components/Mine/Collection'
 import Focus from '../components/Mine/Focus'
 import Published from '../components/Mine/Published'
+import CommonWebView from '../components/common/CommonWebView'
 
 const styles = StyleSheet.create({
   container: {
@@ -56,6 +57,7 @@ export const scenes = Actions.create(
       <Scene key="COLLECTION" component={Collection} />
       <Scene key="FOCUS" component={Focus} />
       <Scene key="PUBLISHED" component={Published} />
+      <Scene key="COMMON_WEB_VIEW" component={CommonWebView} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>
