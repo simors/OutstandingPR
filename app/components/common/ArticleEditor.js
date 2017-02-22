@@ -124,6 +124,9 @@ class ArticleEditor extends Component {
     if(newProps.shouldUploadImgComponent && !this.isUploadedImgComponent) {
       this.uploadImgComponent(newProps.data)
     }
+    if (newProps.onInsertImage) {
+      this.insertImage()
+    }
   }
 
   componentWillUnmount() {
@@ -226,6 +229,7 @@ class ArticleEditor extends Component {
 
   insertImage() {
     this.ActionSheet.show()
+    this.props.onInsertImageCallback()
   }
 
   uploadImgComponent(data) {
@@ -365,27 +369,7 @@ class ArticleEditor extends Component {
     )
   }
 
-  renderEditToolView() {
-    return (
-      <View style={[styles.editToolView,
-        {
-          position: 'absolute',
-          right: 50,
-          bottom: this.state.keyboardPadding + 50,
-        }]}
-      >
-        <View style={{alignItems: 'center', justifyContent: 'center'}}>
-          <TouchableOpacity onPress={() => {this.insertImage()}}
-                            style={styles.toolBtn}>
-            <Image
-              style={{width: 25, height: 25}}
-              source={require('../../assets/images/add_picture.png')}>
-            </Image>
-          </TouchableOpacity>
-        </View>
-      </View>
-    )
-  }
+
 
   _handleActionSheetPress(index) {
     if(0 == index) { //拍照
@@ -447,7 +431,6 @@ class ArticleEditor extends Component {
           >
             {this.renderComponents()}
           </KeyboardAwareScrollView>
-          {this.renderEditToolView()}
           {this.renderActionSheet()}
         </View>
       )
@@ -471,7 +454,6 @@ class ArticleEditor extends Component {
               {this.renderComponents()}
             </ScrollView>
           </Animated.View>
-          {this.renderEditToolView()}
           {this.renderActionSheet()}
         </View>
       )

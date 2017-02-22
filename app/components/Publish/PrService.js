@@ -63,6 +63,7 @@ class PrService extends Component {
     this.state = {
       ArticleFocused: true,
       shouldUploadImgComponent: false,
+      onInsertImage: false,
     }
     this.insertImages = []
     this.leanImgUrls = []
@@ -131,13 +132,27 @@ class PrService extends Component {
     })
   }
 
+  onInsertImage = () => {
+    this.setState({
+      onInsertImage: true,
+    })
+  }
+
+  onInsertImageCallback = () => {
+    this.setState({
+      onInsertImage: false,
+    })
+  }
+
   renderKeyboardAwareToolBar() {
     return (
       <KeyboardAwareToolBar
         show={this.state.ArticleFocused}
         initKeyboardHeight={-50}
       >
-        <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center',alignItems: 'center',height: normalizeH(40), backgroundColor: '#F5F5F5'}}>
+        <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center',alignItems: 'center',height: normalizeH(40), backgroundColor: '#F5F5F5'}}
+                          onPress={this.onInsertImage}
+        >
           <Image
             style={{marginRight: normalizeW(10)}}
             source={require('../../assets/images/add_picture.png')}
@@ -189,6 +204,8 @@ class PrService extends Component {
               wrapHeight={contentHeight.height}
               onFocus={this.onFocusChanged}
               placeholder="正文"
+              onInsertImage = {this.state.onInsertImage}
+              onInsertImageCallback={this.onInsertImageCallback}
               shouldUploadImgComponent={this.state.shouldUploadImgComponent}
               uploadImgComponentCallback={(leanImgUrls) => {this.uploadImgComponentCallback(leanImgUrls)}}
               getImages={(images) => this.getRichTextImages(images)}
