@@ -12,7 +12,7 @@ import {normalizeW, normalizeH} from '../../../util/Responsive'
 import DatePicker from 'react-native-datepicker'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {initInputForm, inputFormUpdate} from '../../action/inputFormActions'
+import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width

@@ -15,7 +15,7 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import CommonBanner from '../common/CommonBanner'
-import {fetchBanner} from '../action/configAction'
+import {fetchBanner} from '../../action/configAction'
 import {getBanner} from '../../selector/configSelector'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import THEME from '../../constants/theme'

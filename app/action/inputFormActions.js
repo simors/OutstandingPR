@@ -2,7 +2,7 @@
  * Created by yangyang on 2016/12/3.
  */
 import {createAction} from 'redux-actions'
-import * as uiTypes from '../../constants/uiActionTypes'
+import * as uiTypes from '../constants/uiActionTypes'
 
 export const inputFormOnChange = createAction(uiTypes.INPUTFORM_ON_CHANGE)
 export const inputFormInit = createAction(uiTypes.INPUTFORM_INIT_STATE)

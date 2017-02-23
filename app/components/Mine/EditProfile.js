@@ -9,19 +9,23 @@ import {
   Image,
   Dimensions,
   Platform,
+  ScrollView,
   TouchableOpacity,
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import Header from '../common/Header'
 import CommonTextInput from '../common/CommonTextInput'
 import Symbol from 'es6-symbol'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import DateTimeInput from '../common/Input/DateTimeInput'
-import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../action/authActions'
+import {submitFormData, submitInputData,INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import {activeUserInfo} from '../../selector/authSelector'
 import * as Toast from '../common/Toast'
+import ImageInput from '../common/Input/ImageInput'
+import RegionPicker from '../common/Input/RegionPicker'
 
 
 
@@ -81,11 +85,17 @@ const industryInput = {
 class EditProfile extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      shouldUploadImage: false
+    }
   }
 
   submitSuccessCallback() {
     Toast.show('保存信息成功')
     Actions.pop()
+  }
+
+  uploadImageCallback() {
   }
 
   submitErrorCallback(error) {
@@ -115,88 +125,101 @@ class EditProfile extends Component {
           rightPress={this.submit}
         />
         <View style={styles.body}>
-          <TouchableOpacity style={styles.item}>
-            <View style={{flex: 1, marginLeft: normalizeW(20)}}>
-              <Text style={styles.itemText}>头像</Text>
-            </View>
-            <Image
-              style={{marginRight: normalizeW(20)}}
-              source={require('../../assets/images/defualt_user40.png')}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
-            <View style={styles.itemView}>
-              <Text style={styles.itemText}>呢称</Text>
-              <CommonTextInput {...nicknameInput}
-                               maxLength={8}
-                               containerStyle={styles.inputContainerStyle}
-                               inputStyle={styles.inputStyle}
-                               placeholder="输入你在非凡的昵称"/>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
-            <View style={styles.itemView}>
-              <Text style={styles.itemText}>姓名</Text>
-              <CommonTextInput {...nameInput}
-                               maxLength={8}
-                               containerStyle={styles.inputContainerStyle}
-                               inputStyle={styles.inputStyle}
-                               placeholder="真实姓名"/>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.item, {marginTop: normalizeH(20)}]}>
-            <View style={styles.itemView}>
-              <Text style={styles.itemText}>所在城市</Text>
-              <Text style={{fontSize: 17}}>长 沙</Text>
-            </View>
-            <Image
-              style={{marginRight: normalizeW(20)}}
-              source={require('../../assets/images/PinLeft_gray.png')}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
-            <View style={styles.itemView}>
-              <Text style={[styles.itemText, {marginRight: 0}]}>出身年月</Text>
-              <DateTimeInput {...birthdayInput}
-                             initValue={'2001-01-01'}
-                             value="2016-05-18" PickerStyle={{justifyContent: 'flex-start', paddingLeft: 0, backgroundColor: '#FFFFFF', width: normalizeW(140), borderWidth: 0}}/>
-            </View>
-            <Image
-              style={{marginRight: normalizeW(20)}}
-              source={require('../../assets/images/PinLeft_gray.png')}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
-            <View style={styles.itemView}>
-              <Text style={styles.itemText}>任职机构</Text>
-              <CommonTextInput {...organizationInput}
-                               maxLength={8}
-                               containerStyle={styles.inputContainerStyle}
-                               inputStyle={styles.inputStyle}
-                               placeholder="输入信息，更非凡"/>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
-            <View style={styles.itemView}>
-              <Text style={styles.itemText}>职业</Text>
-              <CommonTextInput {...professionInput}
-                               maxLength={8}
-                               containerStyle={styles.inputContainerStyle}
-                               inputStyle={styles.inputStyle}
-                               placeholder="输入信息，更非凡"/>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
-            <View style={styles.itemView}>
-              <Text style={styles.itemText}>所在行业</Text>
-              <CommonTextInput {...industryInput}
-                               maxLength={8}
-                               containerStyle={styles.inputContainerStyle}
-                               inputStyle={styles.inputStyle}
-                               placeholder="输入信息，更非凡"/>
-            </View>
-          </TouchableOpacity>
+          <KeyboardAwareScrollView>
+            <TouchableOpacity style={styles.item}>
+              <View style={{flex: 1, marginLeft: normalizeW(20)}}>
+                <Text style={styles.itemText}>头像</Text>
+              </View>
+              <ImageInput
+                {...avatarInput}
+                initValue={this.props.userInfo.avatar? this.props.userInfo.avatar: undefined}
+                containerStyle={styles.imageInputStyle}
+                addImage={require('../../assets/images/defualt_user40.png')}
+                choosenImageStyle={{borderWidth: 0, borderColor: '#FFFFFF', borderRadius: normalizeW(20), overflow: 'hidden', width: normalizeW(40), height: normalizeH(40), overlayColor: '#FFFFFF'}}
+                addImageBtnStyle={{width: normalizeW(40), height: normalizeH(40), top: 0, left: 0}}
+                shouldUploadImage={this.state.shouldUploadImage}
+                uploadImageCallback={(leanHeadImgUrl)=>{this.uploadImageCallback(leanHeadImgUrl)}}
+              />
 
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.item}>
+              <View style={styles.itemView}>
+                <Text style={styles.itemText}>呢称</Text>
+                <CommonTextInput {...nicknameInput}
+                                 maxLength={8}
+                                 containerStyle={styles.inputContainerStyle}
+                                 inputStyle={styles.inputStyle}
+                                 placeholder="输入你在非凡的昵称"/>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.item}>
+              <View style={styles.itemView}>
+                <Text style={styles.itemText}>姓名</Text>
+                <CommonTextInput {...nameInput}
+                                 maxLength={8}
+                                 containerStyle={styles.inputContainerStyle}
+                                 inputStyle={styles.inputStyle}
+                                 placeholder="真实姓名"/>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.item, {marginTop: normalizeH(20)}]}>
+              <View style={styles.itemView}>
+                <Text style={styles.itemText}>所在城市</Text>
+                <View style={{flex: 1}}>
+                  <RegionPicker {...cityInput}
+                                containerStyle={{paddingRight:0, paddingLeft: 0}}
+                                inputStyle={{width: normalizeW(120), height: normalizeH(44), fontSize: 16, backgroundColor: '#fff', borderWidth: 0, paddingLeft: 0,}}
+                  />
+                </View>
+              </View>
+              <Image
+                style={{marginRight: normalizeW(20)}}
+                source={require('../../assets/images/PinLeft_gray.png')}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.item}>
+              <View style={styles.itemView}>
+                <Text style={[styles.itemText, {marginRight: 0}]}>出身年月</Text>
+                <DateTimeInput {...birthdayInput}
+                               initValue={'2001-01-01'}
+                               value="2016-05-18" PickerStyle={{justifyContent: 'flex-start', paddingLeft: 0, backgroundColor: '#FFFFFF', width: normalizeW(140), borderWidth: 0}}/>
+              </View>
+              <Image
+                style={{marginRight: normalizeW(20)}}
+                source={require('../../assets/images/PinLeft_gray.png')}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.item}>
+              <View style={styles.itemView}>
+                <Text style={styles.itemText}>任职机构</Text>
+                <CommonTextInput {...organizationInput}
+                                 maxLength={8}
+                                 containerStyle={styles.inputContainerStyle}
+                                 inputStyle={styles.inputStyle}
+                                 placeholder="输入信息，更非凡"/>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.item}>
+              <View style={styles.itemView}>
+                <Text style={styles.itemText}>职业</Text>
+                <CommonTextInput {...professionInput}
+                                 maxLength={8}
+                                 containerStyle={styles.inputContainerStyle}
+                                 inputStyle={styles.inputStyle}
+                                 placeholder="输入信息，更非凡"/>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.item}>
+              <View style={styles.itemView}>
+                <Text style={styles.itemText}>所在行业</Text>
+                <CommonTextInput {...industryInput}
+                                 maxLength={8}
+                                 containerStyle={styles.inputContainerStyle}
+                                 inputStyle={styles.inputStyle}
+                                 placeholder="输入信息，更非凡"/>
+              </View>
+            </TouchableOpacity>
+          </KeyboardAwareScrollView>
         </View>
       </View>
     )
@@ -276,7 +299,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     color: '#5A5A5A',
     borderWidth: 0,
-  }
-
+  },
+  imageInputStyle: {
+    backgroundColor: '#FFFFFF',
+    width: normalizeW(40),
+    height: normalizeH(40),
+    borderWidth: 1,
+    borderRadius: normalizeW(20),
+    overflow: 'hidden',
+    marginRight: normalizeW(20),
+  },
+  regionContainerStyle: {
+    paddingRight:0,
+    borderWidth: 1,
+    borderColor:'red'
+  },
+  regionInputStyle:{
+    height: normalizeH(44),
+    fontSize: 16,
+    backgroundColor: '#fff',
+    borderWidth: 0,
+    paddingLeft: 0,
+  },
 
 })

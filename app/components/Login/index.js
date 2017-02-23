@@ -20,7 +20,7 @@ import PasswordInput from '../common/Input/PasswordInput'
 import CommonButton from '../common/CommonButton'
 import * as Toast from '../common/Toast'
 import {normalizeH, normalizeW} from '../../util/Responsive'
-import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../action/authActions'
+import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import THEME from '../../constants/theme'
 
 const PAGE_WIDTH=Dimensions.get('window').width

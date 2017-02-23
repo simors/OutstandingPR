@@ -13,7 +13,7 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {FormInput} from 'react-native-elements'
-import {initInputForm, inputFormUpdate} from '../../action/inputFormActions'
+import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {normalizeH, normalizeW} from '../../../util/Responsive'
 

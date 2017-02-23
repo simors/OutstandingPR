@@ -1,11 +1,11 @@
 import {createAction} from 'redux-actions'
-import * as AuthTypes from '../../constants/authActionTypes'
-import * as uiTypes from '../../constants/uiActionTypes'
-import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../../selector/inputFormSelector'
-import * as lcAuth from '../../api/leancloud/auth'
+import * as AuthTypes from '../constants/authActionTypes'
+import * as uiTypes from '../constants/uiActionTypes'
+import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
+import * as lcAuth from '../api/leancloud/auth'
 
 
-import {UserInfo} from '../../models/userModels'
+import {UserInfo} from '../models/userModels'
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -53,39 +53,6 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.PROFILE_SUBMIT:
         dispatch(handleProfileSubmit(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.SHOP_CERTIFICATION:
-        dispatch(handleShopCertification(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.SHOP_RE_CERTIFICATION:
-        dispatch(handleShopReCertification(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.HEALTH_PROFILE_SUBMIT:
-        dispatch(handleHealthProfileSubmit(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.PROMOTER_RE_CERTIFICATION:
-        dispatch(handleShopReCertification(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.COMPLETE_SHOP_INFO:
-        dispatch(handleCompleteShopInfo(payload, formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.PROMOTER_CERTIFICATION:
-        dispatch(handlePromoterCertification(payload,formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_COVER:
-        dispatch(handleShopCover(payload,formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.UPDATE_SHOP_ALBUM:
-        dispatch(handleShopAlbum(payload,formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.PUBLISH_ANNOUNCEMENT:
-        dispatch(handlePublishAnnouncement(payload,formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.PUBLISH_SHOP_COMMENT:
-        dispatch(handlePublishShopComment(payload,formData))
-        break
-      case INPUT_FORM_SUBMIT_TYPE.UPDATE_ANNOUNCEMENT:
-        dispatch(handleUpdateAnnouncement(payload,formData))
         break
     }
   }

@@ -2,10 +2,10 @@
  * Created by wanpeng on 2017/2/17.
  */
 import {createAction} from 'redux-actions'
-import * as publishActionTypes from '../../constants/publishActionTypes'
-import * as uiTypes from '../../constants/uiActionTypes'
-import * as lcPublish from '../../api/leancloud/publish'
-import {getInputFormData, isInputFormValid} from '../../selector/inputFormSelector'
+import * as publishActionTypes from '../constants/publishActionTypes'
+import * as uiTypes from '../constants/uiActionTypes'
+import * as lcPublish from '../api/leancloud/publish'
+import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
 
 export const PUBLISH_FORM_SUBMIT_TYPE = {
   PUBLISH_SERVICE: 'PUBLISH_SERVICE',

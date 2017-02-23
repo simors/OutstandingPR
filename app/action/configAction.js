@@ -4,8 +4,8 @@
 
 import {createAction} from 'redux-actions'
 import {Actions} from 'react-native-router-flux'
-import * as ConfigActionTypes from '../../constants/configActionTypes'
-import * as lcConfig from '../../api/leancloud/config'
+import * as ConfigActionTypes from '../constants/configActionTypes'
+import * as lcConfig from '../api/leancloud/config'
 
 export function fetchBanner(payload) {
   return (dispatch ,getState) => {
