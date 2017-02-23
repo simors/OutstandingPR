@@ -13,6 +13,8 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
+import {activeUserInfo} from '../../selector/authSelector'
+
 
 import {normalizeH, normalizeW} from '../../util/Responsive'
 
@@ -30,10 +32,10 @@ class Mine extends Component {
           <TouchableOpacity style={styles.info} onPress={() => Actions.PROFILE()}>
             <Image
               style={{width: 72, height: 72, borderRadius: 36, overflow: 'hidden', marginLeft: normalizeW(31)}}
-              source={require('../../assets/images/mine_select.png')}
+              source={this.props.userInfo.avatar? {uri: this.props.userInfo.avatar} : require('../../assets/images/mine_select.png')}
             />
             <View style={{flex:1, marginLeft: normalizeW(17)}}>
-              <Text style={{fontSize: 17, color: '#5A5A5A'}}>鹏程万里</Text>
+              <Text style={{fontSize: 17, color: '#5A5A5A'}}>{this.props.userInfo.nickname}</Text>
             </View>
             <Image
               style={{marginRight: normalizeW(30)}}
@@ -95,8 +97,9 @@ class Mine extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let userInfo = activeUserInfo(state)
   return {
-
+    userInfo: userInfo,
   }
 }
 

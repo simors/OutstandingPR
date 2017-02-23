@@ -63,6 +63,23 @@ function handlePublishService(payload, formData) {
 
 function handlePublishHelp(payload, formData) {
   return (dispatch, getState) => {
-
+    let publishHelpPayload = {
+      title: formData.serviceName.text,
+      content: JSON.stringify(formData.serviceContent.text),
+      imgGroup: payload.images,
+      price: formData.servicePrice.text,
+      userId: payload.userId
+    }
+    lcPublish.publishHelp(publishHelpPayload).then((result) => {
+      if (payload.success) {
+        payload.success()
+      }
+      let publishAction = createAction(publishActionTypes.ADD_PUBLISH)
+      dispatch(publishAction({publish: result}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
   }
 }

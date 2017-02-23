@@ -120,7 +120,6 @@ const mapStateToProps = (state, ownProps) => {
   let newNotice = 0
   newProps.hasNotice = newMsg || newNotice
   const banner = getBanner(state, 0)
-  console.log("getBanner", banner)
   newProps.banner = banner
   return newProps
 }

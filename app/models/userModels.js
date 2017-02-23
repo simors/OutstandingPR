@@ -1,14 +1,17 @@
 import {Record, Map, List} from 'immutable'
 
 export const UserInfoRecord = Record({
-  id: undefined,
-  phone: undefined,
-  token: undefined,
-  avatar: undefined,
-  nickname: undefined,
-  gender: undefined,
-  birthday: undefined,
-  identity: undefined,
+  id: undefined, //用户ID
+  phone: undefined, //手机号码
+  token: undefined, //
+  avatar: undefined, //头像
+  nickname: undefined, //昵称
+  birthday: undefined, //出身年月日
+  city: undefined, //所在城市
+  industry: undefined, //所在行业
+  name: undefined, //真实姓名
+  organization: undefined, // 任职机构
+  profession: undefined, //职业
 }, 'UserInfoRecord')
 
 export const UserStateRecord = Record({
@@ -35,23 +38,12 @@ export class UserInfo extends UserInfoRecord {
       record.set('avatar',lcObj.attributes.avatar)
       record.set('phone', attrs.mobilePhoneNumber)
       record.set('nickname', attrs.nickname)
-      record.set('gender', attrs.gender)
       record.set('birthday', attrs.birthday)
-      record.set('identity', attrs.identity)
-    })
-    return info
-  }
-
-  static fromLeancloudApi(lcObj) {
-    let info = new UserInfoRecord()
-    info = info.withMutations((record) => {
-      record.set('id', lcObj.id)
-      record.set('avatar',lcObj.avatar)
-      record.set('phone', lcObj.phone)
-      record.set('nickname', lcObj.nickname)
-      record.set('gender', lcObj.gender)
-      record.set('birthday', lcObj.birthday)
-      record.set('identity', new List(lcObj.identity))
+      record.set('city', attrs.city)
+      record.set('industry', attrs.industry)
+      record.set('name', attrs.username)
+      record.set('organization', attrs.organization)
+      record.set('profession', attrs.profession)
     })
     return info
   }

@@ -16,6 +16,8 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {normalizeH, normalizeW} from '../../util/Responsive'
+import {activeUserInfo} from '../../selector/authSelector'
+
 
 class Profile extends Component {
   constructor(props) {
@@ -39,9 +41,9 @@ class Profile extends Component {
           <View style={{alignItems: 'center', borderBottomWidth: 1, borderBottomColor: 'rgba(170,170,170,0.2)',}}>
             <Image
               style={styles.avatar}
-              source={require('../../assets/images/defualt_user.png')}
+              source={this.props.userInfo.avatar? {uri: this.props.userInfo.avatar} : require('../../assets/images/defualt_user.png')}
             />
-            <Text style={styles.name}>非凡的昵称</Text>
+            <Text style={styles.name}>{this.props.userInfo.nickname? this.props.userInfo.nickname: '非凡的昵称'}</Text>
           </View>
           <TouchableOpacity style={styles.item}>
             <View style={{flex: 1, marginLeft: normalizeW(20)}}>
@@ -53,8 +55,9 @@ class Profile extends Component {
             />
           </TouchableOpacity>
           <TouchableOpacity style={styles.item}>
-            <View style={{flex: 1, marginLeft: normalizeW(20)}}>
+            <View style={{flex: 1, flexDirection: 'row', marginLeft: normalizeW(20)}}>
               <Text style={styles.itemText}>出身年月</Text>
+              <Text style={[styles.itemText, {marginLeft: normalizeW(20)}]}>{this.props.userInfo.birthday}</Text>
             </View>
             <Image
               style={{marginRight: normalizeW(20)}}
@@ -62,18 +65,22 @@ class Profile extends Component {
             />
           </TouchableOpacity>
           <TouchableOpacity style={styles.item}>
-            <View style={{flex: 1, marginLeft: normalizeW(20)}}>
+            <View style={{flex: 1, flexDirection: 'row', marginLeft: normalizeW(20)}}>
               <Text style={styles.itemText}>任职机构</Text>
+              <Text style={[styles.itemText, {marginLeft: normalizeW(20)}]}>{this.props.userInfo.organization}</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.item}>
-            <View style={{flex: 1, marginLeft: normalizeW(20)}}>
-              <Text style={styles.itemText}>职位</Text>
+            <View style={{flex: 1, flexDirection: 'row',marginLeft: normalizeW(20)}}>
+              <Text style={styles.itemText}>职       位</Text>
+              <Text style={[styles.itemText, {marginLeft: normalizeW(20)}]}>{this.props.userInfo.profession}</Text>
+
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.item}>
-            <View style={{flex: 1, marginLeft: normalizeW(20)}}>
+            <View style={{flex: 1, flexDirection: 'row', marginLeft: normalizeW(20)}}>
               <Text style={styles.itemText}>所在行业</Text>
+              <Text style={[styles.itemText, {marginLeft: normalizeW(20)}]}>{this.props.userInfo.industry}</Text>
             </View>
           </TouchableOpacity>
 
@@ -84,7 +91,10 @@ class Profile extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
+  let userInfo = activeUserInfo(state)
+  return {
+    userInfo: userInfo,
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
@@ -122,6 +132,9 @@ const styles = StyleSheet.create({
     color: '#5A5A5A',
   },
   avatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     marginTop: normalizeH(20),
     marginBottom: normalizeH(15),
   },

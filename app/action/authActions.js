@@ -4,9 +4,6 @@ import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
 import * as lcAuth from '../api/leancloud/auth'
 
-
-import {UserInfo} from '../models/userModels'
-
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
   GET_SMS_CODE: 'GET_SMS_CODE',
@@ -16,17 +13,6 @@ export const INPUT_FORM_SUBMIT_TYPE = {
   FORGET_PASSWORD: 'FORGET_PASSWORD',
   MODIFY_PASSWORD: 'MODIFY_PASSWORD',
   PROFILE_SUBMIT: 'PROFILE_SUBMIT',
-  SHOP_CERTIFICATION: 'SHOP_CERTIFICATION',
-  SHOP_RE_CERTIFICATION: 'SHOP_RE_CERTIFICATION',
-  HEALTH_PROFILE_SUBMIT: 'HEALTH_PROFILE_SUBMIT',
-  COMPLETE_SHOP_INFO: 'COMPLETE_SHOP_IFNO',
-  PROMOTER_CERTIFICATION: 'PROMOTER_CERTIFICATION',
-  PROMOTER_RE_CERTIFICATION: 'PROMOTER_RE_CERTIFICATION',
-  UPDATE_SHOP_COVER: 'UPDATE_SHOP_COVER',
-  UPDATE_SHOP_ALBUM: 'UPDATE_SHOP_ALBUM',
-  PUBLISH_ANNOUNCEMENT: 'PUBLISH_ANNOUNCEMENT',
-  PUBLISH_SHOP_COMMENT: 'PUBLISH_SHOP_COMMENT',
-  UPDATE_ANNOUNCEMENT: 'UPDATE_ANNOUNCEMENT',
 }
 
 export function submitFormData(payload) {
@@ -197,14 +183,18 @@ function handleResetPwdSmsCode(payload, formData) {
 
 function handleProfileSubmit(payload, formData) {
   return (dispatch, getState) => {
-    console.log('handleProfileSubmit=', formData)
+    console.log('handleProfileSubmit formData=', formData)
+    console.log('handleProfileSubmit payload=', payload)
     let profilePayload = {
-      id: payload.id,
-      nickname: formData.nicknameInput.text,
+      userId: payload.id,
       avatar: formData.avatarInput.text,
-      phone: formData.phoneInput.text,
-      birthday: formData.dtPicker.text,
-      gender: formData.genderInput.text,
+      birthday: formData.birthdayInput.text,
+      city: formData.cityInput.text,
+      industry: formData.industryInput.text,
+      name: formData.nameInput.text,
+      nickname: formData.nicknameInput.text,
+      organization: formData.organizationInput.text,
+      profession: formData.professionInput.text,
     }
     lcAuth.profileSubmit(profilePayload).then((profile) => {
       if (payload.success) {
@@ -222,337 +212,6 @@ function handleProfileSubmit(payload, formData) {
 }
 
 
-function handlePromoterCertification(payload, formData) {
-  return (dispatch, getState) => {
-    let smsPayload = {
-      phone: formData.phoneInput.text,
-      smsAuthCode: formData.smsAuthCodeInput.text,
-    }
-    if(__DEV__) {
-      dispatch(verifyInviteCode(payload, formData))
-    }
-    else {
-      lcAuth.verifySmsCode(smsPayload).then(() => {
-        dispatch(verifyInviteCode(payload, formData))
-      }).catch((error) => {
-        if (payload.error) {
-          payload.error(error)
-        }
-      })
-    }
-  }
-}
-
-function verifyInviteCode(payload, formData) {
-  return (dispatch, getState) => {
-    lcAuth.verifyInvitationCode({invitationsCode: formData.inviteCodeInput.text}).then(()=> {
-      dispatch(promoterCertification(payload, formData))
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-function promoterCertification(payload, formData) {
-  return (dispatch, getState) => {
-    let certPayload = {
-      name: formData.nameInput.text,
-      phone: formData.phoneInput.text,
-      level: 1,
-      address: formData.regionPicker.text,
-      cardId: formData.IDInput.text,
-      //upUser: payload.upUser,
-    }
-    lcAuth.promoteCertification(certPayload).then((promoter) => {
-     //console.log('promoter',promoter)
-      let certificationAction = createAction(AuthTypes.PROMOTER_CERTIFICATION_SUCCESS)
-      dispatch(certificationAction({promoter}))
-      if (payload.success) {
-        payload.success(promoter)
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
-function handleShopCertification(payload, formData) {
-  return (dispatch, getState) => {
-    let smsPayload = {
-      phone: formData.phoneInput.text,
-      smsAuthCode: formData.smsAuthCodeInput.text,
-    }
-    if(__DEV__) {
-      dispatch(verifyInvitationCode(payload, formData))
-    }
-    else {
-      lcAuth.verifySmsCode(smsPayload).then(() => {
-        dispatch(verifyInvitationCode(payload, formData))
-      }).catch((error) => {
-        if (payload.error) {
-          payload.error(error)
-        }
-      })
-    }
-  }
-}
-
-function handleShopReCertification(payload, formData) {
-  return (dispatch, getState) => {
-    payload.isReCertification = true
-    let smsPayload = {
-      phone: formData.phoneInput.text,
-      smsAuthCode: formData.smsAuthCodeInput.text,
-      isReCertification: payload.isReCertification
-    }
-    if(__DEV__) {
-      dispatch(shopCertification(payload, formData))
-    }
-    else {
-      lcAuth.verifySmsCode(smsPayload).then(() => {
-        dispatch(shopCertification(payload, formData))
-      }).catch((error) => {
-        if (payload.error) {
-          payload.error(error)
-        }
-      })
-    }
-  }
-}
-
-function verifyInvitationCode(payload, formData) {
-  return (dispatch, getState) => {
-    lcAuth.verifyInvitationCode({invitationsCode: formData.invitationCodeInput.text}).then(()=> {
-      dispatch(shopCertification(payload, formData))
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
-function shopCertification(payload, formData) {
-  return (dispatch, getState) => {
-    let certPayload = {
-      name: formData.nameInput.text,
-      phone: formData.phoneInput.text,
-      shopName: formData.shopNameInput.text,
-      shopAddress: formData.shopAddrInput.text,
-    }
-    lcAuth.shopCertification(certPayload).then((shop) => {
-      let actionType = AuthTypes.SHOP_CERTIFICATION_SUCCESS
-      if(payload.isReCertification) {
-        actionType = AuthTypes.SHOP_RE_CERTIFICATION_SUCCESS
-      }
-      let cartificationAction = createAction(actionType)
-      dispatch(cartificationAction({shop}))
-      if (payload.success) {
-        payload.success(shop)
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
-function handleShopCover(payload, formData) {
-  return (dispatch, getState) => {
-    let shopPayload = {
-      id: payload.id,
-      coverUrl: formData.shopCoverInput.text
-    }
-    lcAuth.updateShopCover(shopPayload).then((success) => {
-      if (payload.success) {
-        payload.success(success)
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
-
-function handleShopAlbum(payload, formData) {
-  return (dispatch, getState) => {
-    let shopPayload = {
-      id: payload.id,
-      album: formData.shopAlbumInput.text
-    }
-    lcAuth.handleShopAlbum(shopPayload).then((success) => {
-      if (payload.success) {
-        payload.success(success)
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
-function handleCompleteShopInfo(payload, formData) {
-  return (dispatch, getState) => {
-    
-    let shopCategoryObjectId = ''
-    if(payload.canModifyShopCategory) {
-      shopCategoryObjectId = formData.shopCategoryInput.text
-    }
-    
-    let newPayload = {
-      shopId: payload.shopId,
-      shopCategoryObjectId: shopCategoryObjectId,
-      openTime: formData.serviceTimeInput.text,
-      contactNumber: formData.servicePhoneInput.text,
-      ourSpecial: formData.ourSpecialInput.text,
-      album: formData.shopAlbumInput.text,
-      coverUrl: formData.shopCoverInput.text,
-      tagIds: formData.tagsInput.text,
-    }
-    lcAuth.submitCompleteShopInfo(newPayload).then((result) => {
-      let _action = createAction(AuthTypes.COMPLETE_SHOP_INFO_SUCCESS)
-      dispatch(_action({}))
-      if (payload.success) {
-        payload.success()
-      }
-    }).catch((error) => {
-      // console.log('error=======', error)
-      // console.log('error=======', error.code)
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
-function handlePublishAnnouncement(payload, formData) {
-  return (dispatch, getState) => {
-    let newPayload = {
-      id: payload.id,
-      announcementContent: formData.announcementContentInput.text,
-      announcementCover: formData.announcementCoverInput.text,
-    }
-    lcAuth.publishAnnouncement(newPayload).then((shop) => {
-      let _action = createAction(AuthTypes.PUBLISH_ANNOUNCEMENT_SUCCESS)
-      dispatch(_action(shop))
-      if (payload.success) {
-        payload.success(shop)
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
-function handlePublishShopComment(payload, formData) {
-  return (dispatch, getState) => {
-    let newPayload = {}
-    newPayload.id = payload.id
-    if(formData.content) {
-      newPayload.content = formData.content.text
-    }else{
-      throw new Error('请填写评论内容')
-    }
-    if(formData.score) {
-      newPayload.score = formData.score.text
-    }
-    if(formData.imgGroup) {
-      newPayload.blueprints = formData.imgGroup.text
-    }
-    lcShop.submitShopComment(newPayload).then((result) => {
-      let _action = createAction(AuthTypes.PUBLISH_SHOP_COMMENT_SUCCESS)
-      dispatch(_action({}))
-      let params = {
-        shopId: payload.id,
-        replyTo: payload.shopOwnerId,
-        commentId: result.id,
-        content: newPayload.content,
-      }
-      // console.log('handlePublishShopComment=====params=', params)
-      dispatch(msgAction.notifyShopComment(params))
-      if (payload.success) {
-        payload.success()
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
-function handleUpdateAnnouncement(payload, formData) {
-  return (dispatch, getState) => {
-    let newPayload = {
-      shopAnnouncementId: payload.shopAnnouncementId,
-      announcementContent: formData.announcementContentInput.text,
-      announcementCover: formData.announcementCoverInput.text,
-    }
-    lcAuth.updateAnnouncement(newPayload).then((shop) => {
-      let _action = createAction(AuthTypes.UPDATE_ANNOUNCEMENT_SUCCESS)
-      dispatch(_action(shop))
-      if (payload.success) {
-        payload.success(shop)
-      }
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
-export function getUserInfoById(payload) {
-  return (dispatch, getState) => {
-    if (!payload.userId) {
-      return
-    }
-    lcAuth.getUserById(payload).then((user) => {
-      let code = user.error
-      if (0 != code) {
-        return
-      }
-      let userInfo = UserInfo.fromLeancloudApi(user.userInfo)
-      const addUserProfile = createAction(AuthTypes.ADD_USER_PROFILE)
-      dispatch(addUserProfile({userInfo}))
-    }).catch(error => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
-export function handleHealthProfileSubmit(payload, formData) {
-  console.log("handleHealthProfileSubmit payload", payload)
-  console.log("handleHealthProfileSubmit formData", formData)
-
-  return (dispatch, getState) => {
-    let healthProfilePayload = {
-      userId: payload.id,
-      nickname: formData.nicknameInput.text,
-      gender: formData.genderInput.text,
-      birthday: formData.dtPicker.text,
-    }
-    lcAuth.healthProfileSubmit(healthProfilePayload).then((result) => {
-      let addHealthProfileAction = createAction(AuthTypes.ADD_HEALTH_PROFILE)
-      dispatch(addHealthProfileAction({result}))
-      if (payload.success) {
-        payload.success(result)
-      }
-
-    })
-  }
-}
 
 
 

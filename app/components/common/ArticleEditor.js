@@ -426,7 +426,7 @@ class ArticleEditor extends Component {
             style={{flex: 1}}
             keyboardDismissMode="on-drag"
             automaticallyAdjustContentInsets={false}
-            keyboardShouldPersistTaps={true}
+            keyboardShouldPersistTaps={"always"}
             extraHeight={this.props.wrapHeight + 50}
           >
             {this.renderComponents()}
@@ -442,7 +442,7 @@ class ArticleEditor extends Component {
               ref="scrollView"
               style={{flex: 1}}
               automaticallyAdjustContentInsets={false}
-              keyboardShouldPersistTaps={true}
+              keyboardShouldPersistTaps={"always"}
               onContentSizeChange={ (contentWidth, contentHeight) => {
                 this.setState({contentHeight: contentHeight })
               }}

@@ -26,6 +26,8 @@ import {activeUserInfo} from '../../selector/authSelector'
 import * as Toast from '../common/Toast'
 import ImageInput from '../common/Input/ImageInput'
 import RegionPicker from '../common/Input/RegionPicker'
+import {inputFormOnDestroy} from '../../action/inputFormActions'
+
 
 
 
@@ -90,12 +92,17 @@ class EditProfile extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.props.inputFormOnDestroy({formKey: profileForm})
+  }
+
   submitSuccessCallback() {
     Toast.show('保存信息成功')
     Actions.pop()
   }
 
   uploadImageCallback() {
+    this.updateProfile()
   }
 
   submitErrorCallback(error) {
@@ -103,6 +110,12 @@ class EditProfile extends Component {
   }
 
   submit = () => {
+    this.setState({
+      shouldUploadImage: true
+    })
+  }
+
+  updateProfile() {
     this.props.submitFormData({
       formKey: profileForm,
       submitType: INPUT_FORM_SUBMIT_TYPE.PROFILE_SUBMIT,
@@ -146,6 +159,7 @@ class EditProfile extends Component {
               <View style={styles.itemView}>
                 <Text style={styles.itemText}>呢称</Text>
                 <CommonTextInput {...nicknameInput}
+                                 initValue={this.props.userInfo.nickname? this.props.userInfo.nickname: undefined}
                                  maxLength={8}
                                  containerStyle={styles.inputContainerStyle}
                                  inputStyle={styles.inputStyle}
@@ -156,6 +170,7 @@ class EditProfile extends Component {
               <View style={styles.itemView}>
                 <Text style={styles.itemText}>姓名</Text>
                 <CommonTextInput {...nameInput}
+                                 initValue={this.props.userInfo.name? this.props.userInfo.name: undefined}
                                  maxLength={8}
                                  containerStyle={styles.inputContainerStyle}
                                  inputStyle={styles.inputStyle}
@@ -167,8 +182,9 @@ class EditProfile extends Component {
                 <Text style={styles.itemText}>所在城市</Text>
                 <View style={{flex: 1}}>
                   <RegionPicker {...cityInput}
+                                initValue={this.props.userInfo.city? this.props.userInfo.city: '长沙'}
                                 containerStyle={{paddingRight:0, paddingLeft: 0}}
-                                inputStyle={{width: normalizeW(120), height: normalizeH(44), fontSize: 16, backgroundColor: '#fff', borderWidth: 0, paddingLeft: 0,}}
+                                inputStyle={{width: normalizeW(160), height: normalizeH(44), fontSize: 16, backgroundColor: '#fff', borderWidth: 0, paddingLeft: 0,}}
                   />
                 </View>
               </View>
@@ -181,7 +197,7 @@ class EditProfile extends Component {
               <View style={styles.itemView}>
                 <Text style={[styles.itemText, {marginRight: 0}]}>出身年月</Text>
                 <DateTimeInput {...birthdayInput}
-                               initValue={'2001-01-01'}
+                               initValue={this.props.userInfo.birthday? this.props.userInfo.birthday: undefined}
                                value="2016-05-18" PickerStyle={{justifyContent: 'flex-start', paddingLeft: 0, backgroundColor: '#FFFFFF', width: normalizeW(140), borderWidth: 0}}/>
               </View>
               <Image
@@ -193,6 +209,7 @@ class EditProfile extends Component {
               <View style={styles.itemView}>
                 <Text style={styles.itemText}>任职机构</Text>
                 <CommonTextInput {...organizationInput}
+                                 initValue={this.props.userInfo.organization? this.props.userInfo.organization: undefined}
                                  maxLength={8}
                                  containerStyle={styles.inputContainerStyle}
                                  inputStyle={styles.inputStyle}
@@ -203,6 +220,7 @@ class EditProfile extends Component {
               <View style={styles.itemView}>
                 <Text style={styles.itemText}>职业</Text>
                 <CommonTextInput {...professionInput}
+                                 initValue={this.props.userInfo.profession? this.props.userInfo.profession: undefined}
                                  maxLength={8}
                                  containerStyle={styles.inputContainerStyle}
                                  inputStyle={styles.inputStyle}
@@ -213,6 +231,7 @@ class EditProfile extends Component {
               <View style={styles.itemView}>
                 <Text style={styles.itemText}>所在行业</Text>
                 <CommonTextInput {...industryInput}
+                                 initValue={this.props.userInfo.industry? this.props.userInfo.industry: undefined}
                                  maxLength={8}
                                  containerStyle={styles.inputContainerStyle}
                                  inputStyle={styles.inputStyle}
@@ -234,6 +253,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
+  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProfile)

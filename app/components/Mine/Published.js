@@ -18,12 +18,16 @@ import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
 import {normalizeH, normalizeW} from '../../util/Responsive'
-import {getIPublushes} from '../../selector/publishSelector'
+import {getIPublushes, getIPublishedServices, getIPublishedHelp} from '../../selector/publishSelector'
 import THEME from '../../constants/theme'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
-const ds = new ListView.DataSource({
+const serviceDs = new ListView.DataSource({
+  rowHasChanged: (r1, r2) => r1 != r2,
+})
+
+const helpDs = new ListView.DataSource({
   rowHasChanged: (r1, r2) => r1 != r2,
 })
 
@@ -73,7 +77,7 @@ class Published extends Component {
     } else if (this.state.selectedItem == 'service') {
       return(
         <TouchableOpacity style={styles.item} onPress={this.setHelp}>
-          <Text style={styles.itemText}>公关服务</Text>
+          <Text style={styles.itemText}>公关需求</Text>
         </TouchableOpacity>
       )
     }
@@ -83,15 +87,15 @@ class Published extends Component {
     if (this.state.selectedItem == 'service') {
       return(
         <ListView
-          dataSource={this.props.dataSource}
+          dataSource={this.props.iServiceDataSource}
           renderRow={(rowData) => this.renderService(rowData)}
         />
       )
     } else if (this.state.selectedItem == 'help') {
       return(
         <ListView
-          dataSource={this.props.dataSource}
-          renderRow={(rowData) => this.renderHelp(rowData)}
+          dataSource={this.props.iHelpDataSource}
+          renderRow={(rowData) => this.renderService(rowData)}
         />
       )
     }
@@ -170,9 +174,11 @@ class Published extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const iPublish = getIPublushes(state)
+  const iService = getIPublishedServices(state)
+  const iHelp = getIPublishedHelp(state)
   return {
-    dataSource: ds.cloneWithRows(iPublish),
+    iServiceDataSource: serviceDs.cloneWithRows(iService),
+    iHelpDataSource: helpDs.cloneWithRows(iHelp),
   }
 }
 

@@ -119,6 +119,10 @@ class RegionPicker extends Component {
 
   showPicker() {
     Picker.init({
+      pickerConfirmBtnText: '确认',
+      pickerCancelBtnText: '取消',
+      pickerConfirmBtnColor: [245, 106, 35, 1],
+      pickerCancelBtnColor: [245, 106, 35, 1],
       pickerTitleText: '请选择地区',
       pickerData: this.pickerData,
       wheelFlex: [1, 1, 1],

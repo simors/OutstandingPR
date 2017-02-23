@@ -19,11 +19,13 @@ import Header from '../common/Header'
 import * as Toast from '../common/Toast'
 import CommonTextInput from '../common/CommonTextInput'
 import {normalizeH, normalizeW} from '../../util/Responsive'
-import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
+import {publishFormData, PUBLISH_FORM_SUBMIT_TYPE} from '../../action/publishAction'
 import THEME from '../../constants/theme'
 import ArticleEditor from '../common/ArticleEditor'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import CommonButton from '../common/CommonButton'
+import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
+
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -60,7 +62,62 @@ class PrHelp extends Component {
     super(props)
     this.state = {
       ArticleFocused: true,
+      shouldUploadImgComponent: false,
+      onInsertImage: false,
     }
+    this.insertImages = []
+    this.leanImgUrls = []
+  }
+
+  submitSuccessCallback() {
+    Toast.show('发布成功')
+    Actions.pop()
+  }
+
+  submitErrorCallback(error) {
+    Toast.show(error.message)
+  }
+
+  uploadImgComponentCallback(leanImgUrls) {
+    this.leanImgUrls = leanImgUrls
+    this.onPublish()
+  }
+
+  onPublish() {
+    this.props.publishFormData({
+      formKey: serviceForm,
+      submitType: PUBLISH_FORM_SUBMIT_TYPE.PUBLISH_HELP,
+      userId: this.props.userInfo.id,
+      images: this.leanImgUrls,
+      success: this.submitSuccessCallback,
+      error: this.submitErrorCallback
+    })
+  }
+
+  onButtonPress() {
+    if (this.insertImages && this.insertImages.length) {
+      Toast.show('开始发布...', {
+        duration: 1000,
+        onHidden: ()=> {
+          this.setState({
+            shouldUploadImgComponent: true
+          })
+        }
+      })
+    } else {
+      Toast.show('开始发布...', {
+        duration: 1000,
+        onHidden: ()=> {
+          this.onPublish()
+        }
+      })
+    }
+  }
+
+
+  getRichTextImages(images) {
+    this.insertImages = images
+    console.log('images list', this.insertImages)
   }
 
   onFocusChanged = () => {
@@ -75,13 +132,27 @@ class PrHelp extends Component {
     })
   }
 
+  onInsertImage = () => {
+    this.setState({
+      onInsertImage: true,
+    })
+  }
+
+  onInsertImageCallback = () => {
+    this.setState({
+      onInsertImage: false,
+    })
+  }
+
   renderKeyboardAwareToolBar() {
     return (
       <KeyboardAwareToolBar
         show={this.state.ArticleFocused}
         initKeyboardHeight={-50}
       >
-        <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center',alignItems: 'center',height: normalizeH(40), backgroundColor: '#F5F5F5'}}>
+        <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center',alignItems: 'center',height: normalizeH(40), backgroundColor: '#F5F5F5'}}
+                          onPress={this.onInsertImage}
+        >
           <Image
             style={{marginRight: normalizeW(10)}}
             source={require('../../assets/images/add_picture.png')}
@@ -111,7 +182,9 @@ class PrHelp extends Component {
                              {...serviceName}
                              containerStyle={styles.titleContainerStyle}
                              inputStyle={styles.titleInputStyle}
-                             placeholder="输入标题"/>
+                             placeholder="输入标题"
+                             initValue="就读雅丽中学"
+                             onFocus={this.onFocusLost}/>
           </View>
           <View style={styles.price}>
             <Text style={{fontSize: 17, color: '#AAAAAA', paddingLeft: normalizeW(20)}}>价格</Text>
@@ -121,19 +194,28 @@ class PrHelp extends Component {
                              containerStyle={styles.priceContainerStyle}
                              inputStyle={styles.priceInputStyle}
                              placeholder="10000"
-                             keyboardType='numeric'/>
+                             initValue="10000"
+                             keyboardType='numeric'
+                             onFocus={this.onFocusLost}/>
           </View>
           <View>
             <ArticleEditor
               {...serviceContent}
               wrapHeight={contentHeight.height}
-              placeholder="正文"
               onFocus={this.onFocusChanged}
+              placeholder="正文"
+              onInsertImage = {this.state.onInsertImage}
+              onInsertImageCallback={this.onInsertImageCallback}
+              shouldUploadImgComponent={this.state.shouldUploadImgComponent}
+              uploadImgComponentCallback={(leanImgUrls) => {this.uploadImgComponentCallback(leanImgUrls)}}
+              getImages={(images) => this.getRichTextImages(images)}
+              initValue={[{type: 'COMP_TEXT', text: "亲爱的家长朋友，还在为孩子的读书问题烦恼吗？请联系138-8888-8888！"}, {width: 360, height: 240, type: 'COMP_IMG', url: 'https://dn-1BOFhd4c.qbox.me/1b44e365621221d5f45b.jpg', }]}
             />
 
           </View>
         </View>
         {this.renderKeyboardAwareToolBar()}
+
       </View>
 
     )
@@ -141,11 +223,16 @@ class PrHelp extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
+  const isLogin = isUserLogined(state)
+  const userInfo = activeUserInfo(state)
+  return {
+    isLogin: isLogin,
+    userInfo: userInfo
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  submitFormData,
+  publishFormData,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PrHelp)
