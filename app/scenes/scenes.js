@@ -23,6 +23,9 @@ import Collection from '../components/Mine/Collection'
 import Focus from '../components/Mine/Focus'
 import Published from '../components/Mine/Published'
 import CommonWebView from '../components/common/CommonWebView'
+import Search from '../components/Search'
+import ServiceShow from '../components/Publish/ServiceShow'
+import HelpShow from '../components/Publish/HelpShow'
 
 const styles = StyleSheet.create({
   container: {
@@ -58,6 +61,9 @@ export const scenes = Actions.create(
       <Scene key="FOCUS" component={Focus} />
       <Scene key="PUBLISHED" component={Published} />
       <Scene key="COMMON_WEB_VIEW" component={CommonWebView} />
+      <Scene key="SEARCH" component={Search} direction="vertical"/>
+      <Scene key="HELP_SHOW" component={HelpShow} />
+      <Scene key="SERVICE_SHOW" component={ServiceShow} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>

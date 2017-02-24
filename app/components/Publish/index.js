@@ -15,9 +15,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import Symbol from 'es6-symbol'
-import CommonButton from '../common/CommonButton'
 import {normalizeH, normalizeW} from '../../util/Responsive'
-import THEME from '../../constants/theme'
 import * as authSelector from '../../selector/authSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width

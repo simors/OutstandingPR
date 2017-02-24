@@ -104,7 +104,7 @@ class Published extends Component {
 
   renderService(rowData) {
     return(
-      <TouchableOpacity style={styles.serviceView}>
+      <TouchableOpacity style={styles.serviceView} onPress={() => Actions.SERVICE_SHOW({service: rowData})}>
         <View style={styles.title}>
           <View style={styles.date}>
             <View style={{width: 37, height: 42, borderRadius: 5,backgroundColor: '#FF9D4E'}}></View>

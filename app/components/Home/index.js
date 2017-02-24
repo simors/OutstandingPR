@@ -14,6 +14,8 @@ import {
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+import {Actions, Scene, Switch, ActionConst, Modal} from 'react-native-router-flux'
+
 import CommonBanner from '../common/CommonBanner'
 import {fetchBanner} from '../../action/configAction'
 import {getBanner} from '../../selector/configSelector'
@@ -84,7 +86,7 @@ class Home extends Component {
             <Text style={{fontSize: 17, color: THEME.colors.yellow, marginLeft: normalizeW(12)}}>长沙</Text>
             <Image source={require('../../assets/images/Triangle.png')}/>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.search}>
+          <TouchableOpacity style={styles.search} onPress={() => Actions.SEARCH()}>
             <Image source={require('../../assets/images/search.png')}/>
             <Text style={{fontSize: 15, marginLeft: normalizeH(33), color: '#AAAAAA'}}>输入关键词</Text>
           </TouchableOpacity>
