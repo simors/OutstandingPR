@@ -20,6 +20,8 @@ import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import CommonButton from '../common/CommonButton'
 import ArticleEditor from '../common/ArticleEditor'
 import {normalizeH, normalizeW} from '../../util/Responsive'
+import Symbol from 'es6-symbol'
+
 
 const PAGE_WIDTH=Dimensions.get('window').width
 

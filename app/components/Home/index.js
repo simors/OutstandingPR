@@ -10,6 +10,8 @@ import {
   Platform,
   Dimensions,
   InteractionManager,
+  ListView,
+  ScrollView,
   Text,
 } from 'react-native'
 import {connect} from 'react-redux'
@@ -21,9 +23,17 @@ import {fetchBanner} from '../../action/configAction'
 import {getBanner} from '../../selector/configSelector'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import THEME from '../../constants/theme'
+import ImageGroupViewer from '../../components/common/ImageGroupViewer'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
+const serviceDs = new ListView.DataSource({
+  rowHasChanged: (r1, r2) => r1 != r2,
+})
+
+const helpDs = new ListView.DataSource({
+  rowHasChanged: (r1, r2) => r1 != r2,
+})
 
 class Home extends Component {
   constructor(props) {
@@ -38,6 +48,18 @@ class Home extends Component {
     })
   }
 
+  setService = () => {
+    this.setState({
+      selectedItem: 'service'
+    })
+  }
+
+  setHelp = () => {
+    this.setState({
+      selectedItem: 'help'
+    })
+  }
+
   renderTip() {
     if (this.props.hasNotice) {
       return <View style={styles.noticeTip}></View>
@@ -45,6 +67,50 @@ class Home extends Component {
     return <View/>
   }
 
+  renderService(rowData) {
+    return(
+      <TouchableOpacity style={styles.serviceView}>
+        <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(15)}}>大型活动策划</Text>
+        <View style={{flexDirection: 'row', marginTop: normalizeH(12)}}>
+          <Text style={{fontSize: 15, color: '#5A5A5A'}}>佐凯</Text>
+          <Text style={{marginLeft: normalizeW(24), fontSize: 15, color: '#AAAAAA'}}>欣木科技活动策划</Text>
+        </View>
+        <View style={{justifyContent: 'space-between', marginTop: normalizeH(12), flexDirection: 'row'}}>
+          <Text style={{fontSize: 15, color: THEME.colors.yellow}}>¥ 500元</Text>
+          <Text style={{fontSize: 12, color: '#AAAAAA'}}>111 人看过</Text>
+        </View>
+        <View style={{marginTop: normalizeH(9), marginBottom: normalizeH(9)}}>
+          <ImageGroupViewer containerStyle={{}}
+                            images={this.props.imageTest}
+                            showMode="oneLine"/>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
+  renderHelp(rowDate) {
+    return(
+      <TouchableOpacity style={styles.helpView}>
+        <View>
+          <Image
+            style={{width: 50, height: 50, marginTop: normalizeH(23), marginRight: normalizeW(15)}}
+            source={require('../../assets/images/defualt_user40.png')}
+          />
+        </View>
+        <View style={{flex: 1}}>
+          <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(20)}}>大型活动策划</Text>
+          <View style={{flexDirection: 'row', marginTop: normalizeH(12)}}>
+            <Text style={{fontSize: 15, color: '#5A5A5A'}}>佐凯</Text>
+            <Text style={{marginLeft: normalizeW(24), fontSize: 15, color: '#AAAAAA'}}>欣木科技活动策划</Text>
+          </View>
+          <View style={{justifyContent: 'space-between', marginTop: normalizeH(12), flexDirection: 'row'}}>
+            <Text style={{fontSize: 15, color: THEME.colors.yellow}}>¥ 500元</Text>
+            <Text style={{fontSize: 12, color: '#AAAAAA'}}>111 人看过</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    )
+  }
 
   renderServiceBar() {
     if (this.state.selectedItem == 'service') {
@@ -76,6 +142,25 @@ class Home extends Component {
         </TouchableOpacity>
       )
     }
+  }
+
+  renderItemView() {
+    if (this.state.selectedItem == 'service') {
+      return(
+        <ListView
+          dataSource={this.props.ServiceDataSource}
+          renderRow={(rowData) => this.renderService(rowData)}
+        />
+      )
+    } else if (this.state.selectedItem == 'help') {
+      return(
+        <ListView
+          dataSource={this.props.HelpDataSource}
+          renderRow={(rowData) => this.renderService(rowData)}
+        />
+      )
+    }
+
   }
 
   render() {
@@ -110,20 +195,29 @@ class Home extends Component {
             {this.renderHelpBar()}
           </View>
         </View>
-
+        <ScrollView>
+          {this.renderService()}
+          {this.renderHelp()}
+        </ScrollView>
       </View>
     )
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let newProps = {}
   let newMsg = 1
   let newNotice = 0
-  newProps.hasNotice = newMsg || newNotice
   const banner = getBanner(state, 0)
-  newProps.banner = banner
-  return newProps
+  const Service = undefined
+  const Help = undefined
+  let imageTest = ['https://dn-1bofhd4c.qbox.me/60fd11e75e312f3b37ca.jpg', 'https://dn-1bofhd4c.qbox.me/60fd11e75e312f3b37ca.jpg']
+  return {
+    hasNotice: newMsg || newNotice,
+    banner: banner,
+    // ServiceDataSource: serviceDs.cloneWithRows(Service),
+    // HelpDataSource: helpDs.cloneWithRows(Help),
+    imageTest: imageTest,
+  }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
@@ -193,5 +287,23 @@ const styles = StyleSheet.create({
     height: normalizeH(154),
     backgroundColor: '#fff', //必须加上,否则android机器无法显示banner
   },
+  serviceView: {
+    width: PAGE_WIDTH,
+    paddingLeft: normalizeW(15),
+    paddingRight: normalizeW(15),
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F5F5F5'
+  },
+  helpView: {
+    flexDirection: 'row',
+    height: normalizeH(107),
+    width: PAGE_WIDTH,
+    paddingLeft: normalizeW(15),
+    paddingRight: normalizeW(15),
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F5F5F5'
+  }
 
 })

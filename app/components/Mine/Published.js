@@ -223,8 +223,6 @@ const styles = StyleSheet.create({
     marginBottom: normalizeH(10),
     width: PAGE_WIDTH,
     backgroundColor: '#FFFFFF',
-
-
   },
   title: {
     flexDirection: 'row',
