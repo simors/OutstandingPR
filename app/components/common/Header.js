@@ -176,7 +176,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingLeft: 12
+    paddingLeft: 12,
+    paddingRight: 12,
   },
   left: {
     fontSize: 32,
@@ -212,7 +213,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingRight: 12
+    paddingRight: 12,
   },
   right: {
     fontSize: 17,

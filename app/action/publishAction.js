@@ -10,6 +10,8 @@ import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
 export const PUBLISH_FORM_SUBMIT_TYPE = {
   PUBLISH_SERVICE: 'PUBLISH_SERVICE',
   PUBLISH_HELP: 'PUBLISH_HELP',
+  UPDATE_SERVICE: 'UPDATE_SERVICE',
+  UPDATE_HELP: 'UPDATE_HELP',
 }
 
 export function publishFormData(payload) {
@@ -33,6 +35,12 @@ export function publishFormData(payload) {
         break
       case PUBLISH_FORM_SUBMIT_TYPE.PUBLISH_HELP:
         dispatch(handlePublishHelp(payload, formData))
+        break
+      case PUBLISH_FORM_SUBMIT_TYPE.UPDATE_SERVICE:
+        dispatch(handleUpdateService(payload, formData))
+        break
+      case PUBLISH_FORM_SUBMIT_TYPE.UPDATE_HELP:
+        dispatch(handleUpdateHelp(payload, formData))
         break
     }
   }
@@ -81,5 +89,35 @@ function handlePublishHelp(payload, formData) {
         payload.error(error)
       }
     })
+  }
+}
+
+function handleUpdateService(payload, formData) {
+  return (dispatch, getState) => {
+    let updateServicePayload = {
+      title: formData.serviceName.text,
+      content: JSON.stringify(formData.serviceContent.text),
+      imgGroup: payload.images,
+      price: formData.servicePrice.text,
+      publishId: payload.publishId,
+    }
+
+    lcPublish.updateService(updateServicePayload).then((result) => {
+      if (payload.success) {
+        payload.success()
+      }
+      let publishAction = createAction(publishActionTypes.UPDATE_PUBLISH)
+      dispatch(publishAction({publish: result}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+function handleUpdateHelp(payload, formDate) {
+  return (dispatch, getState) => {
+
   }
 }

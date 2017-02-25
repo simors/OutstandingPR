@@ -180,6 +180,7 @@ class Home extends Component {
             {this.renderTip()}
           </TouchableOpacity>
         </View>
+        <ScrollView>
         <View style={styles.advertisementModule}>
           {this.props.banner &&
             <CommonBanner
@@ -195,7 +196,7 @@ class Home extends Component {
             {this.renderHelpBar()}
           </View>
         </View>
-        <ScrollView>
+
           {this.renderService()}
           {this.renderHelp()}
         </ScrollView>

@@ -26,6 +26,8 @@ import CommonWebView from '../components/common/CommonWebView'
 import Search from '../components/Search'
 import ServiceShow from '../components/Publish/ServiceShow'
 import HelpShow from '../components/Publish/HelpShow'
+import EditService from '../components/Publish/EditService'
+import EditHelp from '../components/Publish/EditHelp'
 
 const styles = StyleSheet.create({
   container: {
@@ -64,6 +66,8 @@ export const scenes = Actions.create(
       <Scene key="SEARCH" component={Search} direction="vertical"/>
       <Scene key="HELP_SHOW" component={HelpShow} />
       <Scene key="SERVICE_SHOW" component={ServiceShow} />
+      <Scene key="EDIT_SERVICE" component={EditService} />
+      <Scene key="EDIT_HELP" component={EditHelp} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>

@@ -12,6 +12,8 @@ export default function publishReducer(state = initialState, action) {
   switch (action.type) {
     case PublishActionTypes.ADD_PUBLISH:
       return handleAddPublish(state, action)
+    case PublishActionTypes.UPDATE_PUBLISH:
+      return handleUpdatePublish(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -28,6 +30,22 @@ function handleAddPublish(state, action) {
   return state
 }
 
+function handleUpdatePublish(state, action) {
+  let publish = action.payload.publish
+  console.log("publish", publish)
+  let _list = undefined
+  _list = state.get('iPublishes')
+  if (_list) {
+    index= _list.findIndex((record) => {
+      return publish.get('objectId') == record.objectId
+    })
+    console.log("index", index)
+    if (index != -1)
+      _list = _list.set(index, publish)
+  }
+  state = state.set('iPublishes', _list)
+  return state
+}
 
 function onRehydrate(state, action) {
   console.log("onRehydrate: payload", action.payload)

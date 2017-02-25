@@ -24,8 +24,6 @@ import ArticleViewer from '../../components/common/ArticleViewer'
 import * as Toast from '../common/Toast'
 
 
-
-
 const PAGE_WIDTH=Dimensions.get('window').width
 
 class ServiceShow extends Component {
@@ -42,7 +40,7 @@ class ServiceShow extends Component {
               name="ios-arrow-back"
               style={{marginLeft: normalizeW(11), fontSize: 32, color: THEME.colors.yellow}}/>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.edit} onPress={() => {Toast.show("嘿嘿！暂时无法编辑")}}>
+          <TouchableOpacity style={styles.edit} onPress={() => Actions.EDIT_SERVICE({service: this.props.service})}>
             <Image source={require('../../assets/images/edite.png')}/>
           </TouchableOpacity>
           <TouchableOpacity style={styles.share} onPress={() => {Toast.show("嘿嘿！暂时无法分享")}}>

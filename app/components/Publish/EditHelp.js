@@ -1,5 +1,5 @@
 /**
- * Created by wanpeng on 2017/2/15.
+ * Created by wanpeng on 2017/2/25.
  */
 import React, {Component} from 'react'
 import {
@@ -57,7 +57,7 @@ const contentHeight = {
   })
 }
 
-class PrService extends Component {
+class EditHelp extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -209,7 +209,7 @@ class PrService extends Component {
               shouldUploadImgComponent={this.state.shouldUploadImgComponent}
               uploadImgComponentCallback={(leanImgUrls) => {this.uploadImgComponentCallback(leanImgUrls)}}
               getImages={(images) => this.getRichTextImages(images)}
-              initValue={[{type: 'COMP_TEXT', text: "亲爱的家长朋友，还在为孩子的读书问题烦恼吗？请联系138-8888-8888！"}, {width: 360, height: 240, type: 'COMP_IMG', url: 'https://dn-1bofhd4c.qbox.me/8b3ec625866c57cc8939.jpg', }]}
+              initValue={[{type: 'COMP_TEXT', text: "亲爱的家长朋友，还在为孩子的读书问题烦恼吗？请联系138-8888-8888！"}, {width: 360, height: 240, type: 'COMP_IMG', url: 'https://dn-1BOFhd4c.qbox.me/1b44e365621221d5f45b.jpg', }]}
             />
 
           </View>
@@ -235,7 +235,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   publishFormData,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(PrService)
+export default connect(mapStateToProps, mapDispatchToProps)(EditHelp)
 
 const styles = StyleSheet.create({
   container: {

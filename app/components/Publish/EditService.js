@@ -1,5 +1,5 @@
 /**
- * Created by wanpeng on 2017/2/15.
+ * Created by wanpeng on 2017/2/25.
  */
 import React, {Component} from 'react'
 import {
@@ -24,24 +24,24 @@ import THEME from '../../constants/theme'
 import ArticleEditor from '../common/ArticleEditor'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import CommonButton from '../common/CommonButton'
-import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
+import {isUserLogined} from '../../selector/authSelector'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
-let serviceForm = Symbol('serviceForm')
+let rePublishServiceForm = Symbol('rePublishServiceForm')
 const serviceName = {
-  formKey: serviceForm,
+  formKey: rePublishServiceForm,
   stateKey: Symbol('serviceName'),
   type: "serviceName",
 }
 const servicePrice = {
-  formKey: serviceForm,
+  formKey: rePublishServiceForm,
   stateKey: Symbol('servicePrice'),
   type: "servicePrice"
 }
 const serviceContent = {
-  formKey: serviceForm,
+  formKey: rePublishServiceForm,
   stateKey: Symbol('serviceContent'),
   type: "serviceContent"
 }
@@ -57,7 +57,7 @@ const contentHeight = {
   })
 }
 
-class PrService extends Component {
+class EditService extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -70,7 +70,7 @@ class PrService extends Component {
   }
 
   submitSuccessCallback() {
-    Toast.show('发布成功')
+    Toast.show('更新成功')
     Actions.pop()
   }
 
@@ -85,9 +85,9 @@ class PrService extends Component {
 
   onPublish() {
     this.props.publishFormData({
-      formKey: serviceForm,
-      submitType: PUBLISH_FORM_SUBMIT_TYPE.PUBLISH_SERVICE,
-      userId: this.props.userInfo.id,
+      formKey: rePublishServiceForm,
+      submitType: PUBLISH_FORM_SUBMIT_TYPE.UPDATE_SERVICE,
+      publishId: this.props.service.objectId,
       images: this.leanImgUrls,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback
@@ -96,7 +96,7 @@ class PrService extends Component {
 
   onButtonPress() {
     if (this.insertImages && this.insertImages.length) {
-      Toast.show('开始发布...', {
+      Toast.show('开始更新...', {
         duration: 1000,
         onHidden: ()=> {
           this.setState({
@@ -105,7 +105,7 @@ class PrService extends Component {
         }
       })
     } else {
-      Toast.show('开始发布...', {
+      Toast.show('开始更新...', {
         duration: 1000,
         onHidden: ()=> {
           this.onPublish()
@@ -174,7 +174,7 @@ class PrService extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="发布公关服务"
+          title="发布"
         />
         <View style={styles.body}>
           <View>
@@ -183,7 +183,7 @@ class PrService extends Component {
                              containerStyle={styles.titleContainerStyle}
                              inputStyle={styles.titleInputStyle}
                              placeholder="输入标题"
-                             initValue="就读雅丽中学"
+                             initValue={this.props.service.title}
                              onFocus={this.onFocusLost}/>
           </View>
           <View style={styles.price}>
@@ -194,7 +194,7 @@ class PrService extends Component {
                              containerStyle={styles.priceContainerStyle}
                              inputStyle={styles.priceInputStyle}
                              placeholder="10000"
-                             initValue="10000"
+                             initValue={this.props.service.price}
                              keyboardType='numeric'
                              onFocus={this.onFocusLost}/>
           </View>
@@ -209,7 +209,7 @@ class PrService extends Component {
               shouldUploadImgComponent={this.state.shouldUploadImgComponent}
               uploadImgComponentCallback={(leanImgUrls) => {this.uploadImgComponentCallback(leanImgUrls)}}
               getImages={(images) => this.getRichTextImages(images)}
-              initValue={[{type: 'COMP_TEXT', text: "亲爱的家长朋友，还在为孩子的读书问题烦恼吗？请联系138-8888-8888！"}, {width: 360, height: 240, type: 'COMP_IMG', url: 'https://dn-1bofhd4c.qbox.me/8b3ec625866c57cc8939.jpg', }]}
+              initValue={JSON.parse(this.props.service.content)}
             />
 
           </View>
@@ -224,10 +224,8 @@ class PrService extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const isLogin = isUserLogined(state)
-  const userInfo = activeUserInfo(state)
   return {
     isLogin: isLogin,
-    userInfo: userInfo
   }
 }
 
@@ -235,7 +233,7 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   publishFormData,
 }, dispatch)
 
-export default connect(mapStateToProps, mapDispatchToProps)(PrService)
+export default connect(mapStateToProps, mapDispatchToProps)(EditService)
 
 const styles = StyleSheet.create({
   container: {

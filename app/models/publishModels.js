@@ -13,10 +13,12 @@ export const PublishRecord = Record({
   type: undefined, //发布类型
   price: undefined, //标价
   createAt: undefined, //发布时间
+  updateAt: undefined, //更新时间
 }, 'PublishRecord')
 
 export class Publish extends PublishRecord {
   static fromLeancloudObject(lcObj) {
+    console.log("lcObj", lcObj)
     let attrs = lcObj.attributes
     let publish = new PublishRecord()
 
@@ -28,7 +30,10 @@ export class Publish extends PublishRecord {
       record.set('imgGroup', attrs.imgGroup)
       record.set('type', attrs.type)
       record.set('price', attrs.price)
-      record.set('createAt', lcObj.createdAt.valueOf())
+      if(lcObj.createdAt)
+        record.set('createAt', lcObj.createdAt.valueOf())
+      if(lcObj.updateAt)
+        record.set('updateAt', lcObj.updateAt.valueOf())
     })
     return publish
   }
