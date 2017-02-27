@@ -10,6 +10,7 @@ import {
   Dimensions,
   Platform,
   TouchableOpacity,
+  InteractionManager,
   ListView,
 } from 'react-native'
 import {connect} from 'react-redux'
@@ -19,6 +20,8 @@ import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import {getIPublushes, getIPublishedServices, getIPublishedHelp} from '../../selector/publishSelector'
+import {fetchPublishesByUserId} from '../../action/publishAction'
+import {activeUserId} from '../../selector/authSelector'
 import THEME from '../../constants/theme'
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -38,6 +41,13 @@ class Published extends Component {
       selectedItem: 'service'
     }
   }
+
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchPublishesByUserId({userId: this.props.currentUser})
+    })
+  }
+
 
   setService = () => {
     this.setState({
@@ -174,15 +184,18 @@ class Published extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let currentUser = activeUserId(state)
   const iService = getIPublishedServices(state)
   const iHelp = getIPublishedHelp(state)
   return {
+    currentUser: currentUser,
     iServiceDataSource: serviceDs.cloneWithRows(iService),
     iHelpDataSource: helpDs.cloneWithRows(iHelp),
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  fetchPublishesByUserId,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Published)

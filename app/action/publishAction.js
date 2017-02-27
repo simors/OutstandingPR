@@ -121,3 +121,23 @@ function handleUpdateHelp(payload, formDate) {
 
   }
 }
+
+export function fetchPublishesByUserId(payload) {
+  return (dispatch, getState) => {
+    let publishesPayload = {
+      userId: payload.userId,
+    }
+
+    lcPublish.getPublishedByUserId(publishesPayload).then((result) => {
+      if (payload.success) {
+        payload.success()
+      }
+      let publishesUpdateAction = createAction(publishActionTypes.UPDATE_PUBLISHES)
+      dispatch(publishesUpdateAction({pubishes: result}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}

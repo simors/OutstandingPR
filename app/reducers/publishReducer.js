@@ -14,6 +14,8 @@ export default function publishReducer(state = initialState, action) {
       return handleAddPublish(state, action)
     case PublishActionTypes.UPDATE_PUBLISH:
       return handleUpdatePublish(state, action)
+    case PublishActionTypes.UPDATE_PUBLISHES:
+      return handleUpdatePublishes(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -23,6 +25,7 @@ export default function publishReducer(state = initialState, action) {
 
 function handleAddPublish(state, action) {
   let publish = action.payload.publish
+  console.log("handleAddPublish publish", publish)
   let _list = undefined
   _list = state.get('iPublishes') || new List()
   _list = _list.insert(0, publish)
@@ -32,7 +35,7 @@ function handleAddPublish(state, action) {
 
 function handleUpdatePublish(state, action) {
   let publish = action.payload.publish
-  console.log("publish", publish)
+  console.log("handleUpdatePublish publish", publish)
   let _list = undefined
   _list = state.get('iPublishes')
   if (_list) {
@@ -47,11 +50,16 @@ function handleUpdatePublish(state, action) {
   return state
 }
 
+function handleUpdatePublishes(state, action) {
+  let publishes = action.payload.pubishes
+  state = state.set('iPublishes', publishes)
+  return state
+}
+
 function onRehydrate(state, action) {
-  console.log("onRehydrate: payload", action.payload)
   var incoming = action.payload.PUBLISH
   if (incoming) {
-    state = state.set('iPublishes', List(incoming.iPublishes))
+    // state = state.set('iPublishes', List(incoming.iPublishes))
   }
   return state
 }

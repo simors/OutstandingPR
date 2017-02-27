@@ -74,3 +74,25 @@ export function updateService(payload) {
   })
 }
 
+export function getPublishedByUserId(payload) {
+  console.log("getServicesByUserId payload", payload)
+  let userId = payload.userId
+  var userInfo = AV.Object.createWithoutData('_User', userId)
+  var publish = new AV.Query('Publishes')
+
+  publish.equalTo('user', userInfo)
+
+  return publish.find().then(function (results) {
+    let publishes = []
+    if (results) {
+      results.forEach((record) => {
+        publishes.push(Publish.fromLeancloudObject(record))
+      })
+    }
+    return new List(publishes)
+  }, function (error) {
+    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    throw error
+  })
+
+}
