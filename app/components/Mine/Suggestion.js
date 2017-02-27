@@ -21,6 +21,7 @@ import CommonButton from '../common/CommonButton'
 import ArticleEditor from '../common/ArticleEditor'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import Symbol from 'es6-symbol'
+import {inputFormOnDestroy} from '../../action/inputFormActions'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -64,7 +65,10 @@ class Suggestion extends Component {
       ArticleFocused: true,
     }
     this.insertImages = []
+  }
 
+  componentWillUnmount() {
+    this.props.inputFormOnDestroy({formKey: suggestionForm})
   }
 
   getRichTextImages(images) {
@@ -158,6 +162,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  inputFormOnDestroy,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Suggestion)

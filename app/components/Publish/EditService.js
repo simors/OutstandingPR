@@ -25,6 +25,7 @@ import ArticleEditor from '../common/ArticleEditor'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import CommonButton from '../common/CommonButton'
 import {isUserLogined} from '../../selector/authSelector'
+import {inputFormOnDestroy} from '../../action/inputFormActions'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -69,9 +70,13 @@ class EditService extends Component {
     this.leanImgUrls = []
   }
 
+  componentWillUnmount() {
+    this.props.inputFormOnDestroy({formKey: rePublishServiceForm})
+  }
+
   submitSuccessCallback() {
     Toast.show('更新成功')
-    Actions.pop()
+    Actions.PUBLISHED()
   }
 
   submitErrorCallback(error) {
@@ -230,6 +235,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  inputFormOnDestroy,
   publishFormData,
 }, dispatch)
 

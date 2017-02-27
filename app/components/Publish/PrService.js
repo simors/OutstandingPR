@@ -25,6 +25,7 @@ import ArticleEditor from '../common/ArticleEditor'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import CommonButton from '../common/CommonButton'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
+import {inputFormOnDestroy} from '../../action/inputFormActions'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -67,6 +68,10 @@ class PrService extends Component {
     }
     this.insertImages = []
     this.leanImgUrls = []
+  }
+
+  componentWillUnmount() {
+    this.props.inputFormOnDestroy({formKey: serviceForm})
   }
 
   submitSuccessCallback() {
@@ -233,6 +238,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   publishFormData,
+  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PrService)

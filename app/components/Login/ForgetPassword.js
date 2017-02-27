@@ -23,6 +23,7 @@ import {normalizeH, normalizeW} from '../../util/Responsive'
 import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import THEME from '../../constants/theme'
 import {isInputValid} from '../../selector/inputFormSelector'
+import {inputFormOnDestroy} from '../../action/inputFormActions'
 import * as Toast from '../common/Toast'
 
 
@@ -51,6 +52,10 @@ const passwordInput = {
 class ForgetPassword extends Component {
   constructor(props) {
     super(props)
+  }
+
+  componentWillUnmount() {
+    this.props.inputFormOnDestroy({formKey: forgetPwdForm})
   }
 
   onButtonPress = () => {
@@ -128,6 +133,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitInputData,
   submitFormData,
+  inputFormOnDestroy,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ForgetPassword)

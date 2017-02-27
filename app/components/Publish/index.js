@@ -20,20 +20,6 @@ import * as authSelector from '../../selector/authSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
-let loginForm = Symbol('loginForm')
-
-const phoneInput = {
-  formKey: loginForm,
-  stateKey: Symbol('phoneInput'),
-  type: "phoneInput"
-}
-
-const passwordInput = {
-  formKey: loginForm,
-  stateKey: Symbol('passwordInput'),
-  type: "passwordInput"
-}
-
 class Publish extends Component {
   constructor(props) {
     super(props)

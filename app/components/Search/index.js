@@ -16,7 +16,9 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import Icon from 'react-native-vector-icons/Ionicons'
-import {Actions, Scene, Switch, ActionConst, Modal} from 'react-native-router-flux'
+import {Actions} from 'react-native-router-flux'
+import {searchBtnClickedAction, searchInputChangeAction} from '../../action/searchActions'
+import {SEARCH_SERVICE, SEARCH_HELP} from '../../constants/searchActionTypes'
 
 
 import CommonBanner from '../common/CommonBanner'
@@ -31,12 +33,29 @@ const PAGE_WIDTH=Dimensions.get('window').width
 class Search extends Component {
   constructor(props) {
     super(props)
-
+    this.searchType = SEARCH_SERVICE
   }
   componentDidMount() {
 
   }
 
+  onTextChange = (text) => {
+    let searchType = this.searchType
+    let searchPayload = {
+      searchKey: text,
+      searchType: searchType
+    }
+
+    this.props.searchInputChangeAction(searchPayload)
+  }
+
+  onSearchBtnClicked = () => {
+    let searchType = this.searchType
+    let searchPayload = {
+      searchType: searchType
+    }
+    this.props.searchBtnClickedAction(searchPayload)
+  }
 
   render() {
     return (
@@ -54,9 +73,10 @@ class Search extends Component {
               multiline={false}
               autoFocus= {true}
               placeholder="请输入关键字"
+              onChangeText={this.onTextChange}
             />
           </View>
-          <TouchableOpacity style={styles.searchButton}>
+          <TouchableOpacity style={styles.searchButton} onPress={this.onSearchBtnClicked}>
             <Text style={{ fontSize: 15, color: '#FFFFFF'}}>搜索</Text>
           </TouchableOpacity>
         </View>
@@ -73,6 +93,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  searchInputChangeAction,
+  searchBtnClickedAction,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search)

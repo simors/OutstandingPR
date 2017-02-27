@@ -25,6 +25,7 @@ import ArticleEditor from '../common/ArticleEditor'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import CommonButton from '../common/CommonButton'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
+import {inputFormOnDestroy} from '../../action/inputFormActions'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -68,6 +69,11 @@ class PrHelp extends Component {
     this.insertImages = []
     this.leanImgUrls = []
   }
+
+  componentWillUnmount() {
+    this.props.inputFormOnDestroy({formKey: serviceForm})
+  }
+
 
   submitSuccessCallback() {
     Toast.show('发布成功')
@@ -209,7 +215,7 @@ class PrHelp extends Component {
               shouldUploadImgComponent={this.state.shouldUploadImgComponent}
               uploadImgComponentCallback={(leanImgUrls) => {this.uploadImgComponentCallback(leanImgUrls)}}
               getImages={(images) => this.getRichTextImages(images)}
-              initValue={[{type: 'COMP_TEXT', text: "亲爱的家长朋友，还在为孩子的读书问题烦恼吗？请联系138-8888-8888！"}, {width: 360, height: 240, type: 'COMP_IMG', url: 'https://dn-1BOFhd4c.qbox.me/1b44e365621221d5f45b.jpg', }]}
+              initValue={[{type: 'COMP_TEXT', text: "亲爱的家长朋友，还在为孩子的读书问题烦恼吗？请联系138-8888-8888！"}, {width: 360, height: 240, type: 'COMP_IMG', url: 'https://dn-1bofhd4c.qbox.me/8b3ec625866c57cc8939.jpg', }]}
             />
 
           </View>
@@ -233,6 +239,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   publishFormData,
+  inputFormOnDestroy
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PrHelp)

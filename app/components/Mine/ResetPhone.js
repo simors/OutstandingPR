@@ -20,6 +20,7 @@ import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
 import CommonButton from '../common/CommonButton'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import THEME from '../../constants/theme'
+import {inputFormOnDestroy} from '../../action/inputFormActions'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -41,6 +42,9 @@ const smsAuthCodeInput = {
 class ResetPhone extends Component {
   constructor(props) {
     super(props)
+  }
+  componentWillUnmount() {
+    this.props.inputFormOnDestroy({formKey: forgetPwdForm})
   }
 
   onButtonPress = () => {
@@ -83,7 +87,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-
+  inputFormOnDestroy,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ResetPhone)

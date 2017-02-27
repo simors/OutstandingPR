@@ -22,6 +22,7 @@ import * as Toast from '../common/Toast'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import THEME from '../../constants/theme'
+import {inputFormOnDestroy} from '../../action/inputFormActions'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -43,6 +44,10 @@ class Login extends Component {
   constructor(props) {
     super(props)
   }
+  componentWillUnmount() {
+    this.props.inputFormOnDestroy({formKey: loginForm})
+  }
+
   submitSuccessCallback(userInfos) {
     Toast.show('登录成功!')
     Actions.pop()
@@ -101,6 +106,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
+  inputFormOnDestroy,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)
