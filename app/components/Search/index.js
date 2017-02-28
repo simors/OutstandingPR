@@ -16,6 +16,7 @@ import {
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+import Symbol from 'es6-symbol'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {Actions} from 'react-native-router-flux'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
@@ -212,7 +213,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingTop: normalizeH(20),
+    ...Platform.select({
+      ios: {
+        paddingTop: normalizeH(20),
+      },
+      android: {
+        paddingTop: normalizeH(0)
+      }
+    }),
     flexDirection: 'row',
     height: normalizeH(65),
     width: PAGE_WIDTH,

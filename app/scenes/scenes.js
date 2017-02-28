@@ -28,6 +28,7 @@ import ServiceShow from '../components/Publish/ServiceShow'
 import HelpShow from '../components/Publish/HelpShow'
 import EditService from '../components/Publish/EditService'
 import EditHelp from '../components/Publish/EditHelp'
+import PersonalHomePage from '../components/Mine/PersonalHomePage'
 
 const styles = StyleSheet.create({
   container: {
@@ -68,6 +69,7 @@ export const scenes = Actions.create(
       <Scene key="SERVICE_SHOW" component={ServiceShow} />
       <Scene key="EDIT_SERVICE" component={EditService} />
       <Scene key="EDIT_HELP" component={EditHelp} />
+      <Scene key="PERSONAL_HOMEPAGE" component={PersonalHomePage} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>

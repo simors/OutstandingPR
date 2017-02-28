@@ -90,14 +90,14 @@ class Home extends Component {
 
   renderHelp(rowDate) {
     return(
-      <TouchableOpacity style={styles.helpView}>
-        <View>
+      <View style={styles.helpView}>
+        <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE()}>
           <Image
             style={{width: 50, height: 50, marginTop: normalizeH(23), marginRight: normalizeW(15)}}
             source={require('../../assets/images/defualt_user40.png')}
           />
-        </View>
-        <View style={{flex: 1}}>
+        </TouchableOpacity>
+        <TouchableOpacity style={{flex: 1}}>
           <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(20)}}>大型活动策划</Text>
           <View style={{flexDirection: 'row', marginTop: normalizeH(12)}}>
             <Text style={{fontSize: 15, color: '#5A5A5A'}}>佐凯</Text>
@@ -107,8 +107,8 @@ class Home extends Component {
             <Text style={{fontSize: 15, color: THEME.colors.yellow}}>¥ 500元</Text>
             <Text style={{fontSize: 12, color: '#AAAAAA'}}>111 人看过</Text>
           </View>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
     )
   }
 
@@ -234,7 +234,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingTop: normalizeH(20),
+    ...Platform.select({
+      ios: {
+        paddingTop: normalizeH(20),
+      },
+      android: {
+        paddingTop: normalizeH(0)
+      }
+    }),
     flexDirection: 'row',
     height: normalizeH(65),
     width: PAGE_WIDTH,

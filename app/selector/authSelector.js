@@ -37,38 +37,4 @@ export function activeUserInfo(state) {
   return activeUser ? state.AUTH.getUserInfoById(activeUser) : new UserInfo()
 }
 
-export function selectUserFollowees(state, userId) {
-  let activeUser = activeUserAndToken(state).activeUser
-  let userFollowees = state.AUTH.followees.get(activeUser)
-  return userFollowees ? userFollowees.toJS() : []
-}
 
-export function selectUserFollowers(state, userId) {
-  let userFollowers = state.AUTH.followers.get(userId)
-  return userFollowers ? userFollowers.toJS() : []
-}
-export function selectUserFollowersTotalCount(state, userId) {
-  let followersTotalCount = state.AUTH.followersTotalCount.get(userId)
-  return followersTotalCount ? followersTotalCount : 0
-}
-
-export function getHealthProfileSize(state) {
-  return state.AUTH.healthProfiles? state.AUTH.healthProfiles.size : 0
-}
-
-export function selectUserFavoriteArticles(state) {
-  let activeUser = activeUserAndToken(state).activeUser
-  let userFavoriteArticles = state.AUTH.favoriteArticles.get(activeUser)
-  return userFavoriteArticles ? userFavoriteArticles.toJS() : []
-}
-
-export function getHealthProfileList(state) {
-  let healthProfileList = []
-  let healthProfileMap = state.AUTH.get('healthProfiles')
-  if (healthProfileMap) {
-    healthProfileMap.forEach((value) => {
-      healthProfileList.push(value)
-    })
-  }
-  return healthProfileList
-}
