@@ -11,50 +11,144 @@ import {
   Dimensions,
   TextInput,
   InteractionManager,
+  ListView,
   Text,
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {Actions} from 'react-native-router-flux'
-import {searchBtnClickedAction, searchInputChangeAction} from '../../action/searchActions'
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
+import {searchBtnClickedAction} from '../../action/searchActions'
 import {SEARCH_SERVICE, SEARCH_HELP} from '../../constants/searchActionTypes'
-
-
-import CommonBanner from '../common/CommonBanner'
-import {fetchBanner} from '../../action/configAction'
-import {getBanner} from '../../selector/configSelector'
+import {getSearchedHelp, getSearchedServices} from '../../selector/searchSelector'
+import CommonTextInput from '../common/CommonTextInput'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import THEME from '../../constants/theme'
+import {getInputData} from '../../selector/inputFormSelector'
+
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
+let searchForm = Symbol('searchForm')
+const searchKeyInput = {
+  formKey: searchForm,
+  stateKey: Symbol('searchKeyInput'),
+  type: "searchKeyInput",
+}
+
+const serviceDs = new ListView.DataSource({
+  rowHasChanged: (r1, r2) => r1 != r2,
+})
+
+const helpDs = new ListView.DataSource({
+  rowHasChanged: (r1, r2) => r1 != r2,
+})
 
 class Search extends Component {
   constructor(props) {
     super(props)
-    this.searchType = SEARCH_SERVICE
+    this.state = {
+      selectedItem: SEARCH_SERVICE,
+    }
   }
   componentDidMount() {
 
   }
 
-  onTextChange = (text) => {
-    let searchType = this.searchType
-    let searchPayload = {
-      searchKey: text,
-      searchType: searchType
-    }
+  setService = () => {
+    this.setState({
+      selectedItem: SEARCH_SERVICE
+    })
+  }
 
-    this.props.searchInputChangeAction(searchPayload)
+  setHelp = () => {
+    this.setState({
+      selectedItem: SEARCH_HELP
+    })
   }
 
   onSearchBtnClicked = () => {
-    let searchType = this.searchType
-    let searchPayload = {
-      searchType: searchType
+    searchPayload = {
+      searchKey: this.props.searchKey,
     }
     this.props.searchBtnClickedAction(searchPayload)
+  }
+
+  renderItemView() {
+    if (this.state.selectedItem == SEARCH_SERVICE) {
+      return(
+        <ListView
+          dataSource={this.props.serviceDataSource}
+          renderRow={(rowData) => this.renderHelp(rowData)}
+          enableEmptySections={true}
+        />
+      )
+    } else if (this.state.selectedItem == SEARCH_HELP) {
+      return(
+        <ListView
+          dataSource={this.props.helpDataSource}
+          renderRow={(rowData) => this.renderHelp(rowData)}
+          enableEmptySections={true}
+        />
+      )
+    }
+  }
+
+  renderServiceBar() {
+    if (this.state.selectedItem == SEARCH_SERVICE) {
+      return(
+        <TouchableOpacity style={[styles.item, {borderBottomColor: THEME.colors.yellow, borderBottomWidth: 3}]} onPress={this.setService}>
+          <Text style={[styles.itemText, {color: THEME.colors.yellow}]}>公关服务</Text>
+        </TouchableOpacity>
+      )
+    } else if (this.state.selectedItem == SEARCH_HELP) {
+      return(
+        <TouchableOpacity style={styles.item} onPress={this.setService}>
+          <Text style={styles.itemText}>公关服务</Text>
+        </TouchableOpacity>
+      )
+    }
+  }
+
+  renderHelpBar() {
+    if (this.state.selectedItem == SEARCH_HELP) {
+      return(
+        <TouchableOpacity style={[styles.item, {borderBottomColor: THEME.colors.yellow, borderBottomWidth: 3}]} onPress={this.setHelp}>
+          <Text style={[styles.itemText, {color: THEME.colors.yellow}]}>公关需求</Text>
+        </TouchableOpacity>
+      )
+    } else if (this.state.selectedItem == SEARCH_SERVICE) {
+      return(
+        <TouchableOpacity style={styles.item} onPress={this.setHelp}>
+          <Text style={styles.itemText}>公关需求</Text>
+        </TouchableOpacity>
+      )
+    }
+  }
+
+  renderHelp(rowData) {
+    return(
+      <TouchableOpacity style={styles.helpView} onPress={() => Actions.SERVICE_SHOW({service: rowData})}>
+        <View>
+          <Image
+            style={{width: 50, height: 50, marginTop: normalizeH(23), marginRight: normalizeW(15)}}
+            source={require('../../assets/images/defualt_user40.png')}
+          />
+        </View>
+        <View style={{flex: 1}}>
+          <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(20)}}>{rowData.title}</Text>
+          <View style={{flexDirection: 'row', marginTop: normalizeH(12)}}>
+            <Text style={{fontSize: 15, color: '#5A5A5A'}}>佐凯</Text>
+            <Text style={{marginLeft: normalizeW(24), fontSize: 15, color: '#AAAAAA'}}>欣木科技活动策划</Text>
+          </View>
+          <View style={{justifyContent: 'space-between', marginTop: normalizeH(12), flexDirection: 'row'}}>
+            <Text style={{fontSize: 15, color: THEME.colors.yellow}}>¥ {rowData.price}元</Text>
+            <Text style={{fontSize: 12, color: '#AAAAAA'}}>111 人看过</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    )
   }
 
   render() {
@@ -68,32 +162,46 @@ class Search extends Component {
           </TouchableOpacity>
           <View style={styles.search}>
             <Image source={require('../../assets/images/search.png')}/>
-            <TextInput
-              style={{flex: 1, marginLeft: normalizeW(16), fontSize: 15}}
-              multiline={false}
-              autoFocus= {true}
-              placeholder="请输入关键字"
-              onChangeText={this.onTextChange}
+            <CommonTextInput {...searchKeyInput}
+                             placeholder="请输入关键字"
+                             autoFocus= {true}
+                             maxLength={8}
+                             containerStyle={{flex: 1, height: normalizeH(30), paddingLeft: 0, paddingRight: 0, }}
+                             inputStyle={{marginLeft: normalizeW(16), fontSize: 15, color: '#5A5A5A'}}
             />
           </View>
-          <TouchableOpacity style={styles.searchButton} onPress={this.onSearchBtnClicked}>
+          <TouchableOpacity style={styles.searchButton} onPress={() =>{this.onSearchBtnClicked()}}>
             <Text style={{ fontSize: 15, color: '#FFFFFF'}}>搜索</Text>
           </TouchableOpacity>
         </View>
-
+        <View style={styles.itemHeader}>
+          <View style={{flex: 1, paddingLeft: normalizeW(75)}}>
+            {this.renderServiceBar()}
+          </View>
+          <View style={{flex: 1, paddingRight: normalizeW(75)}}>
+            {this.renderHelpBar()}
+          </View>
+        </View>
+        <KeyboardAwareScrollView>
+          {this.renderItemView()}
+        </KeyboardAwareScrollView>
       </View>
     )
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let searchKey = getInputData(state, searchKeyInput.formKey, searchKeyInput.stateKey)
+  let service = getSearchedServices(state, searchKey.text)
+  let help = getSearchedHelp(state, searchKey.text)
   return {
-
+    searchKey: searchKey.text,
+    serviceDataSource: serviceDs.cloneWithRows(service),
+    helpDataSource: helpDs.cloneWithRows(help),
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  searchInputChangeAction,
   searchBtnClickedAction,
 }, dispatch)
 
@@ -134,6 +242,32 @@ const styles = StyleSheet.create({
     backgroundColor: THEME.colors.yellow,
     marginRight: normalizeW(15),
     marginLeft: normalizeW(10)
+  },
+  itemHeader: {
+    width: PAGE_WIDTH,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+  },
+  helpView: {
+    flexDirection: 'row',
+    height: normalizeH(107),
+    width: PAGE_WIDTH,
+    paddingLeft: normalizeW(15),
+    paddingRight: normalizeW(15),
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F5F5F5'
+  },
+  item: {
+    height: normalizeH(43),
+    width: normalizeW(80),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  itemText: {
+    fontSize: 15,
+    color: '#AAAAAA'
   },
 
 })

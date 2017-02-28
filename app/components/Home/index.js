@@ -150,6 +150,7 @@ class Home extends Component {
         <ListView
           dataSource={this.props.ServiceDataSource}
           renderRow={(rowData) => this.renderService(rowData)}
+          enableEmptySections={true}
         />
       )
     } else if (this.state.selectedItem == 'help') {
@@ -157,6 +158,7 @@ class Home extends Component {
         <ListView
           dataSource={this.props.HelpDataSource}
           renderRow={(rowData) => this.renderService(rowData)}
+          enableEmptySections={true}
         />
       )
     }

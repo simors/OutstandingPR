@@ -18,7 +18,6 @@ export const PublishRecord = Record({
 
 export class Publish extends PublishRecord {
   static fromLeancloudObject(lcObj) {
-    console.log("lcObj", lcObj)
     let attrs = lcObj.attributes
     let publish = new PublishRecord()
 

@@ -6,7 +6,6 @@ import * as types from '../constants/searchActionTypes'
 
 const SearchRecord = Record({
   searchKey: undefined,
-  searchType: undefined,
   searchResult: undefined
 }, 'SearchRecord')
 
@@ -16,6 +15,8 @@ export default function searchReducer(state = initialState, action) {
   switch(action.type) {
     case types.ON_SEARCH_INPUT_CHANGE:
       return onSearchInputChange(state, action)
+    case types.ON_SEARCH_BTN_CLICKED:
+      return onSearchService(state, action)
     default:
       return state
   }
@@ -23,15 +24,29 @@ export default function searchReducer(state = initialState, action) {
 
 function onSearchInputChange(state, action) {
   let searchKey = action.payload.searchKey
-  let searchType = action.payload.searchType
 
   let searchRecord = state.get(searchKey)
   if (searchRecord === undefined) {
     searchRecord = new SearchRecord()
-    searchRecord = searchRecord.set('searchType', searchType)
   }
   searchRecord = searchRecord.set('searchKey', searchKey)
 
-  state = state.set(searchType, searchRecord)
+  state = state.set(searchKey, searchRecord)
+  return state
+}
+
+function onSearchService(state, action) {
+  console.log("onSearchService", action.payload)
+  let searchKey = action.payload.searchKey
+  let searchResult = action.payload.searchResult
+
+  let searchRecord = state.get(searchKey)
+  if (searchRecord === undefined) {
+    searchRecord = new SearchRecord()
+  }
+  searchRecord = searchRecord.set('searchKey', searchKey)
+  searchRecord = searchRecord.set('searchResult', searchResult)
+
+  state = state.set(searchKey, searchRecord)
   return state
 }

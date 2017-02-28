@@ -99,6 +99,7 @@ class Published extends Component {
         <ListView
           dataSource={this.props.iServiceDataSource}
           renderRow={(rowData) => this.renderService(rowData)}
+          enableEmptySections={true}
         />
       )
     } else if (this.state.selectedItem == 'help') {
@@ -106,6 +107,7 @@ class Published extends Component {
         <ListView
           dataSource={this.props.iHelpDataSource}
           renderRow={(rowData) => this.renderService(rowData)}
+          enableEmptySections={true}
         />
       )
     }
