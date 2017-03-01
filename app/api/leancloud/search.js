@@ -11,6 +11,7 @@ export function searchPublishServices(payload) {
 
   let query = new AV.SearchQuery('Publishes')
   query.queryString(payload.searchKey)
+  query.include('user')
   return query.find().then(function (results) {
     let services = []
     if(results) {

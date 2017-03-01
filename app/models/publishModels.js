@@ -7,6 +7,9 @@ import {Record, Map, List} from 'immutable'
 export const PublishRecord = Record({
   objectId: undefined, //
   userId: undefined,  // 发布用户id
+  avatar: undefined, //用户头像
+  nickname: undefined, //用户昵称
+  profession: undefined, //职业
   title: undefined, //标题
   content: undefined, //公关内容
   imgGroup: undefined, //组图
@@ -20,10 +23,14 @@ export class Publish extends PublishRecord {
   static fromLeancloudObject(lcObj) {
     let attrs = lcObj.attributes
     let publish = new PublishRecord()
+    let user = lcObj.get('user')
 
     publish = publish.withMutations((record) => {
       record.set('objectId', lcObj.id)
       record.set('userId', attrs.user.id)
+      record.set('avatar', user.get('avatar'))
+      record.set('nickname', user.get('nickname'))
+      record.set('profession', user.get('profession'))
       record.set('title', attrs.title)
       record.set('content', attrs.content)
       record.set('imgGroup', attrs.imgGroup)

@@ -11,7 +11,7 @@ export const UserInfoRecord = Record({
   industry: undefined, //所在行业
   name: undefined, //真实姓名
   organization: undefined, // 任职机构
-  profession: undefined, //职业
+  profession: undefined, // 职业
 }, 'UserInfoRecord')
 
 export const UserStateRecord = Record({

@@ -22,6 +22,7 @@ import {normalizeH, normalizeW} from '../../util/Responsive'
 import THEME from '../../constants/theme'
 import ArticleViewer from '../../components/common/ArticleViewer'
 import * as Toast from '../common/Toast'
+import {activeUserId} from '../../selector/authSelector'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -29,6 +30,20 @@ const PAGE_WIDTH=Dimensions.get('window').width
 class ServiceShow extends Component {
   constructor(props) {
     super(props)
+  }
+
+  renderEdit() {
+    if(this.props.service.userId == this.props.currentUser) {
+      return(
+        <TouchableOpacity style={styles.edit} onPress={() => Actions.EDIT_SERVICE({service: this.props.service})}>
+          <Image source={require('../../assets/images/edite.png')}/>
+        </TouchableOpacity>
+      )
+    } else {
+      return (
+        <View />
+      )
+    }
   }
 
   render() {
@@ -40,9 +55,7 @@ class ServiceShow extends Component {
               name="ios-arrow-back"
               style={{marginLeft: normalizeW(11), fontSize: 32, color: THEME.colors.yellow}}/>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.edit} onPress={() => Actions.EDIT_SERVICE({service: this.props.service})}>
-            <Image source={require('../../assets/images/edite.png')}/>
-          </TouchableOpacity>
+          {this.renderEdit()}
           <TouchableOpacity style={styles.share} onPress={() => {Toast.show("嘿嘿！暂时无法分享")}}>
             <Image
               source={require('../../assets/images/share.png')}
@@ -78,8 +91,9 @@ ServiceShow.defaultProps = {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let currentUser = activeUserId(state)
   return {
-
+    currentUser: currentUser,
   }
 }
 

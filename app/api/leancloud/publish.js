@@ -103,6 +103,7 @@ export function fetchLastPublishes(payload) {
 
   let query = new AV.Query('Publishes')
   query.equalTo('type', payload.type)
+  query.include('user')
   query.limit(10)
   query.descending('createdAt')
 

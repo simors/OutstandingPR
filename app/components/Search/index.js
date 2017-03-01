@@ -130,25 +130,25 @@ class Search extends Component {
 
   renderHelp(rowData) {
     return(
-      <TouchableOpacity style={styles.helpView} onPress={() => Actions.SERVICE_SHOW({service: rowData})}>
-        <View>
+      <View style={styles.helpView} >
+        <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE()}>
           <Image
-            style={{width: 50, height: 50, marginTop: normalizeH(23), marginRight: normalizeW(15)}}
-            source={require('../../assets/images/defualt_user40.png')}
+            style={{width: 50, height: 50, borderRadius: 25,marginTop: normalizeH(23), marginRight: normalizeW(15)}}
+            source={rowData.avatar? {uri: rowData.avatar} : require('../../assets/images/defualt_user40.png')}
           />
-        </View>
-        <View style={{flex: 1}}>
+        </TouchableOpacity>
+        <TouchableOpacity style={{flex: 1}} onPress={() => Actions.SERVICE_SHOW({service: rowData})}>
           <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(20)}}>{rowData.title}</Text>
           <View style={{flexDirection: 'row', marginTop: normalizeH(12)}}>
-            <Text style={{fontSize: 15, color: '#5A5A5A'}}>佐凯</Text>
-            <Text style={{marginLeft: normalizeW(24), fontSize: 15, color: '#AAAAAA'}}>欣木科技活动策划</Text>
+            <Text style={{fontSize: 15, color: '#5A5A5A'}}>{rowData.nickname}</Text>
+            <Text style={{marginLeft: normalizeW(24), fontSize: 15, color: '#AAAAAA'}}>{rowData.profession}</Text>
           </View>
           <View style={{justifyContent: 'space-between', marginTop: normalizeH(12), flexDirection: 'row'}}>
             <Text style={{fontSize: 15, color: THEME.colors.yellow}}>¥ {rowData.price}元</Text>
             <Text style={{fontSize: 12, color: '#AAAAAA'}}>111 人看过</Text>
           </View>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
     )
   }
 

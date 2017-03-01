@@ -47,7 +47,8 @@ class Home extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchBanner({type: 0})
-      this.props.fetchLastPublishes({type: this.state.selectedItem})
+      this.props.fetchLastPublishes({type: 'service'})
+      this.props.fetchLastPublishes({type: 'help'})
     })
   }
 
@@ -75,8 +76,8 @@ class Home extends Component {
       <TouchableOpacity style={styles.serviceView} onPress={() => Actions.SERVICE_SHOW({service: rowData})}>
         <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(15)}}>{rowData.title}</Text>
         <View style={{flexDirection: 'row', marginTop: normalizeH(12)}}>
-          <Text style={{fontSize: 15, color: '#5A5A5A'}}>佐凯</Text>
-          <Text style={{marginLeft: normalizeW(24), fontSize: 15, color: '#AAAAAA'}}>欣木科技活动策划</Text>
+          <Text style={{fontSize: 15, color: '#5A5A5A'}}>{rowData.nickname}</Text>
+          <Text style={{marginLeft: normalizeW(24), fontSize: 15, color: '#AAAAAA'}}>{rowData.profession}</Text>
         </View>
         <View style={{justifyContent: 'space-between', marginTop: normalizeH(12), flexDirection: 'row'}}>
           <Text style={{fontSize: 15, color: THEME.colors.yellow}}>¥ {rowData.price}元</Text>
@@ -84,7 +85,7 @@ class Home extends Component {
         </View>
         <View style={{marginTop: normalizeH(9), marginBottom: normalizeH(9)}}>
           <ImageGroupViewer containerStyle={{}}
-                            images={this.props.imageTest}
+                            images={rowData.imgGroup}
                             showMode="oneLine"/>
         </View>
       </TouchableOpacity>
@@ -96,18 +97,18 @@ class Home extends Component {
       <View style={styles.helpView}>
         <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE()}>
           <Image
-            style={{width: 50, height: 50, marginTop: normalizeH(23), marginRight: normalizeW(15)}}
-            source={require('../../assets/images/defualt_user40.png')}
+            style={{width: 50, height: 50, borderRadius: 25, marginTop: normalizeH(23), marginRight: normalizeW(15)}}
+            source={rowData.avatar? {uri: rowData.avatar} : require('../../assets/images/defualt_user40.png')}
           />
         </TouchableOpacity>
         <TouchableOpacity style={{flex: 1}} onPress={() => Actions.HELP_SHOW({help: rowData})}>
-          <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(20)}}>大型活动策划</Text>
+          <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(20)}}>{rowData.title}</Text>
           <View style={{flexDirection: 'row', marginTop: normalizeH(12)}}>
-            <Text style={{fontSize: 15, color: '#5A5A5A'}}>佐凯</Text>
-            <Text style={{marginLeft: normalizeW(24), fontSize: 15, color: '#AAAAAA'}}>欣木科技活动策划</Text>
+            <Text style={{fontSize: 15, color: '#5A5A5A'}}>{rowData.nickname}</Text>
+            <Text style={{marginLeft: normalizeW(24), fontSize: 15, color: '#AAAAAA'}}>{rowData.profession}</Text>
           </View>
           <View style={{justifyContent: 'space-between', marginTop: normalizeH(12), flexDirection: 'row'}}>
-            <Text style={{fontSize: 15, color: THEME.colors.yellow}}>¥ 500元</Text>
+            <Text style={{fontSize: 15, color: THEME.colors.yellow}}>¥ {rowData.price}元</Text>
             <Text style={{fontSize: 12, color: '#AAAAAA'}}>111 人看过</Text>
           </View>
         </TouchableOpacity>
@@ -210,7 +211,6 @@ class Home extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const banner = getBanner(state, 0)
-  let imageTest = ['https://dn-1bofhd4c.qbox.me/60fd11e75e312f3b37ca.jpg', 'https://dn-1bofhd4c.qbox.me/60fd11e75e312f3b37ca.jpg']
 
   let lastService = getLastServices(state)
   console.log("lastService", lastService)
@@ -223,7 +223,6 @@ const mapStateToProps = (state, ownProps) => {
     banner: banner,
     ServiceDataSource: serviceDs.cloneWithRows(lastService),
     HelpDataSource: helpDs.cloneWithRows(lastHelp),
-    imageTest: imageTest,
   }
 }
 

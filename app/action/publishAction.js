@@ -153,7 +153,6 @@ export function fetchLastPublishes(payload) {
       if (payload.success) {
         payload.success()
       }
-      console.log("lcPublish.fetchLastPublishes result", result)
       let publishFetchAction = createAction(publishActionTypes.FETCH_LAST_PUBLISHES)
       dispatch(publishFetchAction({pubishes: result, type: payload.type}))
     }).catch((error) => {
