@@ -27,7 +27,7 @@ import CommonButton from '../common/CommonButton'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 
 
-const PAGE_WIDTH=Dimensions.get('window').width
+const PAGE_WIDTH= Dimensions.get('window').width
 
 let serviceForm = Symbol('serviceForm')
 const serviceName = {

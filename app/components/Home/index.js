@@ -211,12 +211,8 @@ class Home extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const banner = getBanner(state, 0)
-
   let lastService = getLastServices(state)
-  console.log("lastService", lastService)
   let lastHelp = getLastHelp(state)
-  console.log("lastHelp", lastHelp)
-
 
   return {
     hasNotice: 1,

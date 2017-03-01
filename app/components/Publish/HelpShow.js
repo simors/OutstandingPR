@@ -35,9 +35,11 @@ class HelpShow extends Component {
   renderEdit() {
     if(this.props.help.userId == this.props.currentUser) {
       return(
-        <TouchableOpacity style={styles.edit} onPress={() => Actions.EDIT_HELP({help: this.props.help})}>
-          <Image source={require('../../assets/images/edite.png')}/>
-        </TouchableOpacity>
+        <View style={styles.edit} >
+          <TouchableOpacity onPress={() => Actions.EDIT_HELP({help: this.props.help})}>
+            <Image style={{marginLeft: normalizeW(10), marginRight: normalizeW(10)}} source={require('../../assets/images/edite.png')}/>
+          </TouchableOpacity>
+        </View>
       )
     } else {
       return (

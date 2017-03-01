@@ -75,7 +75,6 @@ export function updateService(payload) {
 }
 
 export function getPublishedByUserId(payload) {
-  console.log("getServicesByUserId payload", payload)
   let userId = payload.userId
   var userInfo = AV.Object.createWithoutData('_User', userId)
   var publish = new AV.Query('Publishes')
@@ -99,8 +98,6 @@ export function getPublishedByUserId(payload) {
 }
 
 export function fetchLastPublishes(payload) {
-  console.log("fetchLastPublishes payload", payload)
-
   let query = new AV.Query('Publishes')
   query.equalTo('type', payload.type)
   query.include('user')

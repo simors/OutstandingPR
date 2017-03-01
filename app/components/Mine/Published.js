@@ -99,7 +99,7 @@ class Published extends Component {
       return(
         <ListView
           dataSource={this.props.iServiceDataSource}
-          renderRow={(rowData) => this.renderService(rowData)}
+          renderRow={(rowData) => this.renderItem(rowData)}
           enableEmptySections={true}
         />
       )
@@ -107,7 +107,7 @@ class Published extends Component {
       return(
         <ListView
           dataSource={this.props.iHelpDataSource}
-          renderRow={(rowData) => this.renderService(rowData)}
+          renderRow={(rowData) => this.renderItem(rowData)}
           enableEmptySections={true}
         />
       )
@@ -115,10 +115,19 @@ class Published extends Component {
 
   }
 
-  renderService(rowData) {
+  onItemShow(rowData) {
+    console.log("onItemShow rowData", rowData)
+    if(this.state.selectedItem == 'service') {
+      Actions.SERVICE_SHOW({service: rowData})
+    } else if(this.state.selectedItem == 'help') {
+      Actions.HELP_SHOW({help: rowData})
+    }
+  }
+
+  renderItem(rowData) {
     return(
-      <TouchableOpacity style={styles.serviceView} onPress={() => Actions.SERVICE_SHOW({service: rowData})}>
-        <View style={styles.title}>
+      <TouchableOpacity style={styles.serviceView} onPress={() => {this.onItemShow(rowData)}}>
+          <View style={styles.title}>
           <View style={styles.date}>
             <Image style={{backgroundColor:'transparent', alignItems: 'center', justifyContent: 'flex-end'}}
                    source={require('../../assets/images/date.png')}>
@@ -153,14 +162,6 @@ class Published extends Component {
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
-    )
-  }
-
-  renderHelp(rowData) {
-    return(
-      <View>
-
-      </View>
     )
   }
 
