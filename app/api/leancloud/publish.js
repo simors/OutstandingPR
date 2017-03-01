@@ -81,6 +81,7 @@ export function getPublishedByUserId(payload) {
   var publish = new AV.Query('Publishes')
 
   publish.equalTo('user', userInfo)
+  publish.descending('createdAt')
 
   return publish.find().then(function (results) {
     let publishes = []
@@ -95,4 +96,26 @@ export function getPublishedByUserId(payload) {
     throw error
   })
 
+}
+
+export function fetchLastPublishes(payload) {
+  console.log("fetchLastPublishes payload", payload)
+
+  let query = new AV.Query('Publishes')
+  query.equalTo('type', payload.type)
+  query.limit(10)
+  query.descending('createdAt')
+
+  return query.find().then(function (results) {
+    let publishes = []
+    if(results) {
+      results.forEach((record) => {
+        publishes.push(Publish.fromLeancloudObject(record))
+      })
+      return new List(publishes)
+    }
+  }, function (error) {
+    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    throw error
+  })
 }

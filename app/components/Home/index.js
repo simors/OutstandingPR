@@ -24,6 +24,8 @@ import {getBanner} from '../../selector/configSelector'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import THEME from '../../constants/theme'
 import ImageGroupViewer from '../../components/common/ImageGroupViewer'
+import {getLastServices, getLastHelp} from '../../selector/publishSelector'
+import {fetchLastPublishes} from '../../action/publishAction'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -45,6 +47,7 @@ class Home extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchBanner({type: 0})
+      this.props.fetchLastPublishes({type: this.state.selectedItem})
     })
   }
 
@@ -69,14 +72,14 @@ class Home extends Component {
 
   renderService(rowData) {
     return(
-      <TouchableOpacity style={styles.serviceView}>
-        <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(15)}}>大型活动策划</Text>
+      <TouchableOpacity style={styles.serviceView} onPress={() => Actions.SERVICE_SHOW({service: rowData})}>
+        <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(15)}}>{rowData.title}</Text>
         <View style={{flexDirection: 'row', marginTop: normalizeH(12)}}>
           <Text style={{fontSize: 15, color: '#5A5A5A'}}>佐凯</Text>
           <Text style={{marginLeft: normalizeW(24), fontSize: 15, color: '#AAAAAA'}}>欣木科技活动策划</Text>
         </View>
         <View style={{justifyContent: 'space-between', marginTop: normalizeH(12), flexDirection: 'row'}}>
-          <Text style={{fontSize: 15, color: THEME.colors.yellow}}>¥ 500元</Text>
+          <Text style={{fontSize: 15, color: THEME.colors.yellow}}>¥ {rowData.price}元</Text>
           <Text style={{fontSize: 12, color: '#AAAAAA'}}>111 人看过</Text>
         </View>
         <View style={{marginTop: normalizeH(9), marginBottom: normalizeH(9)}}>
@@ -88,7 +91,7 @@ class Home extends Component {
     )
   }
 
-  renderHelp(rowDate) {
+  renderHelp(rowData) {
     return(
       <View style={styles.helpView}>
         <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE()}>
@@ -97,7 +100,7 @@ class Home extends Component {
             source={require('../../assets/images/defualt_user40.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={{flex: 1}}>
+        <TouchableOpacity style={{flex: 1}} onPress={() => Actions.HELP_SHOW({help: rowData})}>
           <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(20)}}>大型活动策划</Text>
           <View style={{flexDirection: 'row', marginTop: normalizeH(12)}}>
             <Text style={{fontSize: 15, color: '#5A5A5A'}}>佐凯</Text>
@@ -157,7 +160,7 @@ class Home extends Component {
       return(
         <ListView
           dataSource={this.props.HelpDataSource}
-          renderRow={(rowData) => this.renderService(rowData)}
+          renderRow={(rowData) => this.renderHelp(rowData)}
           enableEmptySections={true}
         />
       )
@@ -198,9 +201,7 @@ class Home extends Component {
             {this.renderHelpBar()}
           </View>
         </View>
-
-          {this.renderService()}
-          {this.renderHelp()}
+          {this.renderItemView()}
         </ScrollView>
       </View>
     )
@@ -208,23 +209,27 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let newMsg = 1
-  let newNotice = 0
   const banner = getBanner(state, 0)
-  const Service = undefined
-  const Help = undefined
   let imageTest = ['https://dn-1bofhd4c.qbox.me/60fd11e75e312f3b37ca.jpg', 'https://dn-1bofhd4c.qbox.me/60fd11e75e312f3b37ca.jpg']
+
+  let lastService = getLastServices(state)
+  console.log("lastService", lastService)
+  let lastHelp = getLastHelp(state)
+  console.log("lastHelp", lastHelp)
+
+
   return {
-    hasNotice: newMsg || newNotice,
+    hasNotice: 1,
     banner: banner,
-    // ServiceDataSource: serviceDs.cloneWithRows(Service),
-    // HelpDataSource: helpDs.cloneWithRows(Help),
+    ServiceDataSource: serviceDs.cloneWithRows(lastService),
+    HelpDataSource: helpDs.cloneWithRows(lastHelp),
     imageTest: imageTest,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchBanner,
+  fetchLastPublishes
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

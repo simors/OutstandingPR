@@ -28,5 +28,27 @@ export function getIPublishedHelp(state) {
     })
   }
   return help
-
 }
+
+export function getLastServices(state) {
+  let service = []
+  let publishList = state.PUBLISH.get('lastServices')
+  if(publishList) {
+    publishList.forEach((value) => {
+      service.push(value)
+    })
+  }
+  return service
+}
+
+export function getLastHelp(state) {
+  let help = []
+  let publishList = state.PUBLISH.get('lastHelp')
+  if(publishList) {
+    publishList.forEach((value) => {
+      help.push(value)
+    })
+  }
+  return help
+}
+

@@ -16,6 +16,8 @@ export default function publishReducer(state = initialState, action) {
       return handleUpdatePublish(state, action)
     case PublishActionTypes.UPDATE_PUBLISHES:
       return handleUpdatePublishes(state, action)
+    case PublishActionTypes.FETCH_LAST_PUBLISHES:
+      return handleFetchLastPublishes(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -53,6 +55,17 @@ function handleUpdatePublish(state, action) {
 function handleUpdatePublishes(state, action) {
   let publishes = action.payload.pubishes
   state = state.set('iPublishes', publishes)
+  return state
+}
+
+function handleFetchLastPublishes(state, action) {
+  let publishes = action.payload.pubishes
+  let type = action.payload.type
+  if(type == 'service') {
+    state = state.set('lastServices', publishes)
+  } else if (type == 'help') {
+    state = state.set('lastHelp', publishes)
+  }
   return state
 }
 

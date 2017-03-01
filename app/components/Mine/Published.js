@@ -23,6 +23,7 @@ import {getIPublushes, getIPublishedServices, getIPublishedHelp} from '../../sel
 import {fetchPublishesByUserId} from '../../action/publishAction'
 import {activeUserId} from '../../selector/authSelector'
 import THEME from '../../constants/theme'
+import {getCreatedDay, getCreateMonth} from '../../util/dateUtils'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -119,7 +120,11 @@ class Published extends Component {
       <TouchableOpacity style={styles.serviceView} onPress={() => Actions.SERVICE_SHOW({service: rowData})}>
         <View style={styles.title}>
           <View style={styles.date}>
-            <View style={{width: 37, height: 42, borderRadius: 5,backgroundColor: '#FF9D4E'}}></View>
+            <Image style={{backgroundColor:'transparent', alignItems: 'center', justifyContent: 'flex-end'}}
+                   source={require('../../assets/images/date.png')}>
+              <Text style={{color: '#FFFFFF', fontSize: 17}}>{getCreatedDay(rowData.createAt)}</Text>
+              <Text style={{color: '#FFFFFF', fontSize: 10}}>{getCreateMonth(rowData.createAt)}</Text>
+            </Image>
           </View>
           <View style={styles.serviceTitle}>
             <Text style={styles.titleText}>{rowData.title}</Text>
@@ -270,7 +275,6 @@ const styles = StyleSheet.create({
   date: {
     width: normalizeW(68),
     alignItems: 'center',
-
   },
   button: {
     flexDirection: 'row',

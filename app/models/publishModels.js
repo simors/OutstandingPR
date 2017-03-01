@@ -40,4 +40,6 @@ export class Publish extends PublishRecord {
 
 export const PublishState = Record({
   iPublishes: List(),
+  lastServices: List(),
+  lastHelp: List(),
 }, 'PublishState')
