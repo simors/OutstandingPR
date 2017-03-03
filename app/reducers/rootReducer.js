@@ -4,6 +4,8 @@ import configReducer from './configReducer'
 import uiReducer from './uiReducer'
 import authReducer  from './authReducer'
 import publishReducer from './publishReducer'
+import messageReducer from './messageReducer'
+import notifyReducer from './notifyReducer'
 
 
 
@@ -12,6 +14,8 @@ const rootReducers = combineReducers({
   UI: uiReducer,
   AUTH: authReducer,
   PUBLISH: publishReducer,
+  MESSAGE: messageReducer,
+  NOTICE: notifyReducer,
 })
 
 const rootReducersWrapper = (state, action) => {

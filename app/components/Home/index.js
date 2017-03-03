@@ -26,6 +26,8 @@ import THEME from '../../constants/theme'
 import ImageGroupViewer from '../../components/common/ImageGroupViewer'
 import {getLastServices, getLastHelp} from '../../selector/publishSelector'
 import {fetchLastPublishes} from '../../action/publishAction'
+import MessageBell from '../common/MessageBell'
+import {activeUserId} from '../../selector/authSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -92,10 +94,18 @@ class Home extends Component {
     )
   }
 
+  onAvatarClick(userId) {
+    if(this.props.currentUser == userId) {
+      Actions.PROFILE()
+    } else {
+      Actions.PERSONAL_HOMEPAGE({userId: userId})
+    }
+  }
+
   renderHelp(rowData) {
     return(
       <View style={styles.helpView}>
-        <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE()}>
+        <TouchableOpacity onPress={() => {this.onAvatarClick(rowData.userId)}}>
           <Image
             style={{width: 50, height: 50, borderRadius: 25, marginTop: normalizeH(23), marginRight: normalizeW(15)}}
             source={rowData.avatar? {uri: rowData.avatar} : require('../../assets/images/defualt_user40.png')}
@@ -181,10 +191,7 @@ class Home extends Component {
             <Image source={require('../../assets/images/search.png')}/>
             <Text style={{fontSize: 15, marginLeft: normalizeH(33), color: '#AAAAAA'}}>输入关键词</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.notice}>
-            <Image source={require('../../assets/images/notice.png')}/>
-            {this.renderTip()}
-          </TouchableOpacity>
+          <MessageBell />
         </View>
         <ScrollView>
         <View style={styles.advertisementModule}>
@@ -210,11 +217,13 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let currentUser = activeUserId(state)
   const banner = getBanner(state, 0)
   let lastService = getLastServices(state)
   let lastHelp = getLastHelp(state)
 
   return {
+    currentUser: currentUser,
     hasNotice: 1,
     banner: banner,
     ServiceDataSource: serviceDs.cloneWithRows(lastService),
@@ -261,10 +270,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: 'center',
     paddingLeft: 10,
-  },
-  notice: {
-    padding: 5,
-    marginRight: normalizeW(12),
   },
   noticeTip: {
     position: 'absolute',

@@ -41,7 +41,7 @@ class ServiceShow extends Component {
       )
     } else {
       return (
-        <View />
+        <View style={{flex: 1}} />
       )
     }
   }

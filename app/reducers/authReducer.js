@@ -70,6 +70,7 @@ function handleProfileSubmitSuccess(state, action) {
 }
 
 function handleAddUserProfile(state, action) {
+  console.log("handleAddUserProfile ", action)
   let userInfo = action.payload.userInfo
   state = state.setIn(['profiles', userInfo.id], userInfo)
   return state

@@ -10,6 +10,7 @@ import {
   Dimensions,
   Platform,
   ScrollView,
+  InteractionManager,
   TouchableOpacity,
 } from 'react-native'
 import {connect} from 'react-redux'
@@ -19,6 +20,8 @@ import Header from '../common/Header'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import Icon from 'react-native-vector-icons/Ionicons'
 import THEME from '../../constants/theme'
+import * as authSelector from '../../selector/authSelector'
+import {getUserInfoById}from '../../action/authActions'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -26,6 +29,16 @@ const PAGE_WIDTH=Dimensions.get('window').width
 class PersonalHomePage extends Component {
   constructor(props) {
     super(props)
+  }
+
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(()=>{
+      if(this.props.isLogin) {
+        this.props.getUserInfoById({userId: this.props.userId})
+      }else {
+        Actions.LOGIN()
+      }
+    })
   }
 
   renderPublish() {
@@ -61,6 +74,23 @@ class PersonalHomePage extends Component {
     )
   }
 
+  enterChatroom() {
+    let members = []
+    members.push(this.props.userId)
+    members.push(this.props.currentUser)
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
+    } else  {
+      let payload = {
+        name: this.props.userInfo.nickname,
+        members: members,
+        conversationType: this.props.type,
+        title: this.props.userInfo.nickname,
+      }
+      Actions.CHATROOM(payload)
+    }
+  }
+
   render() {
     return(
       <View style={styles.container}>
@@ -76,12 +106,12 @@ class PersonalHomePage extends Component {
           <View style={{position: 'absolute', top: normalizeH(45), right: normalizeW(33), zIndex: 100}}>
             <Image
               style={{width: 60, height: 60, borderRadius: 30, overflow: 'hidden', borderWidth: 2, borderColor: '#FFFFFF'}}
-              source={{uri: 'https://dn-1bofhd4c.qbox.me/306e4d5ca6536b19c772.jpg'}}
+              source={this.props.userInfo.avatar? {uri: this.props.userInfo.avatar}: require('../../assets/images/defualt_user.png')}
             />
           </View>
           <ScrollView>
           <View style={styles.info}>
-            <Text style={{fontSize: 17, marginTop: normalizeH(20)}}>杨阳</Text>
+            <Text style={{fontSize: 17, marginTop: normalizeH(20)}}>{this.props.userInfo.nickname}</Text>
             <Text style={{fontSize: 12, marginTop: normalizeH(10), color: '#AAAAAA'}}>三小时前来过非凡</Text>
             <View style={{flex: 1, flexDirection: 'row', marginTop: normalizeH(12)}}>
               <View style={{alignItems: 'center', marginRight: normalizeW(40)}}>
@@ -135,7 +165,7 @@ class PersonalHomePage extends Component {
               source={require('../../assets/images/report.png')}
             />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.contacted}>
+          <TouchableOpacity style={styles.contacted} onPress={() => {this.enterChatroom()}}>
             <Image
               source={require('../../assets/images/contacted.png')}
             />
@@ -148,12 +178,20 @@ class PersonalHomePage extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let currentUser = authSelector.activeUserId(state)
+  const isLogin = authSelector.isUserLogined(state)
+  const userInfo = authSelector.userInfoById(state, ownProps.userId)
+
   return {
+    currentUser: currentUser,
+    isLogin: isLogin,
+    userInfo: userInfo,
 
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  getUserInfoById,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonalHomePage)

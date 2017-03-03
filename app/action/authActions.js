@@ -2,7 +2,10 @@ import {createAction} from 'redux-actions'
 import * as AuthTypes from '../constants/authActionTypes'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
+import {initMessageClient} from '../action/messageAction'
 import * as lcAuth from '../api/leancloud/auth'
+import {UserInfo} from '../models/userModels'
+
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
@@ -79,6 +82,7 @@ function handleLoginWithPwd(payload, formData) {
       }
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
       dispatch(loginAction({...userInfo}))
+      dispatch(initMessageClient(payload))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
@@ -210,6 +214,29 @@ function handleProfileSubmit(payload, formData) {
     })
   }
 }
+
+
+export function getUserInfoById(payload) {
+  return (dispatch, getState) => {
+    if (!payload.userId) {
+      return
+    }
+    lcAuth.getUserById(payload).then((user) => {
+      let code = user.error
+      if (0 != code) {
+        return
+      }
+      let userInfo = UserInfo.fromLeancloudApi(user.userInfo)
+      const addUserProfile = createAction(AuthTypes.ADD_USER_PROFILE)
+      dispatch(addUserProfile({userInfo}))
+    }).catch(error => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
 
 
 

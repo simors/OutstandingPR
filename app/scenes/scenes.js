@@ -29,6 +29,10 @@ import HelpShow from '../components/Publish/HelpShow'
 import EditService from '../components/Publish/EditService'
 import EditHelp from '../components/Publish/EditHelp'
 import PersonalHomePage from '../components/Mine/PersonalHomePage'
+import MessageBox from '../components/Message'
+import SystemMessageBox from '../components/Message/SystemMessageBox'
+import PublishNotifyView from '../components/Message/PublishNotifyView'
+import Chatroom from '../components/Chatroom'
 
 const styles = StyleSheet.create({
   container: {
@@ -70,6 +74,10 @@ export const scenes = Actions.create(
       <Scene key="EDIT_SERVICE" component={EditService} />
       <Scene key="EDIT_HELP" component={EditHelp} />
       <Scene key="PERSONAL_HOMEPAGE" component={PersonalHomePage} />
+      <Scene key="MESSAGE_BOX" component={MessageBox} />
+      <Scene key="SYSTEM_MESSAGE_BOX" component={SystemMessageBox} />
+      <Scene key="PUBLISH_NOTIFY" component={PublishNotifyView} />
+      <Scene key="CHATROOM" component={Chatroom} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>

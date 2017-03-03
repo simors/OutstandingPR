@@ -195,7 +195,7 @@ export function resetPwdBySmsCode(payload) {
 }
 
 export function modifyMobilePhoneVerified(payload) {
-  return AV.Cloud.run('hLifeModifyMobilePhoneVerified', payload).then((result)=>{
+  return AV.Cloud.run('prModifyMobilePhoneVerified', payload).then((result)=>{
     return result
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
@@ -226,7 +226,7 @@ export function getUserById(payload) {
     return false
   }
   params.userId = userId
-  return AV.Cloud.run('hLifeGetUserinfoById', params).then((result) => {
+  return AV.Cloud.run('prGetUserinfoById', params).then((result) => {
     return result
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]

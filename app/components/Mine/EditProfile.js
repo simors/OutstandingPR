@@ -210,7 +210,7 @@ class EditProfile extends Component {
                 <Text style={styles.itemText}>任职机构</Text>
                 <CommonTextInput {...organizationInput}
                                  initValue={this.props.userInfo.organization? this.props.userInfo.organization: undefined}
-                                 maxLength={8}
+                                 maxLength={16}
                                  containerStyle={styles.inputContainerStyle}
                                  inputStyle={styles.inputStyle}
                                  placeholder="输入信息，更非凡"/>
@@ -221,7 +221,7 @@ class EditProfile extends Component {
                 <Text style={styles.itemText}>职业</Text>
                 <CommonTextInput {...professionInput}
                                  initValue={this.props.userInfo.profession? this.props.userInfo.profession: undefined}
-                                 maxLength={8}
+                                 maxLength={16}
                                  containerStyle={styles.inputContainerStyle}
                                  inputStyle={styles.inputStyle}
                                  placeholder="输入信息，更非凡"/>
@@ -232,7 +232,7 @@ class EditProfile extends Component {
                 <Text style={styles.itemText}>所在行业</Text>
                 <CommonTextInput {...industryInput}
                                  initValue={this.props.userInfo.industry? this.props.userInfo.industry: undefined}
-                                 maxLength={8}
+                                 maxLength={16}
                                  containerStyle={styles.inputContainerStyle}
                                  inputStyle={styles.inputStyle}
                                  placeholder="输入信息，更非凡"/>

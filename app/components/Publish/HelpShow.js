@@ -43,7 +43,7 @@ class HelpShow extends Component {
       )
     } else {
       return (
-        <View />
+        <View style={{flex: 1}}/>
       )
     }
   }
