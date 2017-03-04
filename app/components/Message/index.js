@@ -197,6 +197,7 @@ const mapStateToProps = (state, ownProps) => {
   let newProps = {}
   let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
   let conversations = getOrderedConvsByType(state, PERSONAL_CONVERSATION)
+  console.log("conversations", conversations)
 
   let newSystemMsg = hasNewMessageByType(state, msgTypes.SYSTEM_TYPE)
   let newPublishMsg = hasNewNoticeByType(state, msgTypes.PUBLISH_TYPE)

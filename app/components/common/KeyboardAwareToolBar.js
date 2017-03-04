@@ -38,6 +38,10 @@ export default class KeyboardAwareToolBar extends Component {
     this.onKeyboardDidHide = this.onKeyboardDidHide.bind(this)
   }
 
+  shouldComponentUpdate(newProps) {
+    return false
+  }
+
   componentDidMount() {
     if (Platform.OS == 'ios') {
       Keyboard.addListener('keyboardWillShow', this.onKeyboardWillShow)

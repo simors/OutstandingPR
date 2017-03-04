@@ -541,6 +541,47 @@ function createTypedMessage(msgType) {
   }
 }
 
+
+export function notifyPublishComment(payload) {
+  return (dispatch, getState) => {
+    let toPeers = []
+    let topicInfo = getTopicById(getState(), payload.topicId)
+    console.log('topicInfo:', topicInfo)
+
+    if (payload.replyTo) {
+      toPeers.push(payload.replyTo)
+    } else {
+      toPeers.push(topicInfo.userId)
+    }
+
+    let currentUser = activeUserInfo(getState())
+    let notifyConv = {
+      members: toPeers,   // 可以是一个数组
+      unique: true
+    }
+    dispatch(createOriginalConversation(notifyConv)).then((conversation) => {
+      let message = createTypedMessage(msgTypes.MSG_TOPIC_COMMENT)
+      let attrs = {
+        msgType: msgTypes.MSG_TOPIC_COMMENT,
+        userId: currentUser.id,
+        nickname: currentUser.nickname,
+        avatar: currentUser.avatar,
+        topicId: payload.topicId,
+        title: topicInfo.title,
+        commentId: payload.commentId,
+        commentContent: payload.content,
+      }
+      console.log("topic attrs:", attrs)
+      let text = currentUser.nickname + '在您的话题《' + topicInfo.title + '》中发表了评论'
+      message.setText(text)
+      message.setAttributes(attrs)
+      conversation.send(message)
+    }, (err) => {
+      console.log(err)
+    })
+  }
+}
+
 export function updateConversationStatus(payload) {
   return (dispatch, getState) => {
     dispatch(setLcConversation(payload)).then((conversation) => {

@@ -42,7 +42,7 @@ class MessageBell extends Component {
         <TouchableOpacity style={[styles.container, this.props.bellStyle]}
                           onPress={() => this.jumpToMessageBox()}>
           <View>
-            <Image source={require("../../assets/images/notice.png")} />
+            <Image style={{marginRight: 5, marginTop: 5}} source={require("../../assets/images/notice.png")} />
             {this.renderTip()}
           </View>
         </TouchableOpacity>

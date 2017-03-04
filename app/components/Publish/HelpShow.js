@@ -22,7 +22,8 @@ import {normalizeH, normalizeW} from '../../util/Responsive'
 import THEME from '../../constants/theme'
 import ArticleViewer from '../../components/common/ArticleViewer'
 import * as Toast from '../common/Toast'
-import {activeUserId} from '../../selector/authSelector'
+import {activeUserId, isUserLogined, userInfoById} from '../../selector/authSelector'
+import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -48,6 +49,85 @@ class HelpShow extends Component {
     }
   }
 
+
+  renderPersonalInfo() {
+    if(this.props.help.userId != this.props.currentUser) {
+      return(
+        <View style={{flexDirection: 'row',alignItems: 'center' , backgroundColor: '#F5F5F5'}}>
+          <TouchableOpacity style={{marginTop: normalizeH(15), marginLeft: normalizeW(10), marginRight: normalizeW(15), marginBottom: normalizeH(15)}}>
+            <Image
+              style={{ width: 60, height: 60, borderRadius: 30, overflow: 'hidden', borderWidth: 2, borderColor: '#FFFFFF'}}
+              source={this.props.userInfo.avatar? {uri: this.props.userInfo.avatar}: require('../../assets/images/defualt_user.png')}
+            />
+          </TouchableOpacity>
+          <View style={{flex: 1, marginTop: normalizeH(15)}}>
+            <View style={{flexDirection: 'row'}}>
+              <Text style={{fontSize: 15}}>{this.props.userInfo.nickname}</Text>
+              <Text style={{fontSize: 15, color: '#AAAAAA', marginLeft: normalizeW(20)}}>{this.props.userInfo.profession}</Text>
+            </View>
+            <Text style={{marginTop: normalizeH(10), fontSize: 12, color: '#AAAAAA'}}>30分钟前来过</Text>
+          </View>
+          <TouchableOpacity style={{marginRight: normalizeW(20)}}>
+            <Image source={require('../../assets/images/add_follow.png')}/>
+          </TouchableOpacity>
+        </View>
+      )
+    } else {
+      return (
+        <View />
+      )
+    }
+  }
+
+
+  enterChatroom() {
+    let members = []
+    members.push(this.props.help.userId)
+    members.push(this.props.currentUser)
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
+    } else  {
+      let payload = {
+        name: this.props.userInfo.nickname,
+        members: members,
+        conversationType: PERSONAL_CONVERSATION,
+        title: this.props.userInfo.nickname,
+      }
+      Actions.CHATROOM(payload)
+    }
+  }
+
+  renderAction() {
+    if(this.props.help.userId != this.props.currentUser) {
+      return(
+        <View style={styles.action}>
+          <TouchableOpacity>
+            <Image
+              style={{marginLeft: normalizeW(40)}}
+              source={require('../../assets/images/favorite.png')}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity style={{flex: 1}}>
+            <Image
+              style={{marginLeft: normalizeW(54)}}
+              source={require('../../assets/images/message.png')}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.contacted} onPress={() => {this.enterChatroom()}}>
+            <Image
+              source={require('../../assets/images/contacted.png')}
+            />
+            <Text style={{marginLeft: normalizeW(9), fontSize: 15, color: '#FFFFFF'}}>私信</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    } else {
+      return (
+        <View />
+      )
+    }
+  }
+
   render() {
     return(
       <View style={styles.container}>
@@ -69,6 +149,7 @@ class HelpShow extends Component {
             <Text style={styles.title}>{this.props.help.title}</Text>
             <Text style={styles.price}>¥ {this.props.help.price}元</Text>
           </View>
+          {this.renderPersonalInfo()}
           <View style={styles.serviceView}>
             <ArticleViewer artlcleContent={JSON.parse(this.props.help.content)}/>
           </View>
@@ -79,6 +160,7 @@ class HelpShow extends Component {
             </View>
           </View>
         </ScrollView>
+        {this.renderAction()}
       </View>
     )
   }
@@ -94,8 +176,13 @@ HelpShow.defaultProps = {
 
 const mapStateToProps = (state, ownProps) => {
   let currentUser = activeUserId(state)
+  const isLogin = isUserLogined(state)
+  const userInfo = userInfoById(state, ownProps.help.userId)
+
   return {
+    isLogin: isLogin,
     currentUser: currentUser,
+    userInfo: userInfo,
   }
 }
 
@@ -173,6 +260,26 @@ const styles = StyleSheet.create({
   commentHeader: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  action: {
+    position: 'absolute',
+    bottom: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: PAGE_WIDTH,
+    height: normalizeH(49),
+    backgroundColor: 'rgba(250, 250, 250, 0.9)',
+    borderTopWidth: 1,
+    borderTopColor: '#AAAAAA'
+  },
+  contacted: {
+    height: normalizeH(49),
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#FF9D4E',
+    width: normalizeW(135),
   }
 
 })

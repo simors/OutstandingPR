@@ -18,6 +18,8 @@ export default function publishReducer(state = initialState, action) {
       return handleUpdatePublishes(state, action)
     case PublishActionTypes.FETCH_LAST_PUBLISHES:
       return handleFetchLastPublishes(state, action)
+    case PublishActionTypes.PUBLISH_COMMENT_SUCCESS:
+      return handleAddPublishComment(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -66,6 +68,19 @@ function handleFetchLastPublishes(state, action) {
   } else if (type == 'help') {
     state = state.set('lastHelp', publishes)
   }
+  return state
+}
+
+function handleAddPublishComment(state, action) {
+  let publishComment = action.payload.publishComment
+  let publishCommentList = state.getIn(['publishComments', action.payload.publishId])
+  if (!publishCommentList) {
+    publishCommentList = new List()
+  }
+  publishCommentList = publishCommentList.insert(0, publishComment)
+  state = state.setIn(['publishComments', action.payload.publishId], publishCommentList)
+  return state
+
   return state
 }
 

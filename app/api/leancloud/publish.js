@@ -4,7 +4,7 @@
 import AV from 'leancloud-storage'
 import {List} from 'immutable'
 import ERROR from '../../constants/errorCode'
-import {Publish} from '../../models/publishModels'
+import {Publish, PublishComment} from '../../models/publishModels'
 
 export function publishService(payload) {
   let Publishes = AV.Object.extend('Publishes')
@@ -117,3 +117,71 @@ export function fetchLastPublishes(payload) {
     throw error
   })
 }
+
+export function publishComments(payload) {
+  console.log(" lean publishComments paylaod", payload)
+  let PublishComments = AV.Object.extend('PublishComments')
+  let publishComment = new PublishComments()
+
+  var publish = AV.Object.createWithoutData('Publishes', payload.publishId)
+  var user = AV.Object.createWithoutData('_User', payload.userId)
+
+  if(payload.commentId) {
+    var parentComment = AV.Object.createWithoutData('PublishComments', payload.commentId)
+    publishComment.set('parentComment', parentComment)
+  }
+  publishComment.set('publish', publish)
+  publishComment.set('user', user)
+  publishComment.set('content', payload.content)
+  
+  return publishComment.save().then(function (result) {
+    if(result) {
+      console.log("lean publishComment result:", result)
+      let relation = publish.relation('comments')
+      relation.add(publishComment)
+      publish.increment("commentNum", 1)
+
+      let newPublishComment = result
+      newPublishComment.attributes.user = AV.User.current()
+
+      return publish.save().then(function (result) {
+        if(payload.commentId) {
+          var query = new AV.Query('PublishComments');
+          query.include(['user'])
+          return query.get(payload.commentId).then(function (result) {
+            newPublishComment.attributes.parentComment = result
+            return PublishComment.fromLeancloudObject(newPublishComment)
+          }, function (error) {
+            error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+            throw error
+          })
+        } else {
+          return PublishComment.fromLeancloudObject(newPublishComment)
+        }
+      }, function (error) {
+        error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+        throw error
+      })
+    }
+
+  }, function (error) {
+    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    throw error
+  })
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

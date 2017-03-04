@@ -45,8 +45,58 @@ export class Publish extends PublishRecord {
   }
 }
 
+
+export const PublishCommentRecord = Record({
+  content: undefined,   //评论内容
+  objectId: undefined,  //评论对象id
+  nickname: undefined,  //评论用户昵称
+  createdAt: undefined, //评论创建时间
+  avatar: undefined,    //评论用户头像
+  userId:undefined,     //评论用户id
+  geoPoint: undefined,
+  position: undefined,
+  parentCommentUserId: undefined,     //父评论的作者Id
+  parentCommentUserName: undefined,     //父评论的作者昵称
+}, 'PublishCommentRecord')
+
+export class PublishComment extends PublishCommentRecord {
+  static fromLeancloudObject(lcObj) {
+    let attrs = lcObj.attributes
+    let publishComment = new PublishCommentRecord()
+    let user = lcObj.get('user')
+    let publish = lcObj.get('publish')
+
+
+    let parentUserPoint = undefined
+    let parentUserId = undefined
+    let parentCommentUserName = undefined
+
+    if(attrs.parentComment) {
+      parentUserPoint = attrs.parentComment.attributes.user
+      parentUserId = attrs.parentComment.id
+      parentCommentUserName = parentUserPoint.get('nickname')
+    }
+
+    publishComment = publishComment.withMutations((record) => {
+      record.set('objectId', lcObj.id)
+      record.set('userId', attrs.user.id)
+      record.set('content', attrs.content)
+      record.set('nickname', user.get('nickname'))
+      record.set('createdAt', lcObj.createdAt.valueOf())
+      record.set('avatar', user.get('avatar'))
+      if(attrs.parentComment) {
+        record.set('parentCommentUserId', parentUserId)
+        record.set('parentCommentUserName', parentCommentUserName)
+
+      }
+    })
+    return publishComment
+  }
+}
+
 export const PublishState = Record({
   iPublishes: List(),
   lastServices: List(),
   lastHelp: List(),
+  publishComments:Map(),
 }, 'PublishState')

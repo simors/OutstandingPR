@@ -8,7 +8,6 @@ export const WUAI_SYSTEM_DOCTOR = 'wuaiSystemDocter'
 export const WUAI_SYSTEM_SPEAKER = 'wuaiSystemSpeaker'
 
 // 会话的类型
-export const INQUIRY_CONVERSATION = 'INQUIRY_CONVERSATION'      // 问诊
 export const PERSONAL_CONVERSATION = 'PERSONAL_CONVERSATION'    // 私信
 
 export const MSG_TEXT = -1

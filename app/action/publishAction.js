@@ -6,12 +6,14 @@ import * as publishActionTypes from '../constants/publishActionTypes'
 import * as uiTypes from '../constants/uiActionTypes'
 import * as lcPublish from '../api/leancloud/publish'
 import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
+import {notifyPublishComment} from './messageAction'
 
 export const PUBLISH_FORM_SUBMIT_TYPE = {
   PUBLISH_SERVICE: 'PUBLISH_SERVICE',
   PUBLISH_HELP: 'PUBLISH_HELP',
   UPDATE_SERVICE: 'UPDATE_SERVICE',
   UPDATE_HELP: 'UPDATE_HELP',
+  PUBLISH_COMMENT: 'PUBLISH_COMMENT',
 }
 
 export function publishFormData(payload) {
@@ -41,6 +43,11 @@ export function publishFormData(payload) {
         break
       case PUBLISH_FORM_SUBMIT_TYPE.UPDATE_HELP:
         dispatch(handleUpdateHelp(payload, formData))
+        break
+      case PUBLISH_FORM_SUBMIT_TYPE.PUBLISH_COMMENT:
+        dispatch(handlePublishComment(payload, formData))
+        break
+      default:
         break
     }
   }
@@ -116,9 +123,42 @@ function handleUpdateService(payload, formData) {
   }
 }
 
-function handleUpdateHelp(payload, formDate) {
+function handleUpdateHelp(payload, formData) {
   return (dispatch, getState) => {
 
+  }
+}
+
+function handlePublishComment(payload, formData) {
+  return (dispatch, getState) => {
+    let publishCommentPayload = {
+      content: payload.content,
+      publishId: payload.publishId,
+      commentId: payload.commentId,
+      userId: payload.userId
+    }
+    if ( (!payload.content) || payload.content.length == 0) {
+      payload.error({message: "输入不能为空"})
+      return
+    }
+    lcPublish.publishComments(publishCommentPayload).then((result) => {
+      console.log("lcPublish.publishComments return", result)
+      if (payload.success) {
+        payload.success()
+      }
+      let publishComentAction = createAction(publishActionTypes.PUBLISH_COMMENT_SUCCESS)
+      dispatch(publishComentAction({publishId:payload.publishId, publishComment:result, stateKey: payload.stateKey}))
+      // dispatch(notifyPublishComment({
+      //   publishId: payload.publishId,
+      //   replyTo: payload.replyTo,
+      //   commentId: result.objectId,
+      //   content: payload.content
+      // }))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
   }
 }
 
@@ -163,3 +203,5 @@ export function fetchLastPublishes(payload) {
 
   }
 }
+
+

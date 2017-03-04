@@ -117,7 +117,7 @@ class Home extends Component {
             <Text style={{fontSize: 15, color: '#5A5A5A'}}>{rowData.nickname}</Text>
             <Text style={{marginLeft: normalizeW(24), fontSize: 15, color: '#AAAAAA'}}>{rowData.profession}</Text>
           </View>
-          <View style={{justifyContent: 'space-between', marginTop: normalizeH(12), flexDirection: 'row'}}>
+          <View style={{justifyContent: 'space-between', marginBottom: normalizeH(20),marginTop: normalizeH(12), flexDirection: 'row'}}>
             <Text style={{fontSize: 15, color: THEME.colors.yellow}}>¥ {rowData.price}元</Text>
             <Text style={{fontSize: 12, color: '#AAAAAA'}}>111 人看过</Text>
           </View>

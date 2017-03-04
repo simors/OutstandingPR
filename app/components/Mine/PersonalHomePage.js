@@ -22,6 +22,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import THEME from '../../constants/theme'
 import * as authSelector from '../../selector/authSelector'
 import {getUserInfoById}from '../../action/authActions'
+import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -84,7 +85,7 @@ class PersonalHomePage extends Component {
       let payload = {
         name: this.props.userInfo.nickname,
         members: members,
-        conversationType: this.props.type,
+        conversationType: PERSONAL_CONVERSATION,
         title: this.props.userInfo.nickname,
       }
       Actions.CHATROOM(payload)

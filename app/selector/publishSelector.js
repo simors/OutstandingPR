@@ -52,3 +52,13 @@ export function getLastHelp(state) {
   return help
 }
 
+export function getPublishComments(state, publishId) {
+  let publishCommentMap = state.PUBLISH.get('publishComments')
+  if(publishCommentMap) {
+    let publishCommentList = publishCommentMap.get(publishId)
+    if(publishCommentList)
+      return publishCommentList.toJS()
+  }
+  return []
+}
+

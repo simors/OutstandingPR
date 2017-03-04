@@ -20,7 +20,7 @@ import {getUserInfoById} from '../../action/authActions'
 import {fetchChatMessages} from '../../action/messageAction'
 import {userInfoById, activeUserId, isUserLogined} from '../../selector/authSelector'
 import {hasNewMessageById, getNewestMessageById, getConversationById} from '../../selector/messageSelector'
-import {WUAI_SYSTEM_DOCTOR} from '../../constants/messageActionTypes'
+import {WUAI_SYSTEM_DOCTOR, PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 
 const ICON_SIZE = 50
 
@@ -54,7 +54,7 @@ class MessageBoxCell extends Component {
       let payload = {
         name: this.props.title,
         members: this.props.members,
-        conversationType: this.props.type,
+        conversationType: PERSONAL_CONVERSATION,
         title: this.props.title,
       }
       Actions.CHATROOM(payload)
@@ -97,7 +97,7 @@ class MessageBoxCell extends Component {
         <View>
           <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.users[0].id})}>
             <Image style={styles.noticeIcon}
-                   source={this.props.users[0].avatar ? {uri: this.props.users[0].avatar} : require("../../assets/images/defualt_user40.png")}>
+                   source={this.props.users[0].avatar ? {uri: this.props.users[0].avatar} : require("../../assets/images/defualt_user.png")}>
             </Image>
           </TouchableOpacity>
         </View>
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   },
   selectItem: {
     flexDirection: 'row',
-    height: normalizeH(63),
+    height: normalizeH(85),
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
   },
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   noticeIcon: {
     width: ICON_SIZE,
     height: ICON_SIZE,
-    // borderRadius: 25,
+    borderRadius: 25,
     // overflow: 'hidden',
   },
   noticeTip: {
