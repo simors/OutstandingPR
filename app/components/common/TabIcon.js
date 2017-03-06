@@ -15,6 +15,7 @@ import {
   Dimensions,
 } from 'react-native'
 import {connect} from 'react-redux'
+import THEME from '../../constants/theme'
 
 const PAGE_WIDTH = Dimensions.get('window').width
 const PAGE_HEIGHT = Dimensions.get('window').height
@@ -28,6 +29,23 @@ class TabIcon extends Component {
     )
   }
   publish=(title, selected, index, onPressed, isLogin) =>{
+    if (index == 1) {
+      return (
+        <TouchableWithoutFeedback onPress={()=> {
+          if (onPressed) {
+            onPressed({isLogin: isLogin, index: index})
+          }
+        }}>
+          <View style={[styles.container, {backgroundColor: '#FF9D4E'}]}>
+            <View>
+              <Text style={{color: 'white', fontSize: 40}}>+</Text>
+            </View>
+            <View style={styles.topLine}/>
+          </View>
+        </TouchableWithoutFeedback>
+      )
+    }
+
     return (
       <TouchableWithoutFeedback onPress={()=> {
         if (onPressed) {
@@ -103,7 +121,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FAFAFA',
     height: 50,
-    width: PAGE_WIDTH / 4,
+    width: PAGE_WIDTH / 3,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -111,7 +129,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-    width: PAGE_WIDTH / 4,
+    width: PAGE_WIDTH / 3,
     height: 0.5,
     backgroundColor: '#ededed',
   },

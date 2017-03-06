@@ -122,7 +122,10 @@ const styles = StyleSheet.create({
     paddingTop: normalizeH(34)
   },
   close: {
-    alignSelf: 'center',
+    flex: 1,
+    width: PAGE_WIDTH,
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: normalizeH(12),
   }
 

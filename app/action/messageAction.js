@@ -11,12 +11,11 @@ import * as LC_CONFIG from '../constants/appConfig'
 import * as msgTypes from '../constants/messageActionTypes'
 import {Conversation, Message} from '../models/messageModels'
 import {
-  TopicCommentMsg,
-  ShopCommentMsg,
   TopicLikeMsg,
   ShopLikeMsg,
   UserFollowMsg,
   ShopFollowMsg,
+  PublishCommentMsg,
   NotifyMessage,
 } from '../models/notifyModel'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
@@ -33,18 +32,6 @@ messageType(msgTypes.MSG_IMAGE)(ImageMessage)
 class AudioMessage extends TypedMessage {
 }
 messageType(msgTypes.MSG_AUDIO)(AudioMessage)
-
-class ArticleCommentMessage extends TypedMessage {
-}
-messageType(msgTypes.MSG_ARTICLE_COMMENT)(ArticleCommentMessage)
-
-class TopicCommentMessage extends TypedMessage {
-}
-messageType(msgTypes.MSG_TOPIC_COMMENT)(TopicCommentMessage)
-
-class ShopCommentMessage extends TypedMessage {
-}
-messageType(msgTypes.MSG_SHOP_COMMENT)(ShopCommentMessage)
 
 class ArticleLikeMessage extends TypedMessage {
 }
@@ -66,6 +53,10 @@ class ShopFollowMessage extends TypedMessage {
 }
 messageType(msgTypes.MSG_SHOP_FOLLOW)(ShopFollowMessage)
 
+class PublishCommentMessage extends TypedMessage {
+}
+messageType(msgTypes.MSG_PUBLISH_COMMENT)(PublishCommentMessage)
+
 
 //we should move this to the server to avoid reverse-engineering
 
@@ -84,14 +75,12 @@ const realtime = new Realtime({
 realtime.register(TextMessage)
 realtime.register(ImageMessage)
 realtime.register(AudioMessage)
-realtime.register(ArticleCommentMessage)
-realtime.register(TopicCommentMessage)
-realtime.register(ShopCommentMessage)
 realtime.register(ArticleLikeMessage)
 realtime.register(TopicLikeMessage)
 realtime.register(ShopLikeMessage)
 realtime.register(UserFollowMessage)
 realtime.register(ShopFollowMessage)
+realtime.register(PublishCommentMessage)
 
 const initMessenger = createAction(msgTypes.INIT_MESSENGER_CLIENT)
 const onCreateConversation = createAction(msgTypes.ON_CONVERSATION_CREATED)
@@ -262,7 +251,7 @@ function fetchLcConversation(payload) {
     let client = messengerClient(getState())
     if (!client) {
       if (payload.error) {
-        payload.error()
+        payload.error()``
       }
       console.log('leancloud Messenger init failed, can\'t get client')
       return undefined
@@ -417,6 +406,7 @@ function sendLcTypedMessage(payload) {
 function onReceiveMsg(message, conversation) {
   return (dispatch, getState) => {
     let msgType = message.type
+    console.log('onReceiveMsg', message)
     if (msgType === msgTypes.MSG_TEXT || msgType === msgTypes.MSG_AUDIO || msgType === msgTypes.MSG_IMAGE) {
       dispatch(onRecvNormalMessage(message, conversation))
     }
@@ -428,6 +418,7 @@ function onReceiveMsg(message, conversation) {
       || msgType === msgTypes.MSG_SHOP_LIKE
       || msgType === msgTypes.MSG_USER_FOLLOW
       || msgType === msgTypes.MSG_SHOP_FOLLOW
+      || msgType === msgTypes.MSG_PUBLISH_COMMENT
       || msgType === msgTypes.MSG_SYSTEM) {
       dispatch(onRecvNotifyMessage(message, conversation))
     }
@@ -447,17 +438,7 @@ function onRecvNotifyMessage(message, conversation) {
   return (dispatch, getState) => {
     let msgType = message.type
     let addNotifyMsg = createAction(msgTypes.ADD_NOTIFY_MSG)
-    if (msgType === msgTypes.MSG_TOPIC_COMMENT) {
-      dispatch(addNotifyMsg({
-        message: TopicCommentMsg.fromLeancloudMessage(message),
-        conversation: Conversation.fromLeancloudConversation(conversation)
-      }))
-    } else if (msgType === msgTypes.MSG_SHOP_COMMENT) {
-      dispatch(addNotifyMsg({
-        message: ShopCommentMsg.fromLeancloudMessage(message),
-        conversation: Conversation.fromLeancloudConversation(conversation)
-      }))
-    } else if (msgType === msgTypes.MSG_TOPIC_LIKE) {
+    if (msgType === msgTypes.MSG_TOPIC_LIKE) {
       dispatch(addNotifyMsg({
         message: TopicLikeMsg.fromLeancloudMessage(message),
         conversation: Conversation.fromLeancloudConversation(conversation)
@@ -475,6 +456,11 @@ function onRecvNotifyMessage(message, conversation) {
     } else if (msgType === msgTypes.MSG_SHOP_FOLLOW) {
       dispatch(addNotifyMsg({
         message: ShopFollowMsg.fromLeancloudMessage(message),
+        conversation: Conversation.fromLeancloudConversation(conversation)
+      }))
+    } else if (msgType === msgTypes.MSG_PUBLISH_COMMENT) {
+      dispatch(addNotifyMsg({
+        message: PublishCommentMsg.fromLeancloudMessage(message),
         conversation: Conversation.fromLeancloudConversation(conversation)
       }))
     }
@@ -520,8 +506,6 @@ function sendAudioMessage(conversation, payload) {
 
 function createTypedMessage(msgType) {
   switch (msgType) {
-    case msgTypes.MSG_ARTICLE_COMMENT:
-      return new ArticleCommentMessage()
     case msgTypes.MSG_ARTICLE_LIKE:
       return new ArticleLikeMessage()
     case msgTypes.MSG_TOPIC_COMMENT:
@@ -536,6 +520,8 @@ function createTypedMessage(msgType) {
       return new UserFollowMessage()
     case msgTypes.MSG_SHOP_FOLLOW:
       return new ShopFollowMessage()
+    case msgTypes.MSG_PUBLISH_COMMENT:
+      return new PublishCommentMessage()
     default:
       return new TextMessage()
   }
@@ -543,15 +529,16 @@ function createTypedMessage(msgType) {
 
 
 export function notifyPublishComment(payload) {
+  console.log("notifyPublishComment:payload", payload)
   return (dispatch, getState) => {
     let toPeers = []
-    let topicInfo = getTopicById(getState(), payload.topicId)
-    console.log('topicInfo:', topicInfo)
+    // let topicInfo = getTopicById(getState(), payload.topicId)
+    // console.log('topicInfo:', topicInfo)
 
     if (payload.replyTo) {
       toPeers.push(payload.replyTo)
     } else {
-      toPeers.push(topicInfo.userId)
+      // toPeers.push(topicInfo.userId)
     }
 
     let currentUser = activeUserInfo(getState())
@@ -560,19 +547,19 @@ export function notifyPublishComment(payload) {
       unique: true
     }
     dispatch(createOriginalConversation(notifyConv)).then((conversation) => {
-      let message = createTypedMessage(msgTypes.MSG_TOPIC_COMMENT)
+      let message = createTypedMessage(msgTypes.MSG_PUBLISH_COMMENT)
       let attrs = {
-        msgType: msgTypes.MSG_TOPIC_COMMENT,
+        msgType: msgTypes.MSG_PUBLISH_COMMENT,
         userId: currentUser.id,
         nickname: currentUser.nickname,
         avatar: currentUser.avatar,
         topicId: payload.topicId,
-        title: topicInfo.title,
+        publishId: payload.publishId,
+        // title: topicInfo.title,
         commentId: payload.commentId,
         commentContent: payload.content,
       }
-      console.log("topic attrs:", attrs)
-      let text = currentUser.nickname + '在您的话题《' + topicInfo.title + '》中发表了评论'
+      let text = currentUser.nickname + '在您的发布信息《' + '********' + '》中发表了评论'
       message.setText(text)
       message.setAttributes(attrs)
       conversation.send(message)

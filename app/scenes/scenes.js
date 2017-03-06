@@ -99,38 +99,36 @@ export const scenes = Actions.create(
 )
 
 function tapActions(props) {
-  if (props) {
-    switch (props.index) {
-      case 0: {
-        Actions.HOME_INDEX()
-        break
-      }
-      case 1: {
-        Actions.PUBLISH_ENTER()
-        break
-      }
-      case 2: {
-        AsyncStorage.getItem("reduxPersist:AUTH").then((data) => {
-          let jsonData = JSON.parse(data)
-          console.log('User Auth:', jsonData)
-          if (!jsonData)
-            return false
-          let activeUser = jsonData.token
-          return activeUser ? true : false
-        }).then((result) => {
-          if (!result) {
-            Actions.LOGIN()
-          } else {
-            Actions.MINE()
-          }
-        }).catch((error) => {
-          console.log("AsyncStorage error:", error)
-        })
-        break
-      }
-      default: {
-        Actions.HOME()
-      }
+  switch (props.index) {
+    case 0: {
+      Actions.HOME_INDEX()
+      break
+    }
+    case 1: {
+      Actions.PUBLISH_ENTER()
+      break
+    }
+    case 2: {
+      AsyncStorage.getItem("reduxPersist:AUTH").then((data) => {
+        let jsonData = JSON.parse(data)
+        console.log('User Auth:', jsonData)
+        if (!jsonData)
+          return false
+        let activeUser = jsonData.token
+        return activeUser ? true : false
+      }).then((result) => {
+        if (!result) {
+          Actions.LOGIN()
+        } else {
+          Actions.MINE()
+        }
+      }).catch((error) => {
+        console.log("AsyncStorage error:", error)
+      })
+      break
+    }
+    default: {
+      Actions.HOME()
     }
   }
 }

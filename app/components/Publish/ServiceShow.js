@@ -30,10 +30,11 @@ import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import ToolBarContent from '../common/ToolBarContent'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import {publishFormData, PUBLISH_FORM_SUBMIT_TYPE} from '../../action/publishAction'
-import {getPublishComments} from '../../selector/publishSelector'
+import {getPublishComments, getPublishById} from '../../selector/publishSelector'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
+const PAGE_HEIGHT=Dimensions.get('window').height
 
 class ServiceShow extends Component {
   constructor(props) {
@@ -231,23 +232,25 @@ class ServiceShow extends Component {
             />
           </TouchableOpacity>
         </View>
-        <ScrollView>
-          <View style={styles.titleView}>
-            <Text style={styles.title}>{this.props.service.title}</Text>
-            <Text style={styles.price}>¥ {this.props.service.price}元</Text>
-          </View>
-          {this.renderPersonalInfo()}
-          <View style={styles.serviceView}>
-            <ArticleViewer artlcleContent={JSON.parse(this.props.service.content)}/>
-          </View>
-          <View style={styles.comments}>
-            <View style={styles.commentHeader}>
-              <View style={{width: normalizeW(5), height: normalizeH(15), backgroundColor: THEME.colors.yellow, marginLeft: normalizeW(15)}}/>
-              <Text style={{fontSize: 17, color: '#5A5A5A', marginLeft: normalizeW(10)}}>留言 (5)</Text>
+        <View style={this.props.service.userId == this.props.currentUser? {height: PAGE_HEIGHT - normalizeH(65)} : {height: PAGE_HEIGHT - normalizeH(49) - normalizeH(65)}}>
+          <ScrollView>
+            <View style={styles.titleView}>
+              <Text style={styles.title}>{this.props.service.title}</Text>
+              <Text style={styles.price}>¥ {this.props.service.price}元</Text>
             </View>
-          </View>
-          {this.renderComments()}
-        </ScrollView>
+            {this.renderPersonalInfo()}
+            <View style={styles.serviceView}>
+              <ArticleViewer artlcleContent={JSON.parse(this.props.service.content)}/>
+            </View>
+            <View style={styles.comments}>
+              <View style={styles.commentHeader}>
+                <View style={{width: normalizeW(5), height: normalizeH(15), backgroundColor: THEME.colors.yellow, marginLeft: normalizeW(15)}}/>
+                <Text style={{fontSize: 17, color: '#5A5A5A', marginLeft: normalizeW(10)}}>留言 (5)</Text>
+              </View>
+            </View>
+            {this.renderComments()}
+          </ScrollView>
+        </View>
         {this.renderAction()}
         {this.renderKeyboardAwareToolBar()}
       </View>
@@ -269,6 +272,8 @@ const mapStateToProps = (state, ownProps) => {
   const isLogin = isUserLogined(state)
   let userInfo = userInfoById(state, ownProps.service.userId)
   const publishComments = getPublishComments(state, ownProps.service.objectId)
+  let serviceInfo = getPublishById(state, ownProps.service.objectId)
+  console.log("serviceInfo:", serviceInfo)
 
   return {
     isLogin: isLogin,
@@ -289,6 +294,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(ServiceShow)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: PAGE_HEIGHT,
   },
   body: {
     flex: 1,

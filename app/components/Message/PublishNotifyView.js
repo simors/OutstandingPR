@@ -18,6 +18,9 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
+import {getNoticeListByType} from '../../selector/notifySelector'
+import * as msgActionTypes from '../../constants/messageActionTypes'
+
 
 
 const PAGE_WIDTH = Dimensions.get('window').width
@@ -38,17 +41,21 @@ class PublishNotifyView extends Component {
   }
 
   renderNoticeItem(notice) {
-    return (
-      <View style={styles.itemView}>
-        <TouchableOpacity style={styles.personView} onPress={() => Actions.PERSONAL_HOMEPAGE()}>
-          <Image style={{width: 50, height: 50}} source={require('../../assets/images/pic50.png')}/>
-        </TouchableOpacity>
-        <TouchableOpacity style={{}} onPress={() => Actions.SERVICE_SHOW()}>
-          <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(25)}}>我发出来一条留言</Text>
-          <Text style={{fontSize: 12, color: '#AAAAAA', marginTop: normalizeH(12)}}>可以在www.simors.com看到我做[1天前]</Text>
-        </TouchableOpacity>
-      </View>
-    )
+    console.log("renderNoticeItem notice", notice)
+    if(notice) {
+      return (
+        <View style={styles.itemView}>
+          <TouchableOpacity style={styles.personView} onPress={() => Actions.PERSONAL_HOMEPAGE({userId: notice.userId})}>
+            <Image style={{width: 50, height: 50}} source={{uri: notice.avatar}}/>
+          </TouchableOpacity>
+          <TouchableOpacity style={{}} onPress={() => Actions.SERVICE_SHOW({service: notice})}>
+            <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(25)}}>{notice.nickname + ' 给您留言了'}</Text>
+            <Text style={{fontSize: 12, color: '#AAAAAA', marginTop: normalizeH(12)}}>{notice.text + '['+ notice.timestamp + ']'}</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }
+
   }
 
   render() {
@@ -66,6 +73,7 @@ class PublishNotifyView extends Component {
             <ListView
               dataSource={this.props.dataSource}
               renderRow={(notice) => this.renderNoticeItem(notice)}
+              enableEmptySections={true}
             />
           </ScrollView>
         </View>
@@ -77,7 +85,7 @@ class PublishNotifyView extends Component {
 const mapStateToProps = (state, ownProps) => {
   let newProps = {}
   let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
-  let noticeList = []
+  let noticeList = getNoticeListByType(state, msgActionTypes.PUBLISH_TYPE)
 
   newProps.dataSource = ds.cloneWithRows(noticeList)
 

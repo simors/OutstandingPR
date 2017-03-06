@@ -32,6 +32,22 @@ export const TopicCommentMsgRecord = Record({
   commentContent: undefined,
 }, 'TopicCommentMsg')
 
+export const PublishCommentMsgRecord = Record({
+  convId: undefined,
+  msgId: undefined,
+  msgType: undefined,
+  userId: undefined,
+  text: undefined,
+  timestamp: undefined,
+  status: undefined,          // 消息的状态，可以为unread,read
+  nickname: undefined,
+  avatar: undefined,
+  publishId: undefined,
+  title: undefined,
+  commentId: undefined,
+  commentContent: undefined,
+}, 'PublishCommentMsgRecord')
+
 export const ShopCommentMsgRecord = Record({
   convId: undefined,
   msgId: undefined,
@@ -126,6 +142,38 @@ export class TopicCommentMsg extends TopicCommentMsgRecord {
       record.set('nickname', attrs.nickname)
       record.set('avatar', attrs.avatar)
       record.set('topicId', attrs.topicId)
+      record.set('title', attrs.title)
+      record.set('commentId', attrs.commentId)
+      record.set('commentContent', attrs.commentContent)
+    })
+  }
+}
+
+export class PublishCommentMsg extends PublishCommentMsgRecord {
+  static fromLeancloudMessage(lcMsg) {
+    let msg = new PublishCommentMsg()
+
+    return msg.withMutations((record) => {
+      var messageType, text
+      if (lcMsg.content) {
+        messageType = lcMsg.content._lctype
+        text = lcMsg.content._lctext
+      } else {
+        messageType = lcMsg.type
+        text = lcMsg.text
+      }
+      record.set('convId', lcMsg.cid)
+      record.set('msgId', lcMsg.id)
+      record.set('userId', lcMsg.from)
+      record.set('msgType', messageType)
+      record.set('text', text)
+      record.set('timestamp', lcMsg.timestamp)
+      record.set('status', 'unread')
+
+      let attrs = lcMsg.content? lcMsg.content._lcattrs: lcMsg.attributes
+      record.set('nickname', attrs.nickname)
+      record.set('avatar', attrs.avatar)
+      record.set('publishId', attrs.publishId)
       record.set('title', attrs.title)
       record.set('commentId', attrs.commentId)
       record.set('commentContent', attrs.commentContent)

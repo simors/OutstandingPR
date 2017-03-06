@@ -148,12 +148,12 @@ function handlePublishComment(payload, formData) {
       }
       let publishComentAction = createAction(publishActionTypes.PUBLISH_COMMENT_SUCCESS)
       dispatch(publishComentAction({publishId:payload.publishId, publishComment:result, stateKey: payload.stateKey}))
-      // dispatch(notifyPublishComment({
-      //   publishId: payload.publishId,
-      //   replyTo: payload.replyTo,
-      //   commentId: result.objectId,
-      //   content: payload.content
-      // }))
+      dispatch(notifyPublishComment({
+        publishId: payload.publishId,
+        replyTo: payload.replyTo,
+        commentId: result.objectId,
+        content: payload.content
+      }))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)

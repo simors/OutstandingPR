@@ -27,6 +27,7 @@ import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
+const PAGE_HEIGHT=Dimensions.get('window').height
 
 class HelpShow extends Component {
   constructor(props) {
@@ -144,22 +145,24 @@ class HelpShow extends Component {
             />
           </TouchableOpacity>
         </View>
-        <ScrollView>
-          <View style={styles.titleView}>
-            <Text style={styles.title}>{this.props.help.title}</Text>
-            <Text style={styles.price}>¥ {this.props.help.price}元</Text>
-          </View>
-          {this.renderPersonalInfo()}
-          <View style={styles.serviceView}>
-            <ArticleViewer artlcleContent={JSON.parse(this.props.help.content)}/>
-          </View>
-          <View style={styles.comments}>
-            <View style={styles.commentHeader}>
-              <View style={{width: normalizeW(5), height: normalizeH(15), backgroundColor: THEME.colors.yellow, marginLeft: normalizeW(15)}}/>
-              <Text style={{fontSize: 17, color: '#5A5A5A', marginLeft: normalizeW(10)}}>留言 (5)</Text>
+        <View style={this.props.help.userId == this.props.currentUser? {height: PAGE_HEIGHT - normalizeH(65)} : {height: PAGE_HEIGHT - normalizeH(49) - normalizeH(65)}}>
+          <ScrollView>
+            <View style={styles.titleView}>
+              <Text style={styles.title}>{this.props.help.title}</Text>
+              <Text style={styles.price}>¥ {this.props.help.price}元</Text>
             </View>
-          </View>
-        </ScrollView>
+            {this.renderPersonalInfo()}
+            <View style={styles.serviceView}>
+              <ArticleViewer artlcleContent={JSON.parse(this.props.help.content)}/>
+            </View>
+            <View style={styles.comments}>
+              <View style={styles.commentHeader}>
+                <View style={{width: normalizeW(5), height: normalizeH(15), backgroundColor: THEME.colors.yellow, marginLeft: normalizeW(15)}}/>
+                <Text style={{fontSize: 17, color: '#5A5A5A', marginLeft: normalizeW(10)}}>留言 (5)</Text>
+              </View>
+            </View>
+          </ScrollView>
+        </View>
         {this.renderAction()}
       </View>
     )

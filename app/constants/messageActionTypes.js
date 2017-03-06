@@ -20,9 +20,7 @@ export const SHOP_TYPE = 'SHOP_TYPE'
 export const SYSTEM_TYPE = 'SYSTEM_TYPE'
 export const PUBLISH_TYPE = 'PUBLISH_TYPE'
 
-export const MSG_ARTICLE_COMMENT  = 20      // 文章评论
-export const MSG_TOPIC_COMMENT    = 21      // 话题评论
-export const MSG_SHOP_COMMENT     = 22      // 店铺评论
+export const MSG_PUBLISH_COMMENT  = 20      // 发布信息评论
 
 
 export const MSG_ARTICLE_LIKE     = 30      // 文章点赞

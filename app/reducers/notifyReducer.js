@@ -6,12 +6,11 @@ import * as msgActionTypes from '../constants/messageActionTypes'
 import {
   NotifyMessage,
   TypedNotifyMsgRecord,
-  TopicCommentMsg,
-  ShopCommentMsg,
   TopicLikeMsg,
   ShopLikeMsg,
   UserFollowMsg,
   ShopFollowMsg,
+  PublishCommentMsg,
 } from '../models/notifyModel'
 import {REHYDRATE} from 'redux-persist/constants'
 
@@ -41,14 +40,15 @@ function handleAddNotifyMsg(state, action) {
 
   let type = msgActionTypes.SYSTEM_TYPE
   switch (msgType) {
-    case msgActionTypes.MSG_TOPIC_COMMENT:
     case msgActionTypes.MSG_TOPIC_LIKE:
       type = msgActionTypes.TOPIC_TYPE
       break
-    case msgActionTypes.MSG_SHOP_COMMENT:
     case msgActionTypes.MSG_SHOP_FOLLOW:
     case msgActionTypes.MSG_SHOP_LIKE:
       type = msgActionTypes.SHOP_TYPE
+      break
+    case msgActionTypes.MSG_PUBLISH_COMMENT:
+      type = msgActionTypes.PUBLISH_TYPE
       break
     default:
       type = msgActionTypes.SYSTEM_TYPE
@@ -97,23 +97,20 @@ function onRehydrate(state, action) {
     let messageMap = Map(incoming.messageMap)
     messageMap.map((msg) => {
       switch (msg.msgType) {
-        case msgActionTypes.MSG_SHOP_COMMENT:
-          state = state.updateIn(['messageMap', msg.msgId], new ShopCommentMsg(), val => val.merge(msg))
-          break
         case msgActionTypes.MSG_SHOP_LIKE:
           state = state.updateIn(['messageMap', msg.msgId], new ShopLikeMsg(), val => val.merge(msg))
           break
         case msgActionTypes.MSG_SHOP_FOLLOW:
           state = state.updateIn(['messageMap', msg.msgId], new ShopFollowMsg(), val => val.merge(msg))
           break
-        case msgActionTypes.MSG_TOPIC_COMMENT:
-          state = state.updateIn(['messageMap', msg.msgId], new TopicCommentMsg(), val => val.merge(msg))
-          break
         case msgActionTypes.MSG_TOPIC_LIKE:
           state = state.updateIn(['messageMap', msg.msgId], new TopicLikeMsg(), val => val.merge(msg))
           break
         case msgActionTypes.MSG_USER_FOLLOW:
           state = state.updateIn(['messageMap', msg.msgId], new UserFollowMsg(), val => val.merge(msg))
+          break
+        case msgActionTypes.MSG_PUBLISH_COMMENT:
+          state = state.updateIn(['messageMap', msg.msgId], new PublishCommentMsg(), val => val.merge(msg))
           break
       }
     })

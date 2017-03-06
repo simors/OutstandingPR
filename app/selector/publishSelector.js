@@ -1,6 +1,7 @@
 /**
  * Created by wanpeng on 2017/2/18.
  */
+import {Publish} from '../models/publishModels'
 
 export function getIPublushes(state) {
   return state.PUBLISH.get('iPublishes').toJS()
@@ -62,3 +63,30 @@ export function getPublishComments(state, publishId) {
   return []
 }
 
+export function getPublishById(state, publishId) {
+  let serviceList = state.PUBLISH.get('lastServices')
+  if(serviceList) {
+    let service = serviceList.find((record) => {
+      if(record.get('objectId') === publishId)
+        return true
+      return false
+    })
+    if(service)
+      return service.toJS()
+    return new Publish().toJS()
+  }
+
+  let helpList = state.PUBLISH.get('lastHelp')
+  if(helpList) {
+    let help = helpList.find((record) => {
+      if(record.get('objectId') === publishId)
+        return true
+      return false
+    })
+    if(help)
+      return help.toJS()
+    return new Publish().toJS()
+  }
+
+
+}
