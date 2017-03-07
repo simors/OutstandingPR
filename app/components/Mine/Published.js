@@ -20,11 +20,12 @@ import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import {getIPublushes, getIPublishedServices, getIPublishedHelp} from '../../selector/publishSelector'
-import {fetchPublishesByUserId} from '../../action/publishAction'
+import {fetchPublishesByUserId, updatePublishStatus, updatePublishRefreshTime} from '../../action/publishAction'
 import {activeUserId} from '../../selector/authSelector'
 import THEME from '../../constants/theme'
 import {getCreatedDay, getCreateMonth} from '../../util/dateUtils'
 import CommonListView from '../common/CommonListView'
+import Popup from 'react-native-popup'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -126,22 +127,64 @@ class Published extends Component {
   }
 
   onClosePublish(status, publishId) {
-    if(status) {
+    this.popup.confirm({
+      title: '提示',
+      content: ['确认关闭发布的信息？'],
+      ok: {
+        text: '确定',
+        style: {
+          color: '#FF9D4E'
+        },
+        callback: () => {
+          if(status) {
+            this.props.updatePublishStatus({
+              publishId: publishId,
+              status: 0,
 
+            })
+          }
+        },
+      },
+      cancel: {
+        text: '取消',
+        style: {
+          color: '#AAAAAA'
+        },
+      }
+
+    })
+  }
+
+  onRefreshPublish(publishId, lastRefreshAt) {
+    let nowTime = new Date()
+    if((nowTime - lastRefreshAt) >= 3*24*3600) {
+      this.props.updatePublishRefreshTime({
+        publishId: publishId,
+        refreshTime: lastRefreshAt,
+      })
     }
   }
 
-  renderItemStatus(status, objectId) {
+  renderItemStatus(status, publishId) {
     return(
-      <TouchableOpacity style={styles.close} onPress={() => {this.onClosePublish(status, objectId)}}>
+      <TouchableOpacity style={status? styles.close : styles.closed} onPress={() => {this.onClosePublish(status, publishId)}}>
         <Text style={{fontSize: 15, color: '#FFFFFF'}}>{status? '关闭': '已解决'}</Text>
       </TouchableOpacity>
+    )
+  }
 
+  renderRefresh(publishId, lastRefreshAt) {
+    return(
+      <TouchableOpacity style={styles.refresh} disabled={true} onPress={() => {this.onRefreshPublish(publishId, lastRefreshAt)}}>
+        <Image
+          source={require('../../assets/images/refresh.png')}
+        />
+        <Text style={{marginLeft: normalizeW(10), fontSize: 15, color: '#FFFFFF'}}>刷新</Text>
+      </TouchableOpacity>
     )
   }
 
   renderItem(rowData) {
-    console.log("renderItem", rowData)
     return(
       <TouchableOpacity style={styles.serviceView} onPress={() => {this.onItemShow(rowData)}}>
           <View style={styles.title}>
@@ -167,12 +210,7 @@ class Published extends Component {
         </View>
         <View style={styles.button}>
           {this.renderItemStatus(rowData.status, rowData.objectId)}
-          <TouchableOpacity style={styles.refresh}>
-            <Image
-              source={require('../../assets/images/refresh.png')}
-            />
-            <Text style={{marginLeft: normalizeW(10), fontSize: 15, color: '#FFFFFF'}}>刷新</Text>
-          </TouchableOpacity>
+          {this.renderRefresh(rowData.objectId, rowData.lastRefreshAt)}
         </View>
       </TouchableOpacity>
     )
@@ -197,6 +235,7 @@ class Published extends Component {
             </View>
           </View>
           {this.renderItemView()}
+          <Popup ref={popup => this.popup = popup}/>
 
         </View>
       </View>
@@ -217,6 +256,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchPublishesByUserId,
+  updatePublishStatus,
+  updatePublishRefreshTime
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Published)
@@ -321,7 +362,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF9D4E',
     justifyContent: 'center',
     alignItems: 'center'
-  }
+  },
+  closed: {
+    marginRight: normalizeW(13),
+    width: normalizeW(80),
+    height: normalizeH(35),
+    backgroundColor: '#AAAAAA',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
 
 
 })

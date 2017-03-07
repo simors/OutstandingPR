@@ -205,6 +205,42 @@ export function getPublishComments(payload) {
 
 }
 
+export function updatePublishStatus(payload) {
+  console.log("updatePublishStatus payload", payload)
+  let publishId = payload.publishId
+  let status = payload.status
+
+  let publish = AV.Object.createWithoutData('Publishes', publishId)
+  publish.set('status', status)
+
+  return publish.save().then(function (result) {
+    let newPublish = result
+    newPublish.attributes.user = AV.User.current()
+    return Publish.fromLeancloudObject(newPublish)
+  }, function (error) {
+    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    throw error
+  })
+}
+
+export function updateRefreshTime(payload) {
+  console.log("updateRefreshTime payload", payload)
+  let publishId = payload.publishId
+  let refreshTime = payload.refreshTime
+
+  let publish = AV.Object.createWithoutData('Publishes', publishId)
+  publish.set('lastRefreshAt', refreshTime)
+
+  return publish.save().then(function (result) {
+    let newPublish = result
+    newPublish.attributes.user = AV.User.current()
+    return Publish.fromLeancloudObject(newPublish)
+  }, function (error) {
+    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    throw error
+  })
+}
+
 
 
 

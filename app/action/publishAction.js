@@ -221,3 +221,30 @@ export function fetchPublishCommentByPublishId(payload) {
 
 }
 
+export function updatePublishStatus(payload) {
+  return (dispatch, getState) => {
+    lcPublish.updatePublishStatus(payload).then((result) => {
+      console.log("lcPublish.updatePublishStatus ", result)
+      let updatePublishStatusAction = createAction(publishActionTypes.UPDATE_PUBLISH_STATUS)
+      dispatch(updatePublishStatusAction({status: payload.status, publishId: payload.publishId}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function updatePublishRefreshTime(payload) {
+  return (dispatch, getState) => {
+    lcPublish.updateRefreshTime(payload).then((result) => {
+      let updatePublishRefreshTime = createAction(publishActionTypes.UPDATE_PUBLISH_REFRESHTIME)
+      dispatch(updatePublishRefreshTime({publishId: payload.publishId, refreshTime: payload.refreshTime}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+
+}

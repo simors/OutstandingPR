@@ -24,6 +24,10 @@ export default function publishReducer(state = initialState, action) {
       return handleUpdateCommentCnt(state, action)
     case PublishActionTypes.UPDATE_PUBLISH_COMMENTS:
       return handleUpdatePublishComments(state, action)
+    case PublishActionTypes.UPDATE_PUBLISH_STATUS:
+      return handleUpdatePublishStatus(state, action)
+    case PublishActionTypes.UPDATE_PUBLISH_REFRESHTIME:
+      return handleUpdatePublishRefreshTime(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -164,3 +168,36 @@ function onRehydrate(state, action) {
   return state
 }
 
+function handleUpdatePublishStatus(state, action) {
+  let payload = action.payload
+  let iPublish = state.get('iPublishes')
+  if(iPublish) {
+    let key = iPublish.findKey((record) => {
+      if(record.get('objectId') == payload.publishId)
+        return true
+      return false
+    })
+    if(key){
+      state = state.updateIn(['iPublishes', key, 'status'], val => payload.status)
+      return state
+    }
+  }
+  return state
+}
+
+function handleUpdatePublishRefreshTime(state, action) {
+  let payload = action.payload
+  let iPublish = state.get('iPublishes')
+  if(iPublish) {
+    let key = iPublish.findKey((record) => {
+      if(record.get('objectId') == payload.publishId)
+        return true
+      return false
+    })
+    if(key){
+      state = state.updateIn(['iPublishes', key, 'lastRefreshAt'], val => payload.refreshTime)
+      return state
+    }
+  }
+  return state
+}
