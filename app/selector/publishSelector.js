@@ -36,7 +36,7 @@ export function getLastServices(state) {
   let publishList = state.PUBLISH.get('lastServices')
   if(publishList) {
     publishList.forEach((value) => {
-      service.push(value)
+      service.push(value.toJS())
     })
   }
   return service
@@ -47,7 +47,7 @@ export function getLastHelp(state) {
   let publishList = state.PUBLISH.get('lastHelp')
   if(publishList) {
     publishList.forEach((value) => {
-      help.push(value)
+      help.push(value.toJS())
     })
   }
   return help

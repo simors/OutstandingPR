@@ -24,6 +24,7 @@ import {fetchPublishesByUserId} from '../../action/publishAction'
 import {activeUserId} from '../../selector/authSelector'
 import THEME from '../../constants/theme'
 import {getCreatedDay, getCreateMonth} from '../../util/dateUtils'
+import CommonListView from '../common/CommonListView'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -124,15 +125,31 @@ class Published extends Component {
     }
   }
 
+  onClosePublish(status, publishId) {
+    if(status) {
+
+    }
+  }
+
+  renderItemStatus(status, objectId) {
+    return(
+      <TouchableOpacity style={styles.close} onPress={() => {this.onClosePublish(status, objectId)}}>
+        <Text style={{fontSize: 15, color: '#FFFFFF'}}>{status? '关闭': '已解决'}</Text>
+      </TouchableOpacity>
+
+    )
+  }
+
   renderItem(rowData) {
+    console.log("renderItem", rowData)
     return(
       <TouchableOpacity style={styles.serviceView} onPress={() => {this.onItemShow(rowData)}}>
           <View style={styles.title}>
           <View style={styles.date}>
             <Image style={{backgroundColor:'transparent', alignItems: 'center', justifyContent: 'flex-end'}}
                    source={require('../../assets/images/date.png')}>
-              <Text style={{color: '#FFFFFF', fontSize: 17}}>{getCreatedDay(rowData.createAt)}</Text>
-              <Text style={{color: '#FFFFFF', fontSize: 10}}>{getCreateMonth(rowData.createAt)}</Text>
+              <Text style={{color: '#FFFFFF', fontSize: 17}}>{getCreatedDay(rowData.createdAt)}</Text>
+              <Text style={{color: '#FFFFFF', fontSize: 10}}>{getCreateMonth(rowData.createdAt)}</Text>
             </Image>
           </View>
           <View style={styles.serviceTitle}>
@@ -145,15 +162,11 @@ class Published extends Component {
         </View>
         <View style={styles.statusTrip}>
           <Text style={[styles.statusTripText, {marginLeft: normalizeW(68)}]}>围观200</Text>
-          <Text style={[styles.statusTripText, {flex: 1, marginLeft: normalizeW(79)}]}>留言 5</Text>
+          <Text style={[styles.statusTripText, {flex: 1, marginLeft: normalizeW(79)}]}>留言 {rowData.commentCnt}</Text>
           <Text style={[styles.statusTripText, {marginRight: normalizeW(46)}]}>私信 40</Text>
         </View>
         <View style={styles.button}>
-          <CommonButton title="关闭"
-                        containerStyle={{marginRight: normalizeW(13)}}
-                        buttonStyle={{width: normalizeW(80), height: normalizeH(35)}}
-                        titleStyle={{fontSize: 15}}
-                        onPress={() => this.onButtonPress()}/>
+          {this.renderItemStatus(rowData.status, rowData.objectId)}
           <TouchableOpacity style={styles.refresh}>
             <Image
               source={require('../../assets/images/refresh.png')}
@@ -300,7 +313,14 @@ const styles = StyleSheet.create({
     height: normalizeH(35),
     marginRight: normalizeW(25),
     backgroundColor: '#F56A23'
-
+  },
+  close: {
+    marginRight: normalizeW(13),
+    width: normalizeW(80),
+    height: normalizeH(35),
+    backgroundColor: '#FF9D4E',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 
 

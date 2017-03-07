@@ -184,19 +184,20 @@ export function fetchPublishesByUserId(payload) {
   }
 }
 
-export function fetchLastPublishes(payload) {
+export function fetchPublishes(payload) {
+  console.log("fetchPublishes payload", payload)
   return (dispatch, getState) => {
 
     let fetchPayload = {
       type: payload.type,
     }
 
-    lcPublish.fetchLastPublishes(fetchPayload).then((result) => {
+    lcPublish.fetchPublishes(fetchPayload).then((result) => {
       if (payload.success) {
         payload.success()
       }
-      let publishFetchAction = createAction(publishActionTypes.FETCH_LAST_PUBLISHES)
-      dispatch(publishFetchAction({pubishes: result, type: payload.type}))
+      let publishFetchAction = createAction(publishActionTypes.FETCH_PUBLISHES)
+      dispatch(publishFetchAction({pubishes: result, type: payload.type, isPaging: !payload.isRefresh}))
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)

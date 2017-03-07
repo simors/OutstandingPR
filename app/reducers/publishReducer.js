@@ -16,8 +16,8 @@ export default function publishReducer(state = initialState, action) {
       return handleUpdatePublish(state, action)
     case PublishActionTypes.UPDATE_PUBLISHES:
       return handleUpdatePublishes(state, action)
-    case PublishActionTypes.FETCH_LAST_PUBLISHES:
-      return handleFetchLastPublishes(state, action)
+    case PublishActionTypes.FETCH_PUBLISHES:
+      return handleFetchPublishes(state, action)
     case PublishActionTypes.PUBLISH_COMMENT_SUCCESS:
       return handleAddPublishComment(state, action)
     case PublishActionTypes.PUBLISH_UPDATE_COMMENTCNT:
@@ -64,13 +64,28 @@ function handleUpdatePublishes(state, action) {
   return state
 }
 
-function handleFetchLastPublishes(state, action) {
-  let publishes = action.payload.pubishes
-  let type = action.payload.type
-  if(type == 'service') {
-    state = state.set('lastServices', publishes)
-  } else if (type == 'help') {
-    state = state.set('lastHelp', publishes)
+function handleFetchPublishes(state, action) {
+  let payload = action.payload
+  let publishes = payload.pubishes
+  let type = payload.type
+  let _list = undefined
+
+  if(payload.isPaging) {
+    if(type == 'service') {
+      _list = state.get('lastServices') || new List()
+      _list = _list.concat(publishes)
+      state = state.set('lastServices', _list)
+    } else if (type == 'help') {
+      _list = state.get('lastHelp') || new List()
+      _list = _list.concat(publishes)
+      state = state.set('lastHelp', _list)
+    }
+  } else {
+    if(type == 'service') {
+      state = state.set('lastServices', publishes)
+    } else if (type == 'help') {
+      state = state.set('lastHelp', publishes)
+    }
   }
   return state
 }

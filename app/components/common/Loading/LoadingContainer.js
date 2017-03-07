@@ -50,7 +50,7 @@ class LoadingContainer extends Component {
         <ActivityIndicator
           animating={true}
           size="small"
-          color={'#C8C8C8'}
+          color={'#FF9D4E'}
         />
       </View>
     )

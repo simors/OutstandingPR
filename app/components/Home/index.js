@@ -25,11 +25,14 @@ import {normalizeH, normalizeW} from '../../util/Responsive'
 import THEME from '../../constants/theme'
 import ImageGroupViewer from '../../components/common/ImageGroupViewer'
 import {getLastServices, getLastHelp} from '../../selector/publishSelector'
-import {fetchLastPublishes} from '../../action/publishAction'
+import {fetchPublishes} from '../../action/publishAction'
 import MessageBell from '../common/MessageBell'
 import {activeUserId} from '../../selector/authSelector'
+import CommonListView from '../common/CommonListView'
+import Toast from '../common/Toast'
 
 const PAGE_WIDTH=Dimensions.get('window').width
+const PAGE_HEIGHT=Dimensions.get('window').height
 
 const serviceDs = new ListView.DataSource({
   rowHasChanged: (r1, r2) => r1 != r2,
@@ -49,8 +52,8 @@ class Home extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchBanner({type: 0})
-      this.props.fetchLastPublishes({type: 'service'})
-      this.props.fetchLastPublishes({type: 'help'})
+      this.props.fetchPublishes({isRefresh: true, type: 'service'})
+      this.props.fetchPublishes({isRefresh: true, type: 'help'})
     })
   }
 
@@ -66,16 +69,10 @@ class Home extends Component {
     })
   }
 
-  renderTip() {
-    if (this.props.hasNotice) {
-      return <View style={styles.noticeTip}></View>
-    }
-    return <View/>
-  }
 
-  renderService(rowData) {
+  renderService(rowData, rowId) {
     return(
-      <TouchableOpacity style={styles.serviceView} onPress={() => Actions.SERVICE_SHOW({publishId: rowData.objectId, userId: rowData.userId})}>
+      <TouchableOpacity key={rowId} style={styles.serviceView} onPress={() => Actions.SERVICE_SHOW({publishId: rowData.objectId, userId: rowData.userId})}>
         <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(15)}}>{rowData.title}</Text>
         <View style={{flexDirection: 'row', marginTop: normalizeH(12)}}>
           <Text style={{fontSize: 15, color: '#5A5A5A'}}>{rowData.nickname}</Text>
@@ -102,9 +99,9 @@ class Home extends Component {
     }
   }
 
-  renderHelp(rowData) {
+  renderHelp(rowData, rowId) {
     return(
-      <View style={styles.helpView}>
+      <View key={rowId} style={styles.helpView}>
         <TouchableOpacity onPress={() => {this.onAvatarClick(rowData.userId)}}>
           <Image
             style={{width: 50, height: 50, borderRadius: 25, marginTop: normalizeH(23), marginRight: normalizeW(15)}}
@@ -158,25 +155,99 @@ class Home extends Component {
     }
   }
 
-  renderItemView() {
-    if (this.state.selectedItem == 'service') {
-      return(
-        <ListView
-          dataSource={this.props.ServiceDataSource}
-          renderRow={(rowData) => this.renderService(rowData)}
-          enableEmptySections={true}
-        />
-      )
-    } else if (this.state.selectedItem == 'help') {
-      return(
-        <ListView
-          dataSource={this.props.HelpDataSource}
-          renderRow={(rowData) => this.renderHelp(rowData)}
-          enableEmptySections={true}
-        />
-      )
+  refreshPublish() {
+    this.loadMoreData(true)
+  }
+
+  loadMoreData(isRefresh) {
+    let lastCreatedAt = undefined
+    let currentPublishes = undefined
+    switch (this.state.selectedItem) {
+      case 'service':
+        currentPublishes = this.props.lastService
+        break
+      case 'help':
+        currentPublishes = this.props.lastHelp
+        break
+      default:
+        break
     }
 
+    if(currentPublishes && currentPublishes.length) {
+      lastCreatedAt = currentPublishes[currentPublishes.length-1].createdAt
+    }
+
+    let payload = {
+      type: this.state.selectedItem,
+      lastCreatedAt: lastCreatedAt,
+      isRefresh: !!isRefresh,
+      success: (isEmpty) => {
+        if(!this.listView) {
+          return
+        }
+        if(isEmpty) {
+          this.listView.isLoadUp(false)
+        }else {
+          this.listView.isLoadUp(true)
+        }
+      },
+      error: (err)=>{
+        Toast.show(err.message, {duration: 1000})
+      }
+    }
+    this.props.fetchPublishes(payload)
+  }
+
+  renderItemView(rowData, rowId) {
+    switch (rowData.itemType) {
+      case 'banner':
+        return this.renderBanner()
+      case 'itemBar':
+        return this.renderItemBar()
+      default:
+        return this.renderItem(rowData, rowId)
+    }
+  }
+
+  renderBanner() {
+    return(
+      <View style={styles.advertisementModule}>
+        {this.props.banner &&
+        <CommonBanner
+          banners={this.props.banner}
+        />
+        }
+      </View>
+    )
+  }
+
+  renderItemBar() {
+    return(
+      <View style={styles.itemHeader}>
+        <View style={{flex: 1, paddingLeft: normalizeW(75)}}>
+          {this.renderServiceBar()}
+        </View>
+        <View style={{flex: 1, paddingRight: normalizeW(75)}}>
+          {this.renderHelpBar()}
+        </View>
+      </View>
+    )
+  }
+
+  renderItem(rowData, rowId) {
+    if(this.state.selectedItem == 'service') {
+      return this.renderService(rowData, rowId)
+    } else if(this.state.selectedItem == 'help') {
+      return this.renderHelp(rowData, rowId)
+    }
+  }
+
+  selectDataSource() {
+    if(this.state.selectedItem == 'service') {
+      return this.props.ServiceDataSource
+    } else if(this.state.selectedItem == 'help') {
+      return this.props.HelpDataSource
+    }
   }
 
   render() {
@@ -193,24 +264,20 @@ class Home extends Component {
           </TouchableOpacity>
           <MessageBell />
         </View>
-        <ScrollView>
-        <View style={styles.advertisementModule}>
-          {this.props.banner &&
-            <CommonBanner
-              banners={this.props.banner}
-            />
-          }
+        <View style={{height: PAGE_HEIGHT - normalizeH(65) - 50}}>
+          <CommonListView
+            contentContainerStyle={{backgroundColor: '#E5E5E5'}}
+            dataSource={this.selectDataSource()}
+            renderRow={(rowData, rowId) => this.renderItemView(rowData, rowId)}
+            loadNewData={()=> {
+              this.refreshPublish()
+            }}
+            loadMoreData={()=> {
+              this.loadMoreData(false)
+            }}
+            ref={(listView) => this.listView = listView}
+          />
         </View>
-        <View style={styles.itemHeader}>
-          <View style={{flex: 1, paddingLeft: normalizeW(75)}}>
-            {this.renderServiceBar()}
-          </View>
-          <View style={{flex: 1, paddingRight: normalizeW(75)}}>
-            {this.renderHelpBar()}
-          </View>
-        </View>
-          {this.renderItemView()}
-        </ScrollView>
       </View>
     )
   }
@@ -222,18 +289,28 @@ const mapStateToProps = (state, ownProps) => {
   let lastService = getLastServices(state)
   let lastHelp = getLastHelp(state)
 
+  let serviceDataArray = []
+  let helpDataArray = []
+  serviceDataArray.push({itemType: 'banner'})
+  serviceDataArray.push({itemType: 'itemBar'})
+  serviceDataArray = serviceDataArray.concat(lastService)
+
+  helpDataArray.push({itemType: 'banner'})
+  helpDataArray.push({itemType: 'itemBar'})
+  helpDataArray = helpDataArray.concat(lastHelp)
   return {
     currentUser: currentUser,
     hasNotice: 1,
     banner: banner,
-    ServiceDataSource: serviceDs.cloneWithRows(lastService),
-    HelpDataSource: helpDs.cloneWithRows(lastHelp),
+    ServiceDataSource: serviceDs.cloneWithRows(serviceDataArray),
+    lastService: lastService,
+    HelpDataSource: helpDs.cloneWithRows(helpDataArray),
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchBanner,
-  fetchLastPublishes
+  fetchPublishes
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

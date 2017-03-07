@@ -16,8 +16,9 @@ export const PublishRecord = Record({
   type: undefined, //发布类型
   price: undefined, //标价
   commentCnt: undefined, //评论数
-  createAt: undefined, //发布时间
-  updateAt: undefined, //更新时间
+  createdAt: undefined, //发布时间
+  updatedAt: undefined, //更新时间
+  status: undefined, // 发布信息状态 0 -- 关闭／已解决 ，1 -- 正常
 }, 'PublishRecord')
 
 export class Publish extends PublishRecord {
@@ -38,10 +39,11 @@ export class Publish extends PublishRecord {
       record.set('type', attrs.type)
       record.set('price', attrs.price)
       record.set('commentCnt', attrs.commentCnt)
+      record.set('status', attrs.status)
       if(lcObj.createdAt)
-        record.set('createAt', lcObj.createdAt.valueOf())
-      if(lcObj.updateAt)
-        record.set('updateAt', lcObj.updateAt.valueOf())
+        record.set('createdAt', lcObj.createdAt.valueOf())
+      if(lcObj.updatedAt)
+        record.set('updatedAt', lcObj.updatedAt.valueOf())
     })
     return publish
   }

@@ -19,6 +19,7 @@ export function publishService(payload) {
   publish.set('price', payload.price)
   publish.set('type', 'service')
   publish.set('commentCnt', 0)
+  publish.set('status', 1)
 
   return publish.save().then(function (result) {
     console.log("lean publish save result:", result)
@@ -99,9 +100,15 @@ export function getPublishedByUserId(payload) {
 
 }
 
-export function fetchLastPublishes(payload) {
+export function fetchPublishes(payload) {
   let query = new AV.Query('Publishes')
   query.equalTo('type', payload.type)
+
+  let isRefresh = payload.isRefresh
+  let lastCreatedAt = payload.lastCreatedAt
+  if (!isRefresh && lastCreatedAt) { //分页查询
+    query.lessThan('createdAt', new Date(lastCreatedAt))
+  }
   query.include('user')
   query.limit(10)
   query.descending('createdAt')
