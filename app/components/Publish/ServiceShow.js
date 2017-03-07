@@ -29,7 +29,7 @@ import {getUserInfoById} from '../../action/authActions'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import ToolBarContent from '../common/ToolBarContent'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
-import {publishFormData, PUBLISH_FORM_SUBMIT_TYPE} from '../../action/publishAction'
+import {publishFormData, PUBLISH_FORM_SUBMIT_TYPE, fetchPublishCommentByPublishId} from '../../action/publishAction'
 import {getPublishComments, getPublishById} from '../../selector/publishSelector'
 
 
@@ -44,7 +44,8 @@ class ServiceShow extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       if(this.props.isLogin) {
-        this.props.getUserInfoById({userId: this.props.service.userId})
+        this.props.getUserInfoById({userId: this.props.userId})
+        this.props.fetchPublishCommentByPublishId({publishId: this.props.publishId})
       }else {
         Actions.LOGIN()
       }
@@ -52,9 +53,9 @@ class ServiceShow extends Component {
   }
 
   renderEdit() {
-    if(this.props.service.userId == this.props.currentUser) {
+    if(this.props.userId == this.props.currentUser) {
       return(
-        <TouchableOpacity style={styles.edit} onPress={() => Actions.EDIT_SERVICE({service: this.props.service})}>
+        <TouchableOpacity style={styles.edit} onPress={() => Actions.EDIT_SERVICE({service: this.props.serviceInfo})}>
           <Image source={require('../../assets/images/edite.png')}/>
         </TouchableOpacity>
       )
@@ -66,7 +67,7 @@ class ServiceShow extends Component {
   }
 
   renderPersonalInfo() {
-    if(this.props.service.userId != this.props.currentUser) {
+    if(this.props.userId != this.props.currentUser) {
       return(
         <View style={{flexDirection: 'row',alignItems: 'center' , backgroundColor: '#F5F5F5'}}>
           <TouchableOpacity style={{marginTop: normalizeH(15), marginLeft: normalizeW(10), marginRight: normalizeW(15), marginBottom: normalizeH(15)}}>
@@ -96,7 +97,7 @@ class ServiceShow extends Component {
 
   enterChatroom() {
     let members = []
-    members.push(this.props.service.userId)
+    members.push(this.props.userId)
     members.push(this.props.currentUser)
     if (!this.props.isLogin) {
       Actions.LOGIN()
@@ -112,7 +113,7 @@ class ServiceShow extends Component {
   }
 
   renderAction() {
-    if(this.props.service.userId != this.props.currentUser) {
+    if(this.props.userId != this.props.currentUser) {
       return(
         <View style={styles.action}>
           <TouchableOpacity>
@@ -162,9 +163,9 @@ class ServiceShow extends Component {
     else {
       this.props.publishFormData({
         content: content,
-        publishId: this.props.service.objectId,
+        publishId: this.props.serviceInfo.objectId,
         userId: this.props.currentUserInfo.id,
-        replyTo: this.props.service.userId,
+        replyTo: this.props.userId,
         commentId: undefined,
         submitType: PUBLISH_FORM_SUBMIT_TYPE.PUBLISH_COMMENT,
         success: this.submitSuccessCallback.bind(this),
@@ -196,13 +197,13 @@ class ServiceShow extends Component {
         this.props.publishComments.map((value, key)=> {
           return (
             <View key={key} style={{flexDirection: 'row', width: PAGE_WIDTH, height: normalizeH(83)}} >
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: value.userId})}>
                 <Image
                   source={{uri: value.avatar}}
                   style={{width: 40, height: 40, borderRadius: 20, marginTop: normalizeH(10), marginRight: normalizeW(10), marginLeft: normalizeW(15)}}
                 />
               </TouchableOpacity>
-              <TouchableOpacity style={{flex: 1, borderBottomColor: '#F5F5F5', borderBottomWidth: 1}}>
+              <TouchableOpacity style={{flex: 1, borderBottomColor: '#F5F5F5', borderBottomWidth: 1}} onPress={() => this.onReply()}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between',marginTop: normalizeH(23)}}>
                   <Text style={{fontSize: 15, color: '#5A5A5A'}}>{value.nickname}</Text>
                   <Text style={{fontSize: 12, color: '#AAAAAA', marginRight: normalizeW(15)}}>{"30分钟以前"}</Text>
@@ -232,20 +233,20 @@ class ServiceShow extends Component {
             />
           </TouchableOpacity>
         </View>
-        <View style={this.props.service.userId == this.props.currentUser? {height: PAGE_HEIGHT - normalizeH(65)} : {height: PAGE_HEIGHT - normalizeH(49) - normalizeH(65)}}>
+        <View style={this.props.userId == this.props.currentUser? {height: PAGE_HEIGHT - normalizeH(65)} : {height: PAGE_HEIGHT - normalizeH(49) - normalizeH(65)}}>
           <ScrollView>
             <View style={styles.titleView}>
-              <Text style={styles.title}>{this.props.service.title}</Text>
-              <Text style={styles.price}>¥ {this.props.service.price}元</Text>
+              <Text style={styles.title}>{this.props.serviceInfo.title}</Text>
+              <Text style={styles.price}>¥ {this.props.serviceInfo.price}元</Text>
             </View>
             {this.renderPersonalInfo()}
             <View style={styles.serviceView}>
-              <ArticleViewer artlcleContent={JSON.parse(this.props.service.content)}/>
+              <ArticleViewer artlcleContent={JSON.parse(this.props.serviceInfo.content)}/>
             </View>
             <View style={styles.comments}>
               <View style={styles.commentHeader}>
                 <View style={{width: normalizeW(5), height: normalizeH(15), backgroundColor: THEME.colors.yellow, marginLeft: normalizeW(15)}}/>
-                <Text style={{fontSize: 17, color: '#5A5A5A', marginLeft: normalizeW(10)}}>留言 (5)</Text>
+                <Text style={{fontSize: 17, color: '#5A5A5A', marginLeft: normalizeW(10)}}>留言 ({this.props.serviceInfo.commentCnt})</Text>
               </View>
             </View>
             {this.renderComments()}
@@ -270,9 +271,9 @@ const mapStateToProps = (state, ownProps) => {
   let currentUser = activeUserId(state)
   let currentUserInfo = activeUserInfo(state)
   const isLogin = isUserLogined(state)
-  let userInfo = userInfoById(state, ownProps.service.userId)
-  const publishComments = getPublishComments(state, ownProps.service.objectId)
-  let serviceInfo = getPublishById(state, ownProps.service.objectId)
+  let userInfo = userInfoById(state, ownProps.userId)
+  let publishComments = getPublishComments(state, ownProps.publishId)
+  let serviceInfo = getPublishById(state, ownProps.publishId)
   console.log("serviceInfo:", serviceInfo)
 
   return {
@@ -280,13 +281,15 @@ const mapStateToProps = (state, ownProps) => {
     currentUser: currentUser,
     currentUserInfo: currentUserInfo,
     userInfo: userInfo,
+    serviceInfo: serviceInfo,
     publishComments: publishComments,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   getUserInfoById,
-  publishFormData
+  publishFormData,
+  fetchPublishCommentByPublishId
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ServiceShow)

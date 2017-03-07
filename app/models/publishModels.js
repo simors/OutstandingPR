@@ -15,6 +15,7 @@ export const PublishRecord = Record({
   imgGroup: undefined, //组图
   type: undefined, //发布类型
   price: undefined, //标价
+  commentCnt: undefined, //评论数
   createAt: undefined, //发布时间
   updateAt: undefined, //更新时间
 }, 'PublishRecord')
@@ -36,6 +37,7 @@ export class Publish extends PublishRecord {
       record.set('imgGroup', attrs.imgGroup)
       record.set('type', attrs.type)
       record.set('price', attrs.price)
+      record.set('commentCnt', attrs.commentCnt)
       if(lcObj.createdAt)
         record.set('createAt', lcObj.createdAt.valueOf())
       if(lcObj.updateAt)

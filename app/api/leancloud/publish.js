@@ -18,8 +18,10 @@ export function publishService(payload) {
   publish.set('content', payload.content)
   publish.set('price', payload.price)
   publish.set('type', 'service')
+  publish.set('commentCnt', 0)
 
   return publish.save().then(function (result) {
+    console.log("lean publish save result:", result)
     let newPublish = result
     newPublish.attributes.user = AV.User.current()
     return Publish.fromLeancloudObject(newPublish)
@@ -139,7 +141,7 @@ export function publishComments(payload) {
       console.log("lean publishComment result:", result)
       let relation = publish.relation('comments')
       relation.add(publishComment)
-      publish.increment("commentNum", 1)
+      publish.increment("commentCnt", 1)
 
       let newPublishComment = result
       newPublishComment.attributes.user = AV.User.current()
@@ -168,7 +170,31 @@ export function publishComments(payload) {
     error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
     throw error
   })
+}
 
+export function getPublishComments(payload) {
+  let publishId = payload.publishId
+
+  let publish = AV.Object.createWithoutData('Publishes', publishId)
+  let relation = publish.relation('comments')
+  let query = relation.query()
+  query.include(['user']);
+  query.include(['parentComment']);
+  query.include(['parentComment.user']);
+  query.descending('createdAt')
+  return query.find().then(function (results) {
+      let publishComments = []
+      if (results) {
+        results.forEach((result) => {
+          publishComments.push(PublishComment.fromLeancloudObject(result))
+        })
+      }
+      return new List(publishComments)
+    }
+    , function (err) {
+      err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+      throw err
+    })
 
 }
 

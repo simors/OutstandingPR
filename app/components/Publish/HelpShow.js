@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  InteractionManager,
   Platform
 } from 'react-native'
 import {connect} from 'react-redux'
@@ -22,8 +23,14 @@ import {normalizeH, normalizeW} from '../../util/Responsive'
 import THEME from '../../constants/theme'
 import ArticleViewer from '../../components/common/ArticleViewer'
 import * as Toast from '../common/Toast'
-import {activeUserId, isUserLogined, userInfoById} from '../../selector/authSelector'
+import {activeUserId, isUserLogined, userInfoById, activeUserInfo} from '../../selector/authSelector'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
+import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
+import ToolBarContent from '../common/ToolBarContent'
+import {publishFormData, PUBLISH_FORM_SUBMIT_TYPE, fetchPublishCommentByPublishId} from '../../action/publishAction'
+import {getUserInfoById} from '../../action/authActions'
+import {getPublishComments, getPublishById} from '../../selector/publishSelector'
+import dismissKeyboard from 'react-native-dismiss-keyboard'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -34,11 +41,22 @@ class HelpShow extends Component {
     super(props)
   }
 
+  componentWillMount() {
+    InteractionManager.runAfterInteractions(()=>{
+      if(this.props.isLogin) {
+        this.props.getUserInfoById({userId: this.props.userId})
+        this.props.fetchPublishCommentByPublishId({publishId: this.props.publishId})
+      }else {
+        Actions.LOGIN()
+      }
+    })
+  }
+
   renderEdit() {
-    if(this.props.help.userId == this.props.currentUser) {
+    if(this.props.userId == this.props.currentUser) {
       return(
         <View style={styles.edit} >
-          <TouchableOpacity onPress={() => Actions.EDIT_HELP({help: this.props.help})}>
+          <TouchableOpacity onPress={() => Actions.EDIT_HELP({help: this.props.helpInfo})}>
             <Image style={{marginLeft: normalizeW(10), marginRight: normalizeW(10)}} source={require('../../assets/images/edite.png')}/>
           </TouchableOpacity>
         </View>
@@ -52,7 +70,7 @@ class HelpShow extends Component {
 
 
   renderPersonalInfo() {
-    if(this.props.help.userId != this.props.currentUser) {
+    if(this.props.userId != this.props.currentUser) {
       return(
         <View style={{flexDirection: 'row',alignItems: 'center' , backgroundColor: '#F5F5F5'}}>
           <TouchableOpacity style={{marginTop: normalizeH(15), marginLeft: normalizeW(10), marginRight: normalizeW(15), marginBottom: normalizeH(15)}}>
@@ -67,7 +85,8 @@ class HelpShow extends Component {
               <Text style={{fontSize: 15, color: '#AAAAAA', marginLeft: normalizeW(20)}}>{this.props.userInfo.profession}</Text>
             </View>
             <Text style={{marginTop: normalizeH(10), fontSize: 12, color: '#AAAAAA'}}>30分钟前来过</Text>
-          </View>
+          </
+            View>
           <TouchableOpacity style={{marginRight: normalizeW(20)}}>
             <Image source={require('../../assets/images/add_follow.png')}/>
           </TouchableOpacity>
@@ -83,7 +102,7 @@ class HelpShow extends Component {
 
   enterChatroom() {
     let members = []
-    members.push(this.props.help.userId)
+    members.push(this.props.userId)
     members.push(this.props.currentUser)
     if (!this.props.isLogin) {
       Actions.LOGIN()
@@ -98,8 +117,12 @@ class HelpShow extends Component {
     }
   }
 
+  onReply = () => {
+    this.contentBar.setFocus()
+  }
+
   renderAction() {
-    if(this.props.help.userId != this.props.currentUser) {
+    if(this.props.userId != this.props.currentUser) {
       return(
         <View style={styles.action}>
           <TouchableOpacity>
@@ -108,7 +131,7 @@ class HelpShow extends Component {
               source={require('../../assets/images/favorite.png')}
             />
           </TouchableOpacity>
-          <TouchableOpacity style={{flex: 1}}>
+          <TouchableOpacity style={{flex: 1}} onPress={() => this.onReply()}>
             <Image
               style={{marginLeft: normalizeW(54)}}
               source={require('../../assets/images/message.png')}
@@ -129,6 +152,76 @@ class HelpShow extends Component {
     }
   }
 
+  submitSuccessCallback() {
+    dismissKeyboard()
+    Toast.show('评论成功', {duration: 1000})
+  }
+
+  submitErrorCallback(error) {
+    Toast.show(error.message)
+  }
+
+  sendReply(content) {
+    if (!this.props.isLogin) {
+      Actions.LOGIN()
+    }
+    else {
+      this.props.publishFormData({
+        content: content,
+        publishId: this.props.helpInfo.objectId,
+        userId: this.props.currentUserInfo.id,
+        replyTo: this.props.helpInfo.userId,
+        commentId: undefined,
+        submitType: PUBLISH_FORM_SUBMIT_TYPE.PUBLISH_COMMENT,
+        success: this.submitSuccessCallback.bind(this),
+        error: this.submitErrorCallback
+      })
+    }
+  }
+
+  renderKeyboardAwareToolBar() {
+    return (
+      <KeyboardAwareToolBar
+        initKeyboardHeight={-50}
+      >
+        <ToolBarContent
+          label={"发送"}
+          ref={(contentBar) => this.contentBar = contentBar}
+          onSend={(content) => {
+            this.sendReply(content)
+          }}
+          placeholder={"输入文字信息"}
+        />
+      </KeyboardAwareToolBar>
+    )
+  }
+
+  renderComments() {
+    if (this.props.publishComments) {
+      return (
+        this.props.publishComments.map((value, key)=> {
+          return (
+            <View key={key} style={{flexDirection: 'row', width: PAGE_WIDTH, height: normalizeH(83)}} >
+              <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: value.userId})}>
+                <Image
+                  source={{uri: value.avatar}}
+                  style={{width: 40, height: 40, borderRadius: 20, marginTop: normalizeH(10), marginRight: normalizeW(10), marginLeft: normalizeW(15)}}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity style={{flex: 1, borderBottomColor: '#F5F5F5', borderBottomWidth: 1}} onPress={() => this.onReply()}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between',marginTop: normalizeH(23)}}>
+                  <Text style={{fontSize: 15, color: '#5A5A5A'}}>{value.nickname}</Text>
+                  <Text style={{fontSize: 12, color: '#AAAAAA', marginRight: normalizeW(15)}}>{"30分钟以前"}</Text>
+                </View>
+                <Text style={{fontSize: 15, color: '#5A5A5A', marginTop: normalizeH(15)}}>{value.content}</Text>
+              </TouchableOpacity>
+            </View>
+          )
+        })
+      )
+    }
+  }
+
   render() {
     return(
       <View style={styles.container}>
@@ -145,25 +238,28 @@ class HelpShow extends Component {
             />
           </TouchableOpacity>
         </View>
-        <View style={this.props.help.userId == this.props.currentUser? {height: PAGE_HEIGHT - normalizeH(65)} : {height: PAGE_HEIGHT - normalizeH(49) - normalizeH(65)}}>
+        <View style={this.props.userId == this.props.currentUser? {height: PAGE_HEIGHT - normalizeH(65)} : {height: PAGE_HEIGHT - normalizeH(49) - normalizeH(65)}}>
           <ScrollView>
             <View style={styles.titleView}>
-              <Text style={styles.title}>{this.props.help.title}</Text>
-              <Text style={styles.price}>¥ {this.props.help.price}元</Text>
+              <Text style={styles.title}>{this.props.helpInfo.title}</Text>
+              <Text style={styles.price}>¥ {this.props.helpInfo.price}元</Text>
             </View>
             {this.renderPersonalInfo()}
             <View style={styles.serviceView}>
-              <ArticleViewer artlcleContent={JSON.parse(this.props.help.content)}/>
+              <ArticleViewer artlcleContent={JSON.parse(this.props.helpInfo.content)}/>
             </View>
             <View style={styles.comments}>
               <View style={styles.commentHeader}>
                 <View style={{width: normalizeW(5), height: normalizeH(15), backgroundColor: THEME.colors.yellow, marginLeft: normalizeW(15)}}/>
-                <Text style={{fontSize: 17, color: '#5A5A5A', marginLeft: normalizeW(10)}}>留言 (5)</Text>
+                <Text style={{fontSize: 17, color: '#5A5A5A', marginLeft: normalizeW(10)}}>留言 ({this.props.helpInfo.commentCnt})</Text>
               </View>
             </View>
+            {this.renderComments()}
           </ScrollView>
         </View>
         {this.renderAction()}
+        {this.renderKeyboardAwareToolBar()}
+
       </View>
     )
   }
@@ -179,18 +275,26 @@ HelpShow.defaultProps = {
 
 const mapStateToProps = (state, ownProps) => {
   let currentUser = activeUserId(state)
+  let currentUserInfo = activeUserInfo(state)
   const isLogin = isUserLogined(state)
-  const userInfo = userInfoById(state, ownProps.help.userId)
-
+  const userInfo = userInfoById(state, ownProps.userId)
+  let publishComments = getPublishComments(state, ownProps.publishId)
+  let helpInfo = getPublishById(state, ownProps.publishId)
+  console.log("ownProps.publishId", ownProps.publishId)
+  console.log("helpInfo", helpInfo)
   return {
     isLogin: isLogin,
-    currentUser: currentUser,
+    currentUserInfo: currentUserInfo,
     userInfo: userInfo,
+    helpInfo: helpInfo,
+    publishComments: publishComments,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-
+  publishFormData,
+  getUserInfoById,
+  fetchPublishCommentByPublishId,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(HelpShow)

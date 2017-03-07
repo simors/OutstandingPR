@@ -75,7 +75,7 @@ class Home extends Component {
 
   renderService(rowData) {
     return(
-      <TouchableOpacity style={styles.serviceView} onPress={() => Actions.SERVICE_SHOW({service: rowData})}>
+      <TouchableOpacity style={styles.serviceView} onPress={() => Actions.SERVICE_SHOW({publishId: rowData.objectId, userId: rowData.userId})}>
         <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(15)}}>{rowData.title}</Text>
         <View style={{flexDirection: 'row', marginTop: normalizeH(12)}}>
           <Text style={{fontSize: 15, color: '#5A5A5A'}}>{rowData.nickname}</Text>
@@ -111,7 +111,7 @@ class Home extends Component {
             source={rowData.avatar? {uri: rowData.avatar} : require('../../assets/images/defualt_user40.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={{flex: 1}} onPress={() => Actions.HELP_SHOW({help: rowData})}>
+        <TouchableOpacity style={{flex: 1}} onPress={() => Actions.HELP_SHOW({publishId: rowData.objectId, userId: rowData.userId})}>
           <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(20)}}>{rowData.title}</Text>
           <View style={{flexDirection: 'row', marginTop: normalizeH(12)}}>
             <Text style={{fontSize: 15, color: '#5A5A5A'}}>{rowData.nickname}</Text>
@@ -312,13 +312,12 @@ const styles = StyleSheet.create({
   },
   helpView: {
     flexDirection: 'row',
-    height: normalizeH(107),
     width: PAGE_WIDTH,
     paddingLeft: normalizeW(15),
     paddingRight: normalizeW(15),
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#F5F5F5'
+    borderBottomColor: '#F5F5F5',
   }
 
 })

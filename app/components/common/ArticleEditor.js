@@ -46,7 +46,7 @@ const COMP_IMG = 'COMP_IMG'
  *
  **/
 
-class ArticleEditor extends Component {
+export class ArticleEditor extends Component {
   constructor(props) {
     super(props)
     this.state = {

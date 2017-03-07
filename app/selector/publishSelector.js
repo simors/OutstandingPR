@@ -64,6 +64,17 @@ export function getPublishComments(state, publishId) {
 }
 
 export function getPublishById(state, publishId) {
+  let iPublishList = state.PUBLISH.get('iPublishes')
+  if(iPublishList) {
+    let iPublish = iPublishList.find((record) => {
+      if(record.get('objectId') === publishId)
+        return true
+      return false
+    })
+    if(iPublish)
+      return iPublish.toJS()
+  }
+
   let serviceList = state.PUBLISH.get('lastServices')
   if(serviceList) {
     let service = serviceList.find((record) => {
@@ -73,7 +84,6 @@ export function getPublishById(state, publishId) {
     })
     if(service)
       return service.toJS()
-    return new Publish().toJS()
   }
 
   let helpList = state.PUBLISH.get('lastHelp')

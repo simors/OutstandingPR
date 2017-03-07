@@ -20,6 +20,10 @@ export default function publishReducer(state = initialState, action) {
       return handleFetchLastPublishes(state, action)
     case PublishActionTypes.PUBLISH_COMMENT_SUCCESS:
       return handleAddPublishComment(state, action)
+    case PublishActionTypes.PUBLISH_UPDATE_COMMENTCNT:
+      return handleUpdateCommentCnt(state, action)
+    case PublishActionTypes.UPDATE_PUBLISH_COMMENTS:
+      return handleUpdatePublishComments(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -81,6 +85,59 @@ function handleAddPublishComment(state, action) {
   state = state.setIn(['publishComments', action.payload.publishId], publishCommentList)
   return state
 
+  return state
+}
+
+function handleUpdateCommentCnt(state, action) {
+  let publishId = action.payload.publishId
+
+  let lastServices = state.get('lastServices')
+  if(lastServices) {
+    let key = lastServices.findKey((record) => {
+      if(record.get('objectId') == publishId)
+        return true
+      return false
+    })
+    if(key){
+      state = state.updateIn(['lastServices', key, 'commentCnt'], val => val +1)
+      return state
+    }
+  }
+
+  let lastHelp = state.get('lastHelp')
+  if(lastHelp) {
+    let key = lastHelp.findKey((record) => {
+      if(record.get('objectId') == publishId)
+        return true
+      return false
+    })
+    if(key){
+      state = state.updateIn(['lastHelp', key, 'commentCnt'], val => val +1)
+      return state
+    }
+  }
+
+  let iPublish = state.get('iPublishes')
+  if(iPublish) {
+    let key = iPublish.findKey((record) => {
+      if(record.get('objectId') == publishId)
+        return true
+      return false
+    })
+    if(key){
+      state = state.updateIn(['iPublishes', key, 'commentCnt'], val => val +1)
+      return state
+    }
+  }
+
+  return state
+}
+
+function handleUpdatePublishComments(state, action) {
+  let payload = action.payload
+  let _map = state.get('publishComments')
+  _map = _map.set(payload.publishId, payload.publishComments)
+  state = state.set('publishComments', _map)
   return state
 }
 

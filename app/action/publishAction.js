@@ -146,8 +146,10 @@ function handlePublishComment(payload, formData) {
       if (payload.success) {
         payload.success()
       }
-      let publishComentAction = createAction(publishActionTypes.PUBLISH_COMMENT_SUCCESS)
-      dispatch(publishComentAction({publishId:payload.publishId, publishComment:result, stateKey: payload.stateKey}))
+      let publishCommentAction = createAction(publishActionTypes.PUBLISH_COMMENT_SUCCESS)
+      dispatch(publishCommentAction({publishId:payload.publishId, publishComment:result, stateKey: payload.stateKey}))
+      let publishCommentCntPlusActoion = createAction(publishActionTypes.PUBLISH_UPDATE_COMMENTCNT)
+      dispatch(publishCommentCntPlusActoion({publishId: payload.publishId}))
       dispatch(notifyPublishComment({
         publishId: payload.publishId,
         replyTo: payload.replyTo,
@@ -204,4 +206,17 @@ export function fetchLastPublishes(payload) {
   }
 }
 
+export function fetchPublishCommentByPublishId(payload) {
+  return (dispatch, getState) => {
+    lcPublish.getPublishComments(payload).then((result) => {
+      let updatePublishCommentsAction = createAction(publishActionTypes.UPDATE_PUBLISH_COMMENTS)
+      dispatch(updatePublishCommentsAction({publishId:payload.publishId, publishComments: result}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+
+}
 

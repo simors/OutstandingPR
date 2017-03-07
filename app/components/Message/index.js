@@ -56,59 +56,6 @@ class MessageBox extends Component {
     }
   }
 
-
-
-  renderPersonalMessage() {
-    return (
-      <View style={styles.itemView}>
-        <TouchableOpacity style={styles.selectItem} onPress={() => Actions.PRIVATE_MESSAGE_BOX()}>
-          <View style={{flex: 1, flexDirection: 'row'}}>
-            <View style={styles.noticeIconView}>
-              <Image style={styles.noticeIcon} source={require('../../assets/images/message_circle.png')}></Image>
-              {this.renderNoticeTip(PERSONAL)}
-            </View>
-            <View style={{flex: 1}}>
-              <View style={{flexDirection: 'row'}}>
-                <Text style={styles.titleStyle}>私信</Text>
-                <View style={{flex: 1}}></View>
-                <Text style={styles.timeTip}>{this.props.lastPersonalMsg.lastMessageAt}</Text>
-              </View>
-              <View style={{marginTop: normalizeH(4), marginRight: normalizeW(15)}}>
-                <Text numberOfLines={1} style={styles.msgTip}>{this.props.lastPersonalMsg.lastMessage}</Text>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </View>
-    )
-  }
-
-  // renderTopicMessage() {
-  //   return (
-  //     <View style={styles.itemView}>
-  //       <TouchableOpacity style={styles.selectItem} onPress={() => Actions.TOPIC_NOTIFY()}>
-  //         <View style={{flex: 1, flexDirection: 'row'}}>
-  //           <View style={styles.noticeIconView}>
-  //             <Image style={styles.noticeIcon} source={require('../../assets/images/notice_topic.png')}></Image>
-  //             {this.renderNoticeTip(TOPIC)}
-  //           </View>
-  //           <View style={{flex: 1}}>
-  //             <View style={{flexDirection: 'row'}}>
-  //               <Text style={styles.titleStyle}>话题互动</Text>
-  //               <View style={{flex: 1}}></View>
-  //               <Text style={styles.timeTip}>{this.props.lastLastNoticeMsg.lastMessageAt}</Text>
-  //             </View>
-  //             <View style={{marginTop: normalizeH(4), marginRight: normalizeW(15)}}>
-  //               <Text numberOfLines={1} style={styles.msgTip}>{this.props.lastLastNoticeMsg.lastMessage}</Text>
-  //             </View>
-  //           </View>
-  //         </View>
-  //       </TouchableOpacity>
-  //     </View>
-  //   )
-  // }
-
-
   renderSystemMessage() {
     return (
       <View style={styles.itemView}>
@@ -197,7 +144,6 @@ const mapStateToProps = (state, ownProps) => {
   let newProps = {}
   let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
   let conversations = getOrderedConvsByType(state, PERSONAL_CONVERSATION)
-  console.log("conversations", conversations)
 
   let newSystemMsg = hasNewMessageByType(state, msgTypes.SYSTEM_TYPE)
   let newPublishMsg = hasNewNoticeByType(state, msgTypes.PUBLISH_TYPE)
