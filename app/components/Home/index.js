@@ -254,7 +254,8 @@ class Home extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', marginRight: normalizeW(13)}}>
+          <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', marginRight: normalizeW(13)}}
+                            onPress={() => Actions.SELECT_CITY()}>
             <Text style={{fontSize: 17, color: THEME.colors.yellow, marginLeft: normalizeW(12)}}>长沙</Text>
             <Image source={require('../../assets/images/Triangle.png')}/>
           </TouchableOpacity>

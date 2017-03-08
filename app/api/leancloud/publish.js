@@ -30,7 +30,6 @@ export function publishService(payload) {
     error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
     throw error
   })
-
 }
 
 export function publishHelp(payload) {

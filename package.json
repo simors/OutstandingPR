@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@exponent/react-native-action-sheet": "^0.3.0",
+    "@zzzkk2009/react-native-baidu-map": "^1.0.6",
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-react": "^6.22.0",
     "es6-symbol": "^3.1.0",
