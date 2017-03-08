@@ -187,6 +187,7 @@ function handleUpdatePublishStatus(state, action) {
 
 function handleUpdatePublishRefreshTime(state, action) {
   let payload = action.payload
+  let refreshTime = payload.refreshTime.getTime()
   let iPublish = state.get('iPublishes')
   if(iPublish) {
     let key = iPublish.findKey((record) => {
@@ -194,8 +195,8 @@ function handleUpdatePublishRefreshTime(state, action) {
         return true
       return false
     })
-    if(key){
-      state = state.updateIn(['iPublishes', key, 'lastRefreshAt'], val => payload.refreshTime)
+    if(key != undefined){
+      state = state.updateIn(['iPublishes', key, 'lastRefreshAt'], val => refreshTime)
       return state
     }
   }

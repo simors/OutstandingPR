@@ -53,7 +53,7 @@ class ServiceShow extends Component {
   }
 
   renderEdit() {
-    if(this.props.userId == this.props.currentUser) {
+    if((this.props.userId == this.props.currentUser) && (this.props.serviceInfo.status == 1)) {
       return(
         <TouchableOpacity style={styles.edit} onPress={() => Actions.EDIT_SERVICE({service: this.props.serviceInfo})}>
           <Image source={require('../../assets/images/edite.png')}/>

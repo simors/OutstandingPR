@@ -127,42 +127,50 @@ class Published extends Component {
   }
 
   onClosePublish(status, publishId) {
-    this.popup.confirm({
-      title: '提示',
-      content: ['确认关闭发布的信息？'],
-      ok: {
-        text: '确定',
-        style: {
-          color: '#FF9D4E'
-        },
-        callback: () => {
-          if(status) {
+    if(status) {
+      this.popup.confirm({
+        title: '提示',
+        content: ['确认关闭发布的信息？'],
+        ok: {
+          text: '确定',
+          style: {
+            color: '#FF9D4E'
+          },
+          callback: () => {
             this.props.updatePublishStatus({
               publishId: publishId,
               status: 0,
 
             })
-          }
+          },
         },
-      },
-      cancel: {
-        text: '取消',
-        style: {
-          color: '#AAAAAA'
-        },
-      }
+        cancel: {
+          text: '取消',
+          style: {
+            color: '#AAAAAA'
+          },
+        }
 
-    })
+      })
+    }
   }
 
   onRefreshPublish(publishId, lastRefreshAt) {
     let nowTime = new Date()
-    if((nowTime - lastRefreshAt) >= 3*24*3600) {
+    if((nowTime - lastRefreshAt) >= 5*60) {
       this.props.updatePublishRefreshTime({
         publishId: publishId,
-        refreshTime: lastRefreshAt,
+        refreshTime: nowTime,
       })
     }
+  }
+
+  getRefreshButtonStyle(lastRefreshAt){
+    let nowTime = new Date()
+    if((nowTime - lastRefreshAt) >= 5*60) {
+      return styles.refresh
+    }
+    return styles.unRefresh
   }
 
   renderItemStatus(status, publishId) {
@@ -175,13 +183,21 @@ class Published extends Component {
 
   renderRefresh(publishId, lastRefreshAt) {
     return(
-      <TouchableOpacity style={styles.refresh} disabled={true} onPress={() => {this.onRefreshPublish(publishId, lastRefreshAt)}}>
+      <TouchableOpacity style={this.getRefreshButtonStyle(lastRefreshAt)} onPress={() => {this.onRefreshPublish(publishId, lastRefreshAt)}}>
         <Image
           source={require('../../assets/images/refresh.png')}
         />
         <Text style={{marginLeft: normalizeW(10), fontSize: 15, color: '#FFFFFF'}}>刷新</Text>
       </TouchableOpacity>
     )
+  }
+
+  renderItemShowStatus(lastRefreshAt) {
+    let nowTime = new Date()
+    if((nowTime - lastRefreshAt) >= 12*24*3600) {
+      return <Text style={[styles.statusText, {color: '#FF001F'}]}>未显示</Text>
+    }
+    return <Text style={styles.statusText}>显示中</Text>
   }
 
   renderItem(rowData) {
@@ -199,7 +215,7 @@ class Published extends Component {
             <Text style={styles.titleText}>{rowData.title}</Text>
             <View style={styles.titleTrip}>
               <Text style={styles.priceText}>¥ {rowData.price}元</Text>
-              <Text style={styles.statusText}>显示中</Text>
+              {this.renderItemShowStatus(rowData.lastRefreshAt)}
             </View>
           </View>
         </View>
@@ -354,6 +370,15 @@ const styles = StyleSheet.create({
     height: normalizeH(35),
     marginRight: normalizeW(25),
     backgroundColor: '#F56A23'
+  },
+  unRefresh: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: normalizeW(80),
+    height: normalizeH(35),
+    marginRight: normalizeW(25),
+    backgroundColor: '#AAAAAA'
   },
   close: {
     marginRight: normalizeW(13),

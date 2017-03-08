@@ -42,7 +42,7 @@ export class Publish extends PublishRecord {
       record.set('commentCnt', attrs.commentCnt)
       record.set('status', attrs.status)
       if(lcObj.lastRefreshAt) {
-        record.set('lastRefreshAt', attrs.lastRefreshAt)
+        record.set('lastRefreshAt', lcObj.lastRefreshAt.valueOf())
       } else {
         record.set('lastRefreshAt', lcObj.createdAt.valueOf())
       }
@@ -51,6 +51,7 @@ export class Publish extends PublishRecord {
       if(lcObj.updatedAt)
         record.set('updatedAt', lcObj.updatedAt.valueOf())
     })
+    console.log("publish", publish)
     return publish
   }
 }

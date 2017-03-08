@@ -101,8 +101,10 @@ export function getPublishedByUserId(payload) {
 }
 
 export function fetchPublishes(payload) {
+  console.log("fetchPublishes payload", payload)
   let query = new AV.Query('Publishes')
   query.equalTo('type', payload.type)
+  query.equalTo('status', 1)
 
   let isRefresh = payload.isRefresh
   let lastCreatedAt = payload.lastCreatedAt
@@ -111,7 +113,7 @@ export function fetchPublishes(payload) {
   }
   query.include('user')
   query.limit(10)
-  query.descending('createdAt')
+  query.descending('lastRefreshAt')
 
   return query.find().then(function (results) {
     let publishes = []
@@ -224,7 +226,6 @@ export function updatePublishStatus(payload) {
 }
 
 export function updateRefreshTime(payload) {
-  console.log("updateRefreshTime payload", payload)
   let publishId = payload.publishId
   let refreshTime = payload.refreshTime
 
@@ -232,9 +233,11 @@ export function updateRefreshTime(payload) {
   publish.set('lastRefreshAt', refreshTime)
 
   return publish.save().then(function (result) {
-    let newPublish = result
-    newPublish.attributes.user = AV.User.current()
-    return Publish.fromLeancloudObject(newPublish)
+    // console.log("result", result)
+    // let newPublish = result
+    // newPublish.attributes.user = AV.User.current()
+    // return Publish.fromLeancloudObject(newPublish)
+    return
   }, function (error) {
     error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
     throw error

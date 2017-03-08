@@ -185,19 +185,13 @@ export function fetchPublishesByUserId(payload) {
 }
 
 export function fetchPublishes(payload) {
-  console.log("fetchPublishes payload", payload)
   return (dispatch, getState) => {
-
-    let fetchPayload = {
-      type: payload.type,
-    }
-
-    lcPublish.fetchPublishes(fetchPayload).then((result) => {
-      if (payload.success) {
-        payload.success()
-      }
+    lcPublish.fetchPublishes(payload).then((result) => {
       let publishFetchAction = createAction(publishActionTypes.FETCH_PUBLISHES)
       dispatch(publishFetchAction({pubishes: result, type: payload.type, isPaging: !payload.isRefresh}))
+      if(payload.success) {
+        payload.success(result.size==0)
+      }
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
