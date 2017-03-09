@@ -5,55 +5,159 @@ import AV from 'leancloud-storage'
 import {List} from 'immutable'
 import ERROR from '../../constants/errorCode'
 import {Publish, PublishComment} from '../../models/publishModels'
+import {Geolocation} from '../../components/common/BaiduMap'
 
 export function publishService(payload) {
+  console.log("publishService")
   let Publishes = AV.Object.extend('Publishes')
   let publish = new Publishes()
-
+  let now = new Date()
   var user = AV.Object.createWithoutData('_User', payload.userId)
 
-  publish.set('user', user)
-  publish.set('imgGroup', payload.imgGroup)
-  publish.set('title', payload.title)
-  publish.set('content', payload.content)
-  publish.set('price', payload.price)
-  publish.set('type', 'service')
-  publish.set('commentCnt', 0)
-  publish.set('status', 1)
+  return AV.GeoPoint.current().then(function (geoPoint) {
+    if (geoPoint) {
+      return Geolocation.reverseGeoCode(geoPoint.latitude, geoPoint.longitude).then(function (position) {
+        publish.set('geoPoint', geoPoint)
+        publish.set('position', position)
+        publish.set('user', user)
+        publish.set('imgGroup', payload.imgGroup)
+        publish.set('title', payload.title)
+        publish.set('content', payload.content)
+        publish.set('price', payload.price)
+        publish.set('type', 'service')
+        publish.set('commentCnt', 0)
+        publish.set('status', 1)
+        publish.set('lastRefreshAt', now)
 
-  return publish.save().then(function (result) {
-    console.log("lean publish save result:", result)
-    let newPublish = result
-    newPublish.attributes.user = AV.User.current()
-    return Publish.fromLeancloudObject(newPublish)
+        return publish.save().then(function (result) {
+          let newPublish = result
+          newPublish.attributes.user = AV.User.current()
+          return Publish.fromLeancloudObject(newPublish)
+        }, function (error) {
+          error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+          throw error
+        })
+      }, function (error) {
+        error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+        throw error
+      })
+    } else {
+      publish.set('user', user)
+      publish.set('imgGroup', payload.imgGroup)
+      publish.set('title', payload.title)
+      publish.set('content', payload.content)
+      publish.set('price', payload.price)
+      publish.set('type', 'service')
+      publish.set('commentCnt', 0)
+      publish.set('status', 1)
+      publish.set('lastRefreshAt', now)
+
+      return publish.save().then(function (result) {
+        let newPublish = result
+        newPublish.attributes.user = AV.User.current()
+        return Publish.fromLeancloudObject(newPublish)
+      }, function (error) {
+        error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+        throw error
+      })
+    }
   }, function (error) {
-    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
-    throw error
+    publish.set('user', user)
+    publish.set('imgGroup', payload.imgGroup)
+    publish.set('title', payload.title)
+    publish.set('content', payload.content)
+    publish.set('price', payload.price)
+    publish.set('type', 'service')
+    publish.set('commentCnt', 0)
+    publish.set('status', 1)
+    publish.set('lastRefreshAt', now)
+
+    return publish.save().then(function (result) {
+      let newPublish = result
+      newPublish.attributes.user = AV.User.current()
+      return Publish.fromLeancloudObject(newPublish)
+    }, function (error) {
+      error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+      throw error
+    })
   })
+
 }
 
 export function publishHelp(payload) {
   let Publishes = AV.Object.extend('Publishes')
   let publish = new Publishes()
+  let now = new Date()
 
   var user = AV.Object.createWithoutData('_User', payload.userId)
 
-  publish.set('user', user)
-  publish.set('imgGroup', payload.imgGroup)
-  publish.set('title', payload.title)
-  publish.set('content', payload.content)
-  publish.set('price', payload.price)
-  publish.set('type', 'help')
+  return AV.GeoPoint.current().then(function (geoPoint) {
+    if (geoPoint) {
+      return Geolocation.reverseGeoCode(geoPoint.latitude, geoPoint.longitude).then(function (position) {
+        publish.set('geoPoint', geoPoint)
+        publish.set('position', position)
+        publish.set('user', user)
+        publish.set('imgGroup', payload.imgGroup)
+        publish.set('title', payload.title)
+        publish.set('content', payload.content)
+        publish.set('price', payload.price)
+        publish.set('type', 'help')
+        publish.set('commentCnt', 0)
+        publish.set('status', 1)
+        publish.set('lastRefreshAt', now)
 
-  return publish.save().then(function (result) {
-    let newPublish = result
-    newPublish.attributes.user = AV.User.current()
-    return Publish.fromLeancloudObject(newPublish)
+        return publish.save().then(function (result) {
+          let newPublish = result
+          newPublish.attributes.user = AV.User.current()
+          return Publish.fromLeancloudObject(newPublish)
+        }, function (error) {
+          error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+          throw error
+        })
+      }, function (error) {
+        error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+        throw error
+      })
+    } else {
+      publish.set('user', user)
+      publish.set('imgGroup', payload.imgGroup)
+      publish.set('title', payload.title)
+      publish.set('content', payload.content)
+      publish.set('price', payload.price)
+      publish.set('type', 'help')
+      publish.set('commentCnt', 0)
+      publish.set('status', 1)
+      publish.set('lastRefreshAt', now)
+
+      return publish.save().then(function (result) {
+        let newPublish = result
+        newPublish.attributes.user = AV.User.current()
+        return Publish.fromLeancloudObject(newPublish)
+      }, function (error) {
+        error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+        throw error
+      })
+    }
   }, function (error) {
-    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
-    throw error
-  })
+    publish.set('user', user)
+    publish.set('imgGroup', payload.imgGroup)
+    publish.set('title', payload.title)
+    publish.set('content', payload.content)
+    publish.set('price', payload.price)
+    publish.set('type', 'help')
+    publish.set('commentCnt', 0)
+    publish.set('status', 1)
+    publish.set('lastRefreshAt', now)
 
+    return publish.save().then(function (result) {
+      let newPublish = result
+      newPublish.attributes.user = AV.User.current()
+      return Publish.fromLeancloudObject(newPublish)
+    }, function (error) {
+      error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+      throw error
+    })
+  })
 }
 
 export function updateService(payload) {
@@ -100,15 +204,14 @@ export function getPublishedByUserId(payload) {
 }
 
 export function fetchPublishes(payload) {
-  console.log("fetchPublishes payload", payload)
   let query = new AV.Query('Publishes')
   query.equalTo('type', payload.type)
   query.equalTo('status', 1)
 
   let isRefresh = payload.isRefresh
-  let lastCreatedAt = payload.lastCreatedAt
-  if (!isRefresh && lastCreatedAt) { //分页查询
-    query.lessThan('createdAt', new Date(lastCreatedAt))
+  let lastRefreshAt = payload.lastRefreshAt
+  if (!isRefresh && lastRefreshAt) { //分页查询
+    query.lessThan('lastRefreshAt', new Date(lastRefreshAt))
   }
   query.include('user')
   query.limit(10)
@@ -129,7 +232,6 @@ export function fetchPublishes(payload) {
 }
 
 export function publishComments(payload) {
-  console.log(" lean publishComments paylaod", payload)
   let PublishComments = AV.Object.extend('PublishComments')
   let publishComment = new PublishComments()
 
@@ -146,7 +248,6 @@ export function publishComments(payload) {
   
   return publishComment.save().then(function (result) {
     if(result) {
-      console.log("lean publishComment result:", result)
       let relation = publish.relation('comments')
       relation.add(publishComment)
       publish.increment("commentCnt", 1)

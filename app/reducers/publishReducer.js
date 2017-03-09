@@ -37,7 +37,6 @@ export default function publishReducer(state = initialState, action) {
 
 function handleAddPublish(state, action) {
   let publish = action.payload.publish
-  console.log("handleAddPublish publish", publish)
   let _list = undefined
   _list = state.get('iPublishes') || new List()
   _list = _list.insert(0, publish)
@@ -47,7 +46,6 @@ function handleAddPublish(state, action) {
 
 function handleUpdatePublish(state, action) {
   let publish = action.payload.publish
-  console.log("handleUpdatePublish publish", publish)
   let _list = undefined
   _list = state.get('iPublishes')
   if (_list) {

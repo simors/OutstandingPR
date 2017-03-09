@@ -27,7 +27,7 @@ import ImageGroupViewer from '../../components/common/ImageGroupViewer'
 import {getLastServices, getLastHelp} from '../../selector/publishSelector'
 import {fetchPublishes} from '../../action/publishAction'
 import MessageBell from '../common/MessageBell'
-import {activeUserId} from '../../selector/authSelector'
+import {activeUserId, activeUserInfo} from '../../selector/authSelector'
 import CommonListView from '../common/CommonListView'
 import Toast from '../common/Toast'
 
@@ -52,7 +52,7 @@ class Home extends Component {
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       this.props.fetchBanner({type: 0})
-      this.props.fetchPublishes({isRefresh: true, type: 'service'})
+      // this.props.fetchPublishes({isRefresh: true, type: 'service'})
       this.props.fetchPublishes({isRefresh: true, type: 'help'})
     })
   }
@@ -160,7 +160,8 @@ class Home extends Component {
   }
 
   loadMoreData(isRefresh) {
-    let lastCreatedAt = undefined
+    console.log("loadMoreData")
+    let lastRefreshAt = undefined
     let currentPublishes = undefined
     switch (this.state.selectedItem) {
       case 'service':
@@ -174,12 +175,11 @@ class Home extends Component {
     }
 
     if(currentPublishes && currentPublishes.length) {
-      lastCreatedAt = currentPublishes[currentPublishes.length-1].createdAt
+      lastRefreshAt = currentPublishes[currentPublishes.length - 1].lastRefreshAt
     }
-
     let payload = {
       type: this.state.selectedItem,
-      lastCreatedAt: lastCreatedAt,
+      lastRefreshAt: lastRefreshAt,
       isRefresh: !!isRefresh,
       success: (isEmpty) => {
         if(!this.listView) {
@@ -256,7 +256,7 @@ class Home extends Component {
         <View style={styles.header}>
           <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', marginRight: normalizeW(13)}}
                             onPress={() => Actions.SELECT_CITY()}>
-            <Text style={{fontSize: 17, color: THEME.colors.yellow, marginLeft: normalizeW(12)}}>长沙</Text>
+            <Text style={{fontSize: 17, color: THEME.colors.yellow, marginLeft: normalizeW(12)}}>{this.props.city}</Text>
             <Image source={require('../../assets/images/Triangle.png')}/>
           </TouchableOpacity>
           <TouchableOpacity style={styles.search} onPress={() => Actions.SEARCH()}>
@@ -286,6 +286,8 @@ class Home extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let currentUser = activeUserId(state)
+  let currentUserInfo = activeUserInfo(state)
+  let city = currentUserInfo.city || '长沙'
   const banner = getBanner(state, 0)
   let lastService = getLastServices(state)
   let lastHelp = getLastHelp(state)
@@ -300,12 +302,14 @@ const mapStateToProps = (state, ownProps) => {
   helpDataArray.push({itemType: 'itemBar'})
   helpDataArray = helpDataArray.concat(lastHelp)
   return {
+    city: city,
     currentUser: currentUser,
     hasNotice: 1,
     banner: banner,
     ServiceDataSource: serviceDs.cloneWithRows(serviceDataArray),
     lastService: lastService,
     HelpDataSource: helpDs.cloneWithRows(helpDataArray),
+    lastHelp: lastHelp,
   }
 }
 

@@ -8,6 +8,8 @@ import {
   Text,
   Image,
   Dimensions,
+  InteractionManager,
+  TouchableOpacity,
   Platform
 } from 'react-native'
 import {connect} from 'react-redux'
@@ -15,45 +17,66 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import Symbol from 'es6-symbol'
 import Header from '../common/Header'
-import PhoneInput from '../common/Input/PhoneInput'
-import SmsAuthCodeInput from '../common/Input/SmsAuthCodeInput'
-import PasswordInput from '../common/Input/PasswordInput'
-import CommonButton from '../common/CommonButton'
 import {normalizeH, normalizeW} from '../../util/Responsive'
-import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
-import THEME from '../../constants/theme'
-import {isInputValid} from '../../selector/inputFormSelector'
-import {inputFormOnDestroy} from '../../action/inputFormActions'
-import * as Toast from '../common/Toast'
+import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE, switchUserCity} from '../../action/authActions'
+import {activeUserId} from '../../selector/authSelector'
 import AV from 'leancloud-storage'
 import Icon from 'react-native-vector-icons/Ionicons'
 import {Geolocation} from '../common/BaiduMap'
-
-
-
+import * as Toast from '../common/Toast'
 
 const PAGE_WIDTH=Dimensions.get('window').width
-
-let forgetPwdForm = Symbol('forgetPwdForm')
 
 
 class SelectCity extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      city: '长沙',
+    }
   }
 
   componentDidMount() {
-    this.getCity()
+    InteractionManager.runAfterInteractions(() => {
+      this.getLocatedCity()
+    })
   }
 
   componentWillUnmount() {
   }
 
-  getCity() {
-    AV.GeoPoint.current().then((geoPoint) =>{
-      Geolocation.reverseGeoCode(geoPoint.latitude, geoPoint.longitude).then(function (position) {
-        console.log("position", position)
-      })
+  getLocatedCity() {
+    return AV.GeoPoint.current().then((geoPoint) =>{
+      if(geoPoint) {
+        return Geolocation.reverseGeoCode(geoPoint.latitude, geoPoint.longitude).then((position) => {
+          if(position){
+            this.setState({
+              city: position.city,
+            })
+          }
+        }, function (error) {
+          err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+          throw err
+        })
+      }
+    })
+  }
+
+  submitSuccessCallback() {
+    Toast.show('切换城市!')
+    Actions.pop()
+  }
+
+  submitErrorCallback(error) {
+    Toast.show(error.message)
+  }
+
+  onSwitchCity(city) {
+    this.props.switchUserCity({
+      userId: this.props.currentUser,
+      city: city,
+      success: this.submitSuccessCallback,
+      error: this.submitErrorCallback,
     })
   }
 
@@ -68,13 +91,13 @@ class SelectCity extends Component {
         />
         <View style={styles.body}>
           <View style={{marginTop: normalizeH(15)}}>
-            <Text style={{fontSize: normalizeH(17)}}>定位城市</Text>
-            <View style={{marginTop: normalizeH(15), justifyContent: 'center', alignItems: 'center', flexDirection: 'row', backgroundColor: '#FFFFFF', width: normalizeW(100), height: normalizeH(50)}}>
+            <Text style={{fontSize: 15}}>定位城市</Text>
+            <TouchableOpacity style={styles.locatedCity} onPress={() => {this.onSwitchCity(this.state.city)}}>
               <Icon
                 name={'ios-locate'}
                 style={{fontSize: 24, color: '#FF9D4E'}}/>
-              <Text>长沙</Text>
-            </View>
+              <Text style={{fontSize: 15, marginLeft: normalizeW(15)}}>{this.state.city}</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -83,12 +106,15 @@ class SelectCity extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {
+  let currentUser = activeUserId(state)
 
+  return {
+    currentUser: currentUser,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  switchUserCity,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(SelectCity)
@@ -110,5 +136,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     paddingLeft: normalizeW(15)
   },
+  locatedCity: {
+    borderRadius: 3,
+    marginTop: normalizeH(5),
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    width: normalizeW(120),
+    height: normalizeH(40)
+  }
 
 })

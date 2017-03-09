@@ -20,6 +20,8 @@ export const PublishRecord = Record({
   updatedAt: undefined, //更新时间
   status: undefined, // 发布信息状态 0 -- 关闭／已解决 ，1 -- 正常
   lastRefreshAt: undefined, //最近刷新时间
+  geoPoint: undefined,
+  position: undefined,
 }, 'PublishRecord')
 
 export class Publish extends PublishRecord {
@@ -30,6 +32,8 @@ export class Publish extends PublishRecord {
 
     publish = publish.withMutations((record) => {
       record.set('objectId', lcObj.id)
+      record.set('geoPoint', attrs.geoPoint)
+      record.set('position', attrs.position)
       record.set('userId', attrs.user.id)
       record.set('avatar', user.get('avatar'))
       record.set('nickname', user.get('nickname'))
@@ -41,8 +45,8 @@ export class Publish extends PublishRecord {
       record.set('price', attrs.price)
       record.set('commentCnt', attrs.commentCnt)
       record.set('status', attrs.status)
-      if(lcObj.lastRefreshAt) {
-        record.set('lastRefreshAt', lcObj.lastRefreshAt.valueOf())
+      if(attrs.lastRefreshAt) {
+        record.set('lastRefreshAt', attrs.lastRefreshAt.valueOf())
       } else {
         record.set('lastRefreshAt', lcObj.createdAt.valueOf())
       }
@@ -51,7 +55,6 @@ export class Publish extends PublishRecord {
       if(lcObj.updatedAt)
         record.set('updatedAt', lcObj.updatedAt.valueOf())
     })
-    console.log("publish", publish)
     return publish
   }
 }

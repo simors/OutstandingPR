@@ -1294,6 +1294,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = XE253W47VG;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../node_modules/@zzzkk2009/react-native-baidu-map/ios/lib/**";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1334,6 +1335,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: 凯 左 (VL3UU83SZ2)";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XE253W47VG;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../node_modules/@zzzkk2009/react-native-baidu-map/ios/lib/**";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",

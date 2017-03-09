@@ -106,7 +106,7 @@ export default class CommonListView extends Component {
     return (
       <View style={styles.footerContainer}>
         <View style={styles.footLine}/>
-        <Text style={styles.footText}>{'天涯海角'}</Text>
+        <Text style={styles.footText}>{'底线'}</Text>
         <View style={styles.footLine}/>
       </View>
     )
