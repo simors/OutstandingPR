@@ -372,4 +372,87 @@ export function switchUserCity(payload) {
   })
 }
 
+export function userIsFollowedTheUser(payload) {
+  let userId = payload.userId
+
+  let query = AV.User.current().followeeQuery()
+  query.include('followee')
+  return query.find().then(function(results) {
+    let followees = []
+    results.forEach((result)=>{
+      followees.push(UserInfo.fromLeancloudObject(result))
+    })
+    for(let i = 0; i < results.length; i++) {
+      if(userId == followees[i].id) {
+        return true
+      }
+    }
+    return false
+  })
+}
+
+export function followUser(payload) {
+  let userId = payload.userId
+  return userIsFollowedTheUser(payload).then((result) =>{
+    if(result) {
+      return {
+        code: '10004',
+        message: '您之前已经关注了该用户'
+      }
+    }
+
+    return AV.User.current().follow(userId).then(()=>{
+      // let activeUser = authSelector.activeUserInfo(store.getState())
+      // // console.log('followShop.shopDetail==', shopDetail)
+      // AVUtils.pushByUserList([userId], {
+      //   alert: `${activeUser.nickname}关注了您,立即查看`,
+      //   sceneName: 'MYATTENTION',
+      // })
+      let user = AV.Object.createWithoutData('_User', userId)
+
+      return user.fetch().then(function (record) {
+        let userInfo = UserInfo.fromLeancloudObject(record)
+        return {
+          code: '10003',
+          message: '关注成功',
+          userInfo: userInfo,
+        }
+      }, function (error) {
+        error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+        throw error
+      })
+    }).catch((err) =>{
+      if(err.code == '1') {
+        err.code = '9998'
+      }
+      throw err
+    })
+  }).catch((err) =>{
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
+
+export function unFollowUser(payload) {
+  let userId = payload.userId
+  return userIsFollowedTheUser(payload).then((result) =>{
+    if(!result) {
+      return {
+        code: '10006',
+        message: '您还没有关注该用户'
+      }
+    }
+    return AV.User.current().unfollow(userId).then(()=>{
+      return {
+        code: '10005',
+        message: '取消关注成功'
+      }
+    }).catch((err) =>{
+      throw err
+    })
+  }).catch((err) =>{
+    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
+    throw err
+  })
+}
 

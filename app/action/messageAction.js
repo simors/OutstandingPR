@@ -569,6 +569,33 @@ export function notifyPublishComment(payload) {
   }
 }
 
+
+export function notifyUserFollow(payload) {
+  return (dispatch, getState) => {
+    let currentUser = activeUserInfo(getState())
+    let notifyConv = {
+      members: [payload.toPeers],   // 可以是一个数组
+      unique: true
+    }
+    dispatch(createOriginalConversation(notifyConv)).then((conversation) => {
+      let message = createTypedMessage(msgTypes.MSG_USER_FOLLOW)
+      let attrs = {
+        msgType: msgTypes.MSG_USER_FOLLOW,
+        userId: currentUser.id,
+        nickname: currentUser.nickname,
+        avatar: currentUser.avatar,
+      }
+      let text = currentUser.nickname + '关注了您'
+      message.setText(text)
+      message.setAttributes(attrs)
+      conversation.send(message)
+    }, (err) => {
+      console.log(err)
+    })
+  }
+}
+
+
 export function updateConversationStatus(payload) {
   return (dispatch, getState) => {
     dispatch(setLcConversation(payload)).then((conversation) => {

@@ -37,4 +37,18 @@ export function activeUserInfo(state) {
   return activeUser ? state.AUTH.getUserInfoById(activeUser) : new UserInfo()
 }
 
+export function isUserFollowed(state, userId) {
+  let followeesMap = state.AUTH.get('followees')
+  return followeesMap? followeesMap.has(userId): false
+}
 
+export function getFollowees(state) {
+  let followees = []
+  let followeesMap = state.AUTH.get('followees')
+  if(followeesMap){
+    followeesMap.forEach((result) => {
+      followees.push(result.toJS())
+    })
+  }
+  return followees
+}

@@ -20,7 +20,7 @@ import Profile from '../components/Mine/Profile'
 import EditProfile from '../components/Mine/EditProfile'
 import Suggestion from '../components/Mine/Suggestion'
 import Collection from '../components/Mine/Collection'
-import Focus from '../components/Mine/Focus'
+import Follow from '../components/Mine/Follow'
 import Published from '../components/Mine/Published'
 import CommonWebView from '../components/common/CommonWebView'
 import Search from '../components/Search'
@@ -66,7 +66,7 @@ export const scenes = Actions.create(
       <Scene key="EDIT_PROFILE" component={EditProfile} />
       <Scene key="SUGGESTION" component={Suggestion} />
       <Scene key="COLLECTION" component={Collection} />
-      <Scene key="FOCUS" component={Focus} />
+      <Scene key="FOLLOW" component={Follow} />
       <Scene key="PUBLISHED" component={Published} />
       <Scene key="COMMON_WEB_VIEW" component={CommonWebView} />
       <Scene key="SEARCH" component={Search} direction="vertical"/>

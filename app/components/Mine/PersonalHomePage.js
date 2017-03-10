@@ -21,7 +21,7 @@ import {normalizeH, normalizeW} from '../../util/Responsive'
 import Icon from 'react-native-vector-icons/Ionicons'
 import THEME from '../../constants/theme'
 import * as authSelector from '../../selector/authSelector'
-import {getUserInfoById}from '../../action/authActions'
+import {getUserInfoById, followUser, unFollowUser}from '../../action/authActions'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -92,6 +92,18 @@ class PersonalHomePage extends Component {
     }
   }
 
+  onFollow() {
+    if(this.props.isFollow) {
+      this.props.unFollowUser({
+        userId: this.props.userId,
+      })
+    } else {
+      this.props.followUser({
+        userId: this.props.userId,
+      })
+    }
+  }
+
   render() {
     return(
       <View style={styles.container}>
@@ -128,10 +140,10 @@ class PersonalHomePage extends Component {
                 <Text style={styles.tripText}>粉丝</Text>
               </View>
               <View style={{flex: 1, alignItems: 'flex-end'}}>
-                <TouchableOpacity style={{marginRight: normalizeW(40)}}>
+                <TouchableOpacity style={{marginRight: normalizeW(40)}} onPress={() =>{this.onFollow()}}>
                   <Image
                     style={{width:50, height: 48}}
-                    source={require('../../assets/images/add_follow.png')}
+                    source={this.props.isFollow?require('../../assets/images/add_follow.png'): require('../../assets/images/followed.png')}
                   />
                 </TouchableOpacity>
               </View>
@@ -183,16 +195,19 @@ const mapStateToProps = (state, ownProps) => {
   const isLogin = authSelector.isUserLogined(state)
   const userInfo = authSelector.userInfoById(state, ownProps.userId)
 
+  let isFollow = authSelector.isUserFollowed(state, ownProps.userId)
   return {
     currentUser: currentUser,
     isLogin: isLogin,
+    isFollow: isFollow,
     userInfo: userInfo,
-
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   getUserInfoById,
+  followUser,
+  unFollowUser,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonalHomePage)

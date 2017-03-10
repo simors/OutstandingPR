@@ -51,7 +51,7 @@ class Mine extends Component {
             source={require('../../assets/images/PinLeft_gray.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item} onPress={() => Actions.FOCUS()}>
+        <TouchableOpacity style={styles.item} onPress={() => Actions.FOLLOW()}>
           <View style={{flex: 1, marginLeft: normalizeW(20)}}>
             <Text style={styles.itemText}>我的关注</Text>
           </View>

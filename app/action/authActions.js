@@ -2,7 +2,7 @@ import {createAction} from 'redux-actions'
 import * as AuthTypes from '../constants/authActionTypes'
 import * as uiTypes from '../constants/uiActionTypes'
 import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '../selector/inputFormSelector'
-import {initMessageClient} from '../action/messageAction'
+import {initMessageClient, notifyUserFollow} from '../action/messageAction'
 import * as lcAuth from '../api/leancloud/auth'
 import {UserInfo} from '../models/userModels'
 
@@ -266,6 +266,57 @@ export function switchUserCity(payload) {
       dispatch(switchUserCityAction(payload))
       if(payload.success)
         payload.success()
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+export function followUser(payload) {
+  return (dispatch, getState) => {
+    lcAuth.followUser(payload).then((result) => {
+      if (result && '10003' == result.code) {
+
+        let addUserFolloweeAction = createAction(AuthTypes.ADD_USER_FOLLOWEE_SUCCESS)
+        dispatch(addUserFolloweeAction({userId: payload.userId, userInfo: result.userInfo}))
+        let params = {
+          toPeers: payload.userId
+        }
+        dispatch(notifyUserFollow(params))
+        if (payload.success) {
+          payload.success(result)
+        }
+      } else {
+        if (payload.error) {
+          payload.error(result)
+        }
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
+
+export function unFollowUser(payload) {
+  return (dispatch, getState) => {
+    lcAuth.unFollowUser(payload).then((result) => {
+      if (result && '10005' == result.code) {
+        let delUserFolloweeAction = createAction(AuthTypes.DEL_USER_FOLLOWEE_SUCCESS)
+        dispatch(delUserFolloweeAction({userId: payload.userId}))
+
+        if (payload.success) {
+          payload.success(result)
+        }
+      } else {
+        if (payload.error) {
+          payload.error(result)
+        }
+      }
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)

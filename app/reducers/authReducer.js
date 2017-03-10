@@ -34,6 +34,10 @@ export default function authReducer(state = initialState, action) {
       return handleAddHealthProfile(state, action)
     case AuthTypes.SWITCH_USER_CITY:
       return handleSwitchUserCity(state, action)
+    case AuthTypes.ADD_USER_FOLLOWEE_SUCCESS:
+      return handleAddUserFollowee(state, action)
+    case AuthTypes.DEL_USER_FOLLOWEE_SUCCESS:
+      return handleDelUserFollowee(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -123,6 +127,26 @@ function handleSwitchUserCity(state, action) {
   return state
 }
 
+function handleAddUserFollowee(state, action) {
+  let userId = action.payload.userId
+  let userInfo = action.payload.userInfo
+  let followeesMap = state.get('followees')
+  if(followeesMap && !followeesMap.has(userId)) {
+    state = state.setIn(['followees', userId], userInfo)
+  }
+  return state
+}
+
+function handleDelUserFollowee(state, action) {
+  let userId = action.payload.userId
+  let followeesMap = state.get('followees')
+  if(followeesMap && followeesMap.has(userId)) {
+    followeesMap = followeesMap.delete(userId)
+    state = state.set('followees', followeesMap)
+  }
+  return state
+}
+
 function onRehydrate(state, action) {
   var incoming = action.payload.AUTH
   console.log("onRehydrate incoming", incoming)
@@ -156,6 +180,19 @@ function onRehydrate(state, action) {
     } catch (e) {
       healthProfiles.clear()
     }
+
+    const followeesMap = Map(incoming.followees)
+    try {
+      for (let [userId, userInfo] of followeesMap) {
+        if (userId && userInfo) {
+          const userInfoRecord = new UserInfo({...userInfo})
+          state = state.setIn(['followees', userId], userInfoRecord)
+        }
+      }
+    } catch (e) {
+      followeesMap.clear()
+    }
+
   }
   return state
 }
