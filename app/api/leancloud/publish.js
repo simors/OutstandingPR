@@ -316,9 +316,7 @@ export function updatePublishStatus(payload) {
   publish.set('status', status)
 
   return publish.save().then(function (result) {
-    let newPublish = result
-    newPublish.attributes.user = AV.User.current()
-    return Publish.fromLeancloudObject(newPublish)
+    return true
   }, function (error) {
     error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
     throw error
@@ -337,7 +335,64 @@ export function updateRefreshTime(payload) {
     // let newPublish = result
     // newPublish.attributes.user = AV.User.current()
     // return Publish.fromLeancloudObject(newPublish)
-    return
+    return true
+  }, function (error) {
+    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    throw error
+  })
+}
+
+export function favoritePublish(payload) {
+  let publishId = payload.publishId
+  let publish = AV.Object.createWithoutData('Publishes', publishId)
+
+  let own = AV.User.current()
+  let relation = own.relation('favorites')
+  let query = relation.query()
+
+  return query.find().then((favorites) => {
+    if(favorites.includes(publish)){
+      console.log("已经关注！")
+      return undefined
+    }
+    relation.add(publish)
+    return own.save().then((result) => {
+      return publish.fetch({include: ['user']}).then((record) =>{
+        return {publish: Publish.fromLeancloudObject(record)}
+      }, function (error) {
+        error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+        throw error
+      })
+    }, function (error) {
+      error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+      throw error
+    })
+  }, function (error) {
+    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    throw error
+  })
+
+}
+
+
+export function UnFavoritePublish(payload) {
+  let publishId = payload.publishId
+  let publish = AV.Object.createWithoutData('Publishes', publishId)
+
+  let own = AV.User.current()
+  let relation = own.relation('favorites')
+  let query = relation.query()
+
+  return query.find().then(favorites => {
+    if(favorites.includes(publish)) {
+      relation.remove(publish)
+      return own.save().then((result) => {
+        return true
+      }, function (error) {
+        error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+        throw error
+      })
+    }
   }, function (error) {
     error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
     throw error

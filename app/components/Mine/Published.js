@@ -17,14 +17,12 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
-import CommonButton from '../common/CommonButton'
 import {normalizeH, normalizeW} from '../../util/Responsive'
-import {getIPublushes, getIPublishedServices, getIPublishedHelp} from '../../selector/publishSelector'
+import {getIPublishedServices, getIPublishedHelp} from '../../selector/publishSelector'
 import {fetchPublishesByUserId, updatePublishStatus, updatePublishRefreshTime} from '../../action/publishAction'
 import {activeUserId} from '../../selector/authSelector'
 import THEME from '../../constants/theme'
 import {getCreatedDay, getCreateMonth} from '../../util/dateUtils'
-import CommonListView from '../common/CommonListView'
 import Popup from 'react-native-popup'
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -126,6 +124,14 @@ class Published extends Component {
     }
   }
 
+  submitSuccessCallback(userInfos) {
+    Toast.show('成功关闭!')
+  }
+
+  submitErrorCallback(error) {
+    Toast.show(error.message)
+  }
+
   onClosePublish(status, publishId) {
     if(status) {
       this.popup.confirm({
@@ -140,7 +146,8 @@ class Published extends Component {
             this.props.updatePublishStatus({
               publishId: publishId,
               status: 0,
-
+              success: this.submitSuccessCallback,
+              error: this.submitErrorCallback,
             })
           },
         },
@@ -157,7 +164,7 @@ class Published extends Component {
 
   onRefreshPublish(publishId, lastRefreshAt) {
     let nowTime = new Date()
-    if((nowTime - lastRefreshAt) >= 5*60) {
+    if((nowTime - lastRefreshAt) >= 5*60*1000) {
       this.props.updatePublishRefreshTime({
         publishId: publishId,
         refreshTime: nowTime,
@@ -165,9 +172,9 @@ class Published extends Component {
     }
   }
 
-  getRefreshButtonStyle(lastRefreshAt){
+  getRefreshButtonStyle(lastRefreshAt) {
     let nowTime = new Date()
-    if((nowTime - lastRefreshAt) >= 5*60) {
+    if((nowTime - lastRefreshAt) >= 5*60*1000) {
       return styles.refresh
     }
     return styles.unRefresh

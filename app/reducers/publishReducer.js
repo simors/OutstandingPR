@@ -28,6 +28,10 @@ export default function publishReducer(state = initialState, action) {
       return handleUpdatePublishStatus(state, action)
     case PublishActionTypes.UPDATE_PUBLISH_REFRESHTIME:
       return handleUpdatePublishRefreshTime(state, action)
+    case PublishActionTypes.FAVORITE_PUBLISH:
+      return handleAddFavoritePublish(state, action)
+    case PublishActionTypes.UNFAVORITE_PUBLISH:
+      return handleDelFavoritePublish(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -115,7 +119,7 @@ function handleUpdateCommentCnt(state, action) {
         return true
       return false
     })
-    if(key){
+    if(key != undefined){
       state = state.updateIn(['lastServices', key, 'commentCnt'], val => val +1)
       return state
     }
@@ -128,7 +132,7 @@ function handleUpdateCommentCnt(state, action) {
         return true
       return false
     })
-    if(key){
+    if(key != undefined){
       state = state.updateIn(['lastHelp', key, 'commentCnt'], val => val +1)
       return state
     }
@@ -141,7 +145,7 @@ function handleUpdateCommentCnt(state, action) {
         return true
       return false
     })
-    if(key){
+    if(key != undefined){
       state = state.updateIn(['iPublishes', key, 'commentCnt'], val => val +1)
       return state
     }
@@ -158,15 +162,8 @@ function handleUpdatePublishComments(state, action) {
   return state
 }
 
-function onRehydrate(state, action) {
-  var incoming = action.payload.PUBLISH
-  if (incoming) {
-    // state = state.set('iPublishes', List(incoming.iPublishes))
-  }
-  return state
-}
-
 function handleUpdatePublishStatus(state, action) {
+  console.log("handleUpdatePublishStatus", action.payload)
   let payload = action.payload
   let iPublish = state.get('iPublishes')
   if(iPublish) {
@@ -175,7 +172,8 @@ function handleUpdatePublishStatus(state, action) {
         return true
       return false
     })
-    if(key){
+    console.log("key", key)
+    if(key != undefined){
       state = state.updateIn(['iPublishes', key, 'status'], val => payload.status)
       return state
     }
@@ -197,6 +195,38 @@ function handleUpdatePublishRefreshTime(state, action) {
       state = state.updateIn(['iPublishes', key, 'lastRefreshAt'], val => refreshTime)
       return state
     }
+  }
+  return state
+}
+
+function handleAddFavoritePublish(state, action) {
+  let publishId = action.payload.publishId
+  let publish = action.payload.publish
+  let isFavoriteMap = state.get('isFavorite')
+  if(!isFavoriteMap)
+    isFavoriteMap = new Map()
+  // isFavoriteMap = isFavoriteMap.push(publishId)
+  isFavoriteMap = isFavoriteMap.setIn([publishId], publish)
+  state = state.set('isFavorite', isFavoriteMap)
+
+  return state
+}
+
+function handleDelFavoritePublish(state, action) {
+  let publishId = action.payload.publishId
+  let isFavoriteMap = state.get('isFavorite')
+  if(isFavoriteMap) {
+    isFavoriteMap = isFavoriteMap.delete(publishId)
+  }
+  state = state.set('isFavorite', isFavoriteMap)
+  return state
+}
+
+
+function onRehydrate(state, action) {
+  var incoming = action.payload.PUBLISH
+  if (incoming) {
+    state = state.set('isFavorite', Map(incoming.isFavorite))
   }
   return state
 }

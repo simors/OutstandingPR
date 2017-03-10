@@ -27,9 +27,9 @@ import {activeUserId, isUserLogined, userInfoById, activeUserInfo} from '../../s
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import ToolBarContent from '../common/ToolBarContent'
-import {publishFormData, PUBLISH_FORM_SUBMIT_TYPE, fetchPublishCommentByPublishId} from '../../action/publishAction'
+import {publishFormData, PUBLISH_FORM_SUBMIT_TYPE, fetchPublishCommentByPublishId, favoritePublish, unFavoritePublish} from '../../action/publishAction'
 import {getUserInfoById} from '../../action/authActions'
-import {getPublishComments, getPublishById} from '../../selector/publishSelector'
+import {getPublishComments, getPublishById, getIsFavorite} from '../../selector/publishSelector'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 
 
@@ -121,14 +121,27 @@ class HelpShow extends Component {
     this.contentBar.setFocus()
   }
 
+  onFavorite() {
+    if(this.props.isFavorite) {
+      this.props.unFavoritePublish({
+        publishId: this.props.publishId,
+      })
+    } else {
+      this.props.favoritePublish({
+        publishId: this.props.publishId,
+
+      })
+    }
+  }
+
   renderAction() {
     if(this.props.userId != this.props.currentUser) {
       return(
         <View style={styles.action}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => {this.onFavorite()}}>
             <Image
               style={{marginLeft: normalizeW(40)}}
-              source={require('../../assets/images/favorite.png')}
+              source={this.props.isFavorite? require('../../assets/images/favorited.png'): require('../../assets/images/favorite.png')}
             />
           </TouchableOpacity>
           <TouchableOpacity style={{flex: 1}} onPress={() => this.onReply()}>
@@ -280,10 +293,11 @@ const mapStateToProps = (state, ownProps) => {
   const userInfo = userInfoById(state, ownProps.userId)
   let publishComments = getPublishComments(state, ownProps.publishId)
   let helpInfo = getPublishById(state, ownProps.publishId)
-  console.log("ownProps.publishId", ownProps.publishId)
-  console.log("helpInfo", helpInfo)
+  let isFavorite = getIsFavorite(state, ownProps.publishId)
+
   return {
     isLogin: isLogin,
+    isFavorite: isFavorite,
     currentUserInfo: currentUserInfo,
     userInfo: userInfo,
     helpInfo: helpInfo,
@@ -295,6 +309,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   publishFormData,
   getUserInfoById,
   fetchPublishCommentByPublishId,
+  favoritePublish,
+  unFavoritePublish
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(HelpShow)

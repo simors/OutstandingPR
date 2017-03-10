@@ -97,6 +97,25 @@ export function getPublishById(state, publishId) {
       return help.toJS()
     return new Publish().toJS()
   }
+}
 
+export function getIsFavorite(state, publishId) {
+  let isFavoriteMap = state.PUBLISH.get('isFavorite')
+  if(isFavoriteMap) {
+    return isFavoriteMap.has(publishId)
+  }
+  return false
+}
 
+export function getFavoritePublishes(state, type) {
+  let publish = []
+
+  let isFavoriteMap = state.PUBLISH.get('isFavorite')
+  if(isFavoriteMap) {
+    isFavoriteMap.forEach((value) => {
+      if(value.type == type)
+        publish.push(value)
+    })
+  }
+  return publish
 }

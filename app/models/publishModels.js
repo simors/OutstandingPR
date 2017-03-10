@@ -113,4 +113,5 @@ export const PublishState = Record({
   lastServices: List(),
   lastHelp: List(),
   publishComments:Map(),
+  isFavorite: Map(),
 }, 'PublishState')

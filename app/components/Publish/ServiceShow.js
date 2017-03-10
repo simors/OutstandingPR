@@ -29,8 +29,8 @@ import {getUserInfoById} from '../../action/authActions'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import ToolBarContent from '../common/ToolBarContent'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
-import {publishFormData, PUBLISH_FORM_SUBMIT_TYPE, fetchPublishCommentByPublishId} from '../../action/publishAction'
-import {getPublishComments, getPublishById} from '../../selector/publishSelector'
+import {publishFormData, PUBLISH_FORM_SUBMIT_TYPE, fetchPublishCommentByPublishId, favoritePublish, unFavoritePublish} from '../../action/publishAction'
+import {getPublishComments, getPublishById, getIsFavorite} from '../../selector/publishSelector'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -116,10 +116,10 @@ class ServiceShow extends Component {
     if(this.props.userId != this.props.currentUser) {
       return(
         <View style={styles.action}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => {this.onFavorite()}}>
             <Image
               style={{marginLeft: normalizeW(40)}}
-              source={require('../../assets/images/favorite.png')}
+              source={this.props.isFavorite? require('../../assets/images/favorited.png'): require('../../assets/images/favorite.png')}
             />
           </TouchableOpacity>
           <TouchableOpacity style={{flex: 1}} onPress={() => this.onReply()}>
@@ -145,6 +145,19 @@ class ServiceShow extends Component {
 
   onReply = () => {
     this.contentBar.setFocus()
+  }
+
+  onFavorite() {
+    if(this.props.isFavorite) {
+      this.props.unFavoritePublish({
+        publishId: this.props.publishId,
+      })
+    } else {
+      this.props.favoritePublish({
+        publishId: this.props.publishId,
+
+      })
+    }
   }
 
   submitSuccessCallback() {
@@ -274,10 +287,11 @@ const mapStateToProps = (state, ownProps) => {
   let userInfo = userInfoById(state, ownProps.userId)
   let publishComments = getPublishComments(state, ownProps.publishId)
   let serviceInfo = getPublishById(state, ownProps.publishId)
-  console.log("serviceInfo:", serviceInfo)
+  let isFavorite = getIsFavorite(state, ownProps.publishId)
 
   return {
     isLogin: isLogin,
+    isFavorite: isFavorite,
     currentUser: currentUser,
     currentUserInfo: currentUserInfo,
     userInfo: userInfo,
@@ -289,7 +303,9 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   getUserInfoById,
   publishFormData,
-  fetchPublishCommentByPublishId
+  fetchPublishCommentByPublishId,
+  favoritePublish,
+  unFavoritePublish
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ServiceShow)

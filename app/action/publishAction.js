@@ -218,7 +218,6 @@ export function fetchPublishCommentByPublishId(payload) {
 export function updatePublishStatus(payload) {
   return (dispatch, getState) => {
     lcPublish.updatePublishStatus(payload).then((result) => {
-      console.log("lcPublish.updatePublishStatus ", result)
       let updatePublishStatusAction = createAction(publishActionTypes.UPDATE_PUBLISH_STATUS)
       dispatch(updatePublishStatusAction({status: payload.status, publishId: payload.publishId}))
     }).catch((error) => {
@@ -242,3 +241,32 @@ export function updatePublishRefreshTime(payload) {
   }
 
 }
+
+export function favoritePublish(payload) {
+  return (dispatch, getState) => {
+    lcPublish.favoritePublish(payload).then((result) => {
+      console.log("lcPublish.favoritePublish ", result)
+      let favoritePublishAction = createAction(publishActionTypes.FAVORITE_PUBLISH)
+      dispatch(favoritePublishAction({publishId: payload.publishId, publish: result.publish}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+
+  }
+}
+
+export function unFavoritePublish(payload) {
+  return (dispatch, getState) => {
+    lcPublish.UnFavoritePublish(payload).then((result) => {
+      let unFavoritePublishAction = createAction(publishActionTypes.UNFAVORITE_PUBLISH)
+      dispatch(unFavoritePublishAction({publishId: payload.publishId}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
