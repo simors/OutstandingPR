@@ -29,8 +29,6 @@ import RegionPicker from '../common/Input/RegionPicker'
 import {inputFormOnDestroy} from '../../action/inputFormActions'
 
 
-
-
 const PAGE_WIDTH=Dimensions.get('window').width
 
 let profileForm = Symbol('profileForm')
@@ -125,6 +123,10 @@ class EditProfile extends Component {
     })
   }
 
+  validInput = (data) => {
+    return {isVal: true, errMsg: '验证通过'}
+  }
+
   render() {
     return (
       <View style={styles.container} >
@@ -163,6 +165,7 @@ class EditProfile extends Component {
                                  maxLength={8}
                                  containerStyle={styles.inputContainerStyle}
                                  inputStyle={styles.inputStyle}
+                                 validInput={this.validInput}
                                  placeholder="输入你在非凡的昵称"/>
               </View>
             </TouchableOpacity>
@@ -174,6 +177,7 @@ class EditProfile extends Component {
                                  maxLength={8}
                                  containerStyle={styles.inputContainerStyle}
                                  inputStyle={styles.inputStyle}
+                                 validInput={this.validInput}
                                  placeholder="真实姓名"/>
               </View>
             </TouchableOpacity>
@@ -213,6 +217,7 @@ class EditProfile extends Component {
                                  maxLength={16}
                                  containerStyle={styles.inputContainerStyle}
                                  inputStyle={styles.inputStyle}
+                                 validInput={this.validInput}
                                  placeholder="输入信息，更非凡"/>
               </View>
             </TouchableOpacity>
@@ -224,6 +229,7 @@ class EditProfile extends Component {
                                  maxLength={16}
                                  containerStyle={styles.inputContainerStyle}
                                  inputStyle={styles.inputStyle}
+                                 validInput={this.validInput}
                                  placeholder="输入信息，更非凡"/>
               </View>
             </TouchableOpacity>
@@ -235,6 +241,7 @@ class EditProfile extends Component {
                                  maxLength={16}
                                  containerStyle={styles.inputContainerStyle}
                                  inputStyle={styles.inputStyle}
+                                 validInput={this.validInput}
                                  placeholder="输入信息，更非凡"/>
               </View>
             </TouchableOpacity>

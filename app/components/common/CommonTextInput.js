@@ -33,7 +33,7 @@ class CommonTextInput extends Component {
       stateKey: this.props.stateKey,
       type: this.props.type,
       initValue: {text: this.props.initValue},
-      checkValid: this.validInput
+      checkValid: this.props.validInput || this.validInput,
     }
     this.props.initInputForm(formInfo)
 
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: normalizeW(10),
     paddingRight: normalizeW(10),
-    backgroundColor: '#F3F3F3',
+    // backgroundColor: '#F3F3F3',
     borderWidth: normalizeBorder(),
     borderColor: '#E9E9E9',
     fontSize: em(16),
