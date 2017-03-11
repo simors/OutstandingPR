@@ -40,6 +40,7 @@ export const LocationRecord = Record({
 export const Config = Record({
   banners: Map(),
   location: undefined,
+  selectCity: undefined,
 }, 'Config')
 
 

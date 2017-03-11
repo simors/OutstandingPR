@@ -356,22 +356,6 @@ export function fetchUserFollowees() {
   })
 }
 
-export function switchUserCity(payload) {
-  var userInfo = AV.Object.createWithoutData('_User', payload.userId);
-
-  userInfo.set('city', payload.city)
-
-  return userInfo.save().then((result)=>{
-    let userInfo = UserInfo.fromLeancloudObject(result)
-    return {
-      userInfo: userInfo,
-    }
-  }, function (err) {
-    err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-    throw err
-  })
-}
-
 export function userIsFollowedTheUser(payload) {
   let userId = payload.userId
 

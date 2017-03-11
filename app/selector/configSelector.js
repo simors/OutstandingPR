@@ -82,3 +82,10 @@ export function selectShopCategories(state, num) {
   }
   return undefined
 }
+
+export function getSelectCity(state) {
+  let selectCity = state.CONFIG.selectCity
+  if(selectCity)
+    return selectCity
+  return undefined
+}

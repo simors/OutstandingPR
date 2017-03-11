@@ -20,7 +20,7 @@ import {Actions, Scene, Switch, ActionConst, Modal} from 'react-native-router-fl
 
 import CommonBanner from '../common/CommonBanner'
 import {fetchBanner} from '../../action/configAction'
-import {getBanner} from '../../selector/configSelector'
+import {getBanner, getSelectCity} from '../../selector/configSelector'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import THEME from '../../constants/theme'
 import ImageGroupViewer from '../../components/common/ImageGroupViewer'
@@ -289,7 +289,8 @@ class Home extends Component {
 const mapStateToProps = (state, ownProps) => {
   let currentUser = activeUserId(state)
   let currentUserInfo = activeUserInfo(state)
-  let city = currentUserInfo.city || '长沙'
+  let city = getSelectCity(state) || '长沙'
+  console.log("getSelectCity:", getSelectCity(state))
   const banner = getBanner(state, 0)
   let lastService = getLastServices(state)
   let lastHelp = getLastHelp(state)

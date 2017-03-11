@@ -257,23 +257,6 @@ export function fetchUsers(payload) {
   }
 }
 
-export function switchUserCity(payload) {
-  console.log("switchUserCity", payload)
-  return (dispatch, getState) => {
-    lcAuth.switchUserCity(payload).then((user) => {
-      console.log("lcAuth.switchUserCity", user)
-      let switchUserCityAction = createAction(AuthTypes.SWITCH_USER_CITY)
-      dispatch(switchUserCityAction(payload))
-      if(payload.success)
-        payload.success()
-    }).catch((error) => {
-      if (payload.error) {
-        payload.error(error)
-      }
-    })
-  }
-}
-
 export function followUser(payload) {
   return (dispatch, getState) => {
     lcAuth.followUser(payload).then((result) => {

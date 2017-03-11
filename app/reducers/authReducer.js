@@ -32,8 +32,6 @@ export default function authReducer(state = initialState, action) {
       return handleFetchUserFavoriteArticleSuccess(state,action)
     case AuthTypes.ADD_HEALTH_PROFILE:
       return handleAddHealthProfile(state, action)
-    case AuthTypes.SWITCH_USER_CITY:
-      return handleSwitchUserCity(state, action)
     case AuthTypes.ADD_USER_FOLLOWEE_SUCCESS:
       return handleAddUserFollowee(state, action)
     case AuthTypes.DEL_USER_FOLLOWEE_SUCCESS:
@@ -116,15 +114,6 @@ function handleAddHealthProfile(state, action) {
   state = state.setIn(['healthProfiles', healthProfile.get('id')], healthProfile)
   return state
 
-}
-
-function handleSwitchUserCity(state, action) {
-  console.log("handleSwitchUserCity payload", action.payload)
-  let userId = action.payload.userId
-  let city = action.payload.city
-
-  state = state.updateIn(['profiles', userId, 'city'], val => city)
-  return state
 }
 
 function handleAddUserFollowee(state, action) {

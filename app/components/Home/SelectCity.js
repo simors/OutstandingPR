@@ -18,12 +18,12 @@ import {Actions} from 'react-native-router-flux'
 import Symbol from 'es6-symbol'
 import Header from '../common/Header'
 import {normalizeH, normalizeW} from '../../util/Responsive'
-import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE, switchUserCity} from '../../action/authActions'
+import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import {activeUserId} from '../../selector/authSelector'
-import AV from 'leancloud-storage'
 import Icon from 'react-native-vector-icons/Ionicons'
-import {Geolocation} from '../common/BaiduMap'
 import * as Toast from '../common/Toast'
+import {getCurrentLocation} from '../../action/locAction'
+import {getCity} from '../../selector/locSelector'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -31,53 +31,16 @@ const PAGE_WIDTH=Dimensions.get('window').width
 class SelectCity extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      city: '长沙',
-    }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
-      this.getLocatedCity()
+      this.props.getCurrentLocation()
     })
-  }
-
-  componentWillUnmount() {
-  }
-
-  getLocatedCity() {
-    return AV.GeoPoint.current().then((geoPoint) =>{
-      if(geoPoint) {
-        return Geolocation.reverseGeoCode(geoPoint.latitude, geoPoint.longitude).then((position) => {
-          if(position){
-            this.setState({
-              city: position.city,
-            })
-          }
-        }, function (error) {
-          err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]
-          throw err
-        })
-      }
-    })
-  }
-
-  submitSuccessCallback() {
-    Toast.show('切换城市!')
-    Actions.pop()
-  }
-
-  submitErrorCallback(error) {
-    Toast.show(error.message)
   }
 
   onSwitchCity(city) {
-    this.props.switchUserCity({
-      userId: this.props.currentUser,
-      city: city,
-      success: this.submitSuccessCallback,
-      error: this.submitErrorCallback,
-    })
+
   }
 
   render() {
@@ -92,11 +55,11 @@ class SelectCity extends Component {
         <View style={styles.body}>
           <View style={{marginTop: normalizeH(15)}}>
             <Text style={{fontSize: 15}}>定位城市</Text>
-            <TouchableOpacity style={styles.locatedCity} onPress={() => {this.onSwitchCity(this.state.city)}}>
+            <TouchableOpacity style={styles.locatedCity} onPress={() => {this.onSwitchCity()}}>
               <Icon
                 name={'ios-locate'}
                 style={{fontSize: 24, color: '#FF9D4E'}}/>
-              <Text style={{fontSize: 15, marginLeft: normalizeW(15)}}>{this.state.city}</Text>
+              <Text style={{fontSize: 15, marginLeft: normalizeW(15)}}>{this.props.locatedCity}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -107,14 +70,15 @@ class SelectCity extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   let currentUser = activeUserId(state)
-
+  let locatedCity = getCity(state)
   return {
     currentUser: currentUser,
+    locatedCity: locatedCity,
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-  switchUserCity,
+  getCurrentLocation
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(SelectCity)
@@ -144,7 +108,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
     width: normalizeW(120),
-    height: normalizeH(40)
+    height: normalizeH(40),
+    paddingLeft: normalizeW(5)
   }
 
 })
