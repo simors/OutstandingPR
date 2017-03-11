@@ -19,6 +19,7 @@ import CommonButton from '../common/CommonButton'
 import {normalizeW, normalizeH} from '../../util/Responsive'
 import {persistor} from '../../store/persistStore'
 import * as Toast from '../../components/common/Toast'
+import {activeUserInfo} from '../../selector/authSelector'
 
 
 class Setting extends Component {
@@ -61,7 +62,7 @@ class Setting extends Component {
               <Text style={styles.itemText}>手机号码</Text>
             </View>
             <View style={{flex: 1, alignItems: 'flex-end',marginRight: normalizeW(12)}}>
-              <Text style={styles.itemText}>138 8888 8888</Text>
+              <Text style={styles.itemText}>{this.props.userInfo.phone}</Text>
             </View>
             <Image
               style={{marginRight: normalizeW(20)}}
@@ -121,7 +122,10 @@ class Setting extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  let userInfo = activeUserInfo(state)
+
   return {
+    userInfo: userInfo,
   }
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({

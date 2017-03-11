@@ -331,9 +331,16 @@ const styles = StyleSheet.create({
     }),
   },
   header: {
-    paddingTop: normalizeH(20),
+    ...Platform.select({
+      ios: {
+        paddingTop: normalizeH(20),
+        height: normalizeH(64)
+      },
+      android: {
+        height: normalizeH(44)
+      }
+    }),
     flexDirection: 'row',
-    height: normalizeH(65),
     width: PAGE_WIDTH,
     alignItems: 'center',
     backgroundColor: '#F5F5F5'

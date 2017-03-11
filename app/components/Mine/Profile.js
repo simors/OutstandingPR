@@ -45,45 +45,37 @@ class Profile extends Component {
             />
             <Text style={styles.name}>{this.props.userInfo.nickname? this.props.userInfo.nickname: '非凡的昵称'}</Text>
           </View>
-          <TouchableOpacity style={styles.item}>
+          <View style={styles.item}>
             <View style={styles.subItem}>
               <Text style={styles.itemText}>所在城市</Text>
               <Text style={[styles.itemText, {marginLeft: normalizeW(20)}]}>{this.props.userInfo.city}</Text>
             </View>
-            <Image
-              style={{marginRight: normalizeW(20)}}
-              source={require('../../assets/images/PinLeft_gray.png')}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
+          </View>
+          <View style={styles.item}>
             <View style={styles.subItem}>
               <Text style={styles.itemText}>出身年月</Text>
               <Text style={[styles.itemText, {marginLeft: normalizeW(20)}]}>{this.props.userInfo.birthday}</Text>
             </View>
-            <Image
-              style={{marginRight: normalizeW(20)}}
-              source={require('../../assets/images/PinLeft_gray.png')}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
+          </View>
+          <View style={styles.item}>
             <View style={styles.subItem}>
               <Text style={styles.itemText}>任职机构</Text>
               <Text style={[styles.itemText, {marginLeft: normalizeW(20)}]}>{this.props.userInfo.organization}</Text>
             </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
+          </View>
+          <View style={styles.item}>
             <View style={styles.subItem}>
               <Text style={styles.itemText}>职       位</Text>
               <Text style={[styles.itemText, {marginLeft: normalizeW(20)}]}>{this.props.userInfo.profession}</Text>
 
             </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
+          </View>
+          <View style={styles.item}>
             <View style={styles.subItem}>
               <Text style={styles.itemText}>所在行业</Text>
               <Text style={[styles.itemText, {marginLeft: normalizeW(20)}]}>{this.props.userInfo.industry}</Text>
             </View>
-          </TouchableOpacity>
+          </View>
 
         </View>
       </View>
