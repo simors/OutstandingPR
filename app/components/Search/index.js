@@ -169,6 +169,7 @@ class Search extends Component {
                              maxLength={8}
                              containerStyle={{flex: 1, height: normalizeH(30),paddingLeft: 0, paddingRight: 0, }}
                              inputStyle={{marginLeft: normalizeW(16), height: normalizeH(30),fontSize: 15, color: '#5A5A5A'}}
+                             clearBtnStyle={{top: normalizeH(3)}}
             />
           </View>
           <TouchableOpacity style={styles.searchButton} onPress={() =>{this.onSearchBtnClicked()}}>

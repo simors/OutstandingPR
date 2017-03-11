@@ -189,6 +189,7 @@ class PrService extends Component {
                              inputStyle={styles.titleInputStyle}
                              placeholder="输入标题"
                              initValue="就读雅丽中学"
+                             clearBtnStyle={{top: normalizeH(10)}}
                              onFocus={this.onFocusLost}/>
           </View>
           <View style={styles.price}>
