@@ -23,14 +23,15 @@ import {normalizeH, normalizeW} from '../../util/Responsive'
 import THEME from '../../constants/theme'
 import ArticleViewer from '../../components/common/ArticleViewer'
 import * as Toast from '../common/Toast'
-import {activeUserId, isUserLogined, userInfoById, activeUserInfo} from '../../selector/authSelector'
+import {activeUserId, isUserLogined, userInfoById, activeUserInfo, isUserFollowed} from '../../selector/authSelector'
 import {PERSONAL_CONVERSATION} from '../../constants/messageActionTypes'
-import {getUserInfoById} from '../../action/authActions'
+import {getUserInfoById, followUser, unFollowUser} from '../../action/authActions'
 import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import ToolBarContent from '../common/ToolBarContent'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
 import {publishFormData, PUBLISH_FORM_SUBMIT_TYPE, fetchPublishCommentByPublishId, favoritePublish, unFavoritePublish} from '../../action/publishAction'
 import {getPublishComments, getPublishById, getIsFavorite} from '../../selector/publishSelector'
+
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -66,6 +67,18 @@ class ServiceShow extends Component {
     }
   }
 
+  onFollow() {
+    if(this.props.isFollow) {
+      this.props.unFollowUser({
+        userId: this.props.userId,
+      })
+    } else {
+      this.props.followUser({
+        userId: this.props.userId,
+      })
+    }
+  }
+
   renderPersonalInfo() {
     if(this.props.userId != this.props.currentUser) {
       return(
@@ -83,8 +96,10 @@ class ServiceShow extends Component {
             </View>
             <Text style={{marginTop: normalizeH(10), fontSize: 12, color: '#AAAAAA'}}>30分钟前来过</Text>
           </View>
-          <TouchableOpacity style={{marginRight: normalizeW(20)}}>
-            <Image source={require('../../assets/images/add_follow.png')}/>
+          <TouchableOpacity style={{marginRight: normalizeW(20)}} onPress={() =>{this.onFollow()}}>
+            <Image
+              source={this.props.isFollow?require('../../assets/images/add_follow.png'): require('../../assets/images/followed.png')}
+            />
           </TouchableOpacity>
         </View>
       )
@@ -288,10 +303,13 @@ const mapStateToProps = (state, ownProps) => {
   let publishComments = getPublishComments(state, ownProps.publishId)
   let serviceInfo = getPublishById(state, ownProps.publishId)
   let isFavorite = getIsFavorite(state, ownProps.publishId)
+  let isFollow = isUserFollowed(state, ownProps.userId)
+
 
   return {
     isLogin: isLogin,
     isFavorite: isFavorite,
+    isFollow: isFollow,
     currentUser: currentUser,
     currentUserInfo: currentUserInfo,
     userInfo: userInfo,
@@ -305,7 +323,9 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   publishFormData,
   fetchPublishCommentByPublishId,
   favoritePublish,
-  unFavoritePublish
+  unFavoritePublish,
+  followUser,
+  unFollowUser
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(ServiceShow)

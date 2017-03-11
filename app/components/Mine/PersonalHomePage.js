@@ -142,7 +142,6 @@ class PersonalHomePage extends Component {
               <View style={{flex: 1, alignItems: 'flex-end'}}>
                 <TouchableOpacity style={{marginRight: normalizeW(40)}} onPress={() =>{this.onFollow()}}>
                   <Image
-                    style={{width:50, height: 48}}
                     source={this.props.isFollow?require('../../assets/images/add_follow.png'): require('../../assets/images/followed.png')}
                   />
                 </TouchableOpacity>
