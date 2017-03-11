@@ -16,10 +16,10 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import Header from '../common/Header'
 import CommonButton from '../common/CommonButton'
-import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
+import {normalizeW, normalizeH} from '../../util/Responsive'
 import {persistor} from '../../store/persistStore'
-// import RNRestart from 'react-native-restart'
 import * as Toast from '../../components/common/Toast'
+
 
 class Setting extends Component {
   constructor(props) {
@@ -27,17 +27,6 @@ class Setting extends Component {
   }
 
   clearApplication() {
-    // persistor.purge()
-    // Toast.show('清除成功')
-    // setTimeout(() => {
-    //   Actions.HOME_INDEX()
-    //   if (Platform.OS == 'ios') {
-    //     reactInvokeMethod.reload()
-    //   } else {
-    //     RNRestart.Restart()
-    //   }
-    // }, 2000)
-
     Actions.POPUP({
       title: '提示',
       content: ['确认清除缓存？'],
@@ -45,13 +34,6 @@ class Setting extends Component {
         Actions.pop()
         persistor.purge()
         Toast.show('清除成功')
-        setTimeout(() => {
-          if (Platform.OS == 'ios') {
-            reactInvokeMethod.reload()
-          } else {
-            RNRestart.Restart()
-          }
-        }, 2000)
       }
     })
   }
@@ -60,7 +42,7 @@ class Setting extends Component {
     persistor.purge(['AUTH'])
     Toast.show('清除成功')
     setTimeout(() => {
-      Actions.HOME_INDEX()
+      Actions.LOGIN()
     }, 2000)
   }
 
