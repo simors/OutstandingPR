@@ -167,8 +167,8 @@ class Search extends Component {
                              placeholder="请输入关键字"
                              autoFocus= {true}
                              maxLength={8}
-                             containerStyle={{flex: 1, height: normalizeH(30), paddingLeft: 0, paddingRight: 0, }}
-                             inputStyle={{marginLeft: normalizeW(16), fontSize: 15, color: '#5A5A5A'}}
+                             containerStyle={{flex: 1, height: normalizeH(30),paddingLeft: 0, paddingRight: 0, }}
+                             inputStyle={{marginLeft: normalizeW(16), height: normalizeH(30),fontSize: 15, color: '#5A5A5A'}}
             />
           </View>
           <TouchableOpacity style={styles.searchButton} onPress={() =>{this.onSearchBtnClicked()}}>

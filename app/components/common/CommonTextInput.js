@@ -173,6 +173,7 @@ const styles = StyleSheet.create({
   },
   defaultInputStyle: {
     flex: 1,
+    padding: 0,
     paddingLeft: normalizeW(10),
     paddingRight: normalizeW(10),
     // backgroundColor: '#F3F3F3',
