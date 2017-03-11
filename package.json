@@ -23,6 +23,7 @@
     "react-native-button": "^1.8.2",
     "react-native-communications": "^2.2.1",
     "react-native-datepicker": "^1.4.4",
+    "react-native-device-info": "^0.10.1",
     "react-native-dismiss-keyboard": "^1.0.0",
     "react-native-elements": "^0.9.6",
     "react-native-gallery": "0.0.17",

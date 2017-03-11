@@ -30,6 +30,7 @@ import MessageBell from '../common/MessageBell'
 import {activeUserId, activeUserInfo} from '../../selector/authSelector'
 import CommonListView from '../common/CommonListView'
 import Toast from '../common/Toast'
+import {getCurrentLocation} from '../../action/locAction'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -54,6 +55,7 @@ class Home extends Component {
       this.props.fetchBanner({type: 0})
       // this.props.fetchPublishes({isRefresh: true, type: 'service'})
       this.props.fetchPublishes({isRefresh: true, type: 'help'})
+      this.props.getCurrentLocation()
     })
   }
 
@@ -315,7 +317,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchBanner,
-  fetchPublishes
+  fetchPublishes,
+  getCurrentLocation
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

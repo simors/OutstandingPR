@@ -1,7 +1,7 @@
 import {Map, List} from 'immutable'
 import {REHYDRATE} from 'redux-persist/constants'
 import * as ConfigActionTypes from '../constants/configActionTypes'
-import {Config} from '../models/ConfigModels'
+import {Config, LocationRecord} from '../models/ConfigModels'
 
 const initialState = Config()
 
@@ -9,6 +9,8 @@ export default function configReducer(state = initialState, action) {
   switch (action.type) {
     case ConfigActionTypes.UPDATE_CONFIG_BANNERS:
       return handleUpdateConfigBanners(state, action)
+    case ConfigActionTypes.UPDATE_GEO_LOCATION:
+      return handleUpdateGeolocation(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -25,9 +27,42 @@ function handleUpdateConfigBanners(state, action) {
   return state
 }
 
+function handleUpdateGeolocation(state, action) {
+  let position = action.payload.position
+  let location = new LocationRecord({
+    latitude: position.latitude,
+    longitude: position.longitude,
+    address: position.address,
+    country: position.country,
+    province: position.province,
+    city: position.city,
+    district: position.district,
+    street: position.street,
+    streetNumber: position.streetNumber,
+  })
+  state = state.set('location', location)
+  return state
+}
+
 function onRehydrate(state, action) {
   var incoming = action.payload.CONFIG
   if (!incoming) return state
+
+  let position = incoming.location
+  if (position) {
+    let location = new LocationRecord({
+      latitude: position.latitude,
+      longitude: position.longitude,
+      address: position.address,
+      country: position.country,
+      province: position.province,
+      city: position.city,
+      district: position.district,
+      street: position.street,
+      streetNumber: position.streetNumber,
+    })
+    state = state.set('location', location)
+  }
 
   return state
 }

@@ -25,8 +25,21 @@ export class BannerItem extends BannerItemConfig {
   }
 }
 
+export const LocationRecord = Record({
+  latitude: undefined,
+  longitude: undefined,
+  address: undefined,
+  country: undefined,
+  province: undefined,
+  city: undefined,
+  district: undefined,
+  street: undefined,
+  streetNumber: undefined,
+}, 'LocationRecord')
+
 export const Config = Record({
   banners: Map(),
+  location: undefined,
 }, 'Config')
 
 
