@@ -25,10 +25,6 @@ export default class KeyboardAwareToolBar extends Component {
     this._isTypingDisabled = false
     this._touchStarted = false
 
-    this.state = {
-      show: true
-    }
-
     this.onTouchStart = this.onTouchStart.bind(this)
     this.onTouchMove = this.onTouchMove.bind(this)
     this.onTouchEnd = this.onTouchEnd.bind(this)
@@ -36,10 +32,6 @@ export default class KeyboardAwareToolBar extends Component {
     this.onKeyboardWillHide = this.onKeyboardWillHide.bind(this)
     this.onKeyboardDidShow = this.onKeyboardDidShow.bind(this)
     this.onKeyboardDidHide = this.onKeyboardDidHide.bind(this)
-  }
-
-  shouldComponentUpdate(newProps) {
-    return false
   }
 
   componentDidMount() {
@@ -63,9 +55,7 @@ export default class KeyboardAwareToolBar extends Component {
   }
 
   componentWillReceiveProps(nextProps = {}) {
-    this.setState({
-      show: nextProps.show
-    })
+
   }
 
   componentWillUnmount() {
@@ -150,9 +140,6 @@ export default class KeyboardAwareToolBar extends Component {
   }
 
   render() {
-    if(!this.state.show) {
-      return null
-    }
     return (
       <Animated.View style={[styles.container, {bottom: this.rePosition()}, this.props.containerStyle]}>
         {this.props.children}

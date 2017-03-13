@@ -62,7 +62,6 @@ class Suggestion extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      ArticleFocused: true,
     }
     this.insertImages = []
   }
@@ -76,22 +75,9 @@ class Suggestion extends Component {
     console.log('images list', this.insertImages)
   }
 
-  onFocusChanged = () => {
-    this.setState({
-      ArticleFocused: true,
-    })
-  }
-
-  onFocusLost = () => {
-    this.setState({
-      ArticleFocused: false
-    })
-  }
-
   renderKeyboardAwareToolBar() {
     return (
       <KeyboardAwareToolBar
-        show={this.state.ArticleFocused}
         initKeyboardHeight={-50}
       >
         <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center',alignItems: 'center',height: normalizeH(40), backgroundColor: '#F5F5F5'}}>
@@ -124,8 +110,7 @@ class Suggestion extends Component {
                              {...suggestionType}
                              containerStyle={styles.titleContainerStyle}
                              inputStyle={styles.titleInputStyle}
-                             placeholder="问题类型"
-                             onFocus={this.onFocusLost}/>
+                             placeholder="问题类型"/>
           </View>
           <TouchableOpacity style={styles.item}>
             <View style={styles.itemView}>
@@ -134,15 +119,13 @@ class Suggestion extends Component {
                                maxLength={8}
                                containerStyle={styles.inputContainerStyle}
                                inputStyle={styles.inputStyle}
-                               placeholder="手机号或邮箱（选填）"
-                               onFocus={this.onFocusLost}/>
+                               placeholder="手机号或邮箱（选填）"/>
             </View>
           </TouchableOpacity>
           <View>
             <ArticleEditor
               {...suggestionContent}
               wrapHeight={contentHeight.height}
-              onFocus={this.onFocusChanged}
               placeholder="正文"
               getImages={(images) => this.getRichTextImages(images)}
             />

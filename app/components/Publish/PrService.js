@@ -62,9 +62,9 @@ class PrService extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      ArticleFocused: true,
       shouldUploadImgComponent: false,
       onInsertImage: false,
+      publishButtonDisable: false
     }
     this.insertImages = []
     this.leanImgUrls = []
@@ -74,12 +74,13 @@ class PrService extends Component {
     this.props.inputFormOnDestroy({formKey: serviceForm})
   }
 
-  submitSuccessCallback() {
+  submitSuccessCallback =() => {
     Toast.show('发布成功')
     Actions.pop()
   }
 
-  submitErrorCallback(error) {
+  submitErrorCallback =(error) => {
+    this.setState({publishButtonDisable: false})
     Toast.show(error.message)
   }
 
@@ -100,6 +101,10 @@ class PrService extends Component {
   }
 
   onButtonPress() {
+    this.setState({
+      publishButtonDisable: true
+    })
+
     if (this.insertImages && this.insertImages.length) {
       Toast.show('开始发布...', {
         duration: 1000,
@@ -122,19 +127,6 @@ class PrService extends Component {
 
   getRichTextImages(images) {
     this.insertImages = images
-    console.log('images list', this.insertImages)
-  }
-
-  onFocusChanged = () => {
-    this.setState({
-      ArticleFocused: true,
-    })
-  }
-
-  onFocusLost = () => {
-    this.setState({
-      ArticleFocused: false
-    })
   }
 
   onInsertImage = () => {
@@ -152,7 +144,6 @@ class PrService extends Component {
   renderKeyboardAwareToolBar() {
     return (
       <KeyboardAwareToolBar
-        show={this.state.ArticleFocused}
         initKeyboardHeight={-50}
       >
         <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center',alignItems: 'center',height: normalizeH(40), backgroundColor: '#F5F5F5'}}
@@ -167,6 +158,7 @@ class PrService extends Component {
         <CommonButton title="发布"
                       buttonStyle={{width: normalizeW(64), height: normalizeH(40)}}
                       titleStyle={{fontSize: 15}}
+                      disabled={this.state.publishButtonDisable}
                       onPress={() => this.onButtonPress()}/>
       </KeyboardAwareToolBar>
     )
@@ -180,6 +172,11 @@ class PrService extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title="发布公关服务"
+          rightType="text"
+          rightText="发送"
+          rightButtonDisabled= {this.state.publishButtonDisable}
+          rightPress={() => this.onButtonPress()}
+          rightStyle= {this.state.publishButtonDisable? {color: '#AAAAAA'}: {}}
         />
         <View style={styles.body}>
           <View>
@@ -189,8 +186,7 @@ class PrService extends Component {
                              inputStyle={styles.titleInputStyle}
                              placeholder="输入标题"
                              initValue="就读雅丽中学"
-                             clearBtnStyle={{top: normalizeH(10)}}
-                             onFocus={this.onFocusLost}/>
+                             clearBtnStyle={{top: normalizeH(10)}}/>
           </View>
           <View style={styles.price}>
             <Text style={{fontSize: 17, color: '#AAAAAA', paddingLeft: normalizeW(20)}}>价格</Text>
@@ -201,14 +197,12 @@ class PrService extends Component {
                              inputStyle={styles.priceInputStyle}
                              placeholder="10000"
                              initValue="10000"
-                             keyboardType='numeric'
-                             onFocus={this.onFocusLost}/>
+                             keyboardType='numeric'/>
           </View>
-          <View>
+          <View style={{flex: 1}}>
             <ArticleEditor
               {...serviceContent}
               wrapHeight={contentHeight.height}
-              onFocus={this.onFocusChanged}
               placeholder="正文"
               onInsertImage = {this.state.onInsertImage}
               onInsertImageCallback={this.onInsertImageCallback}
@@ -216,7 +210,6 @@ class PrService extends Component {
               uploadImgComponentCallback={(leanImgUrls) => {this.uploadImgComponentCallback(leanImgUrls)}}
               getImages={(images) => this.getRichTextImages(images)}
             />
-
           </View>
         </View>
         {this.renderKeyboardAwareToolBar()}

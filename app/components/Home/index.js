@@ -290,7 +290,6 @@ const mapStateToProps = (state, ownProps) => {
   let currentUser = activeUserId(state)
   let currentUserInfo = activeUserInfo(state)
   let city = getSelectCity(state) || '长沙'
-  console.log("getSelectCity:", getSelectCity(state))
   const banner = getBanner(state, 0)
   let lastService = getLastServices(state)
   let lastHelp = getLastHelp(state)

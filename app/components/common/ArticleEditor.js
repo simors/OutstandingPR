@@ -350,7 +350,6 @@ export class ArticleEditor extends Component {
         value={content}
         onChangeText={(text) => this.updateTextInput(index, text)}
         onFocus={() => {
-          this.props.onFocus()
           this.setState({cursor: index})
           if (Platform.OS != 'ios') {
             this.inputFocused("content_" + index)

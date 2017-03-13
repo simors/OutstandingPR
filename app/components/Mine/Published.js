@@ -214,7 +214,7 @@ class Published extends Component {
           <View style={styles.date}>
             <Image style={{backgroundColor:'transparent', alignItems: 'center', justifyContent: 'flex-end'}}
                    source={require('../../assets/images/date.png')}>
-              <Text style={{color: '#FFFFFF', fontSize: 17}}>{getCreatedDay(rowData.createdAt)}</Text>
+              <Text style={{color: '#FFFFFF', fontSize: 17, marginBottom: 0}}>{getCreatedDay(rowData.createdAt)}</Text>
               <Text style={{color: '#FFFFFF', fontSize: 10}}>{getCreateMonth(rowData.createdAt)}</Text>
             </Image>
           </View>

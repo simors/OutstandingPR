@@ -110,6 +110,7 @@ export default class Header extends Component {
       return (
         <View style={styles.rightWrap}>
           <TouchableOpacity style={[styles.rightContainer, this.props.rightContainerStyle]}
+                            disabled= {this.props.rightButtonDisabled}
                             onPress={() => this.props.rightPress()}>
             <Text numberOfLines={1} style={[styles.right, this.props.rightStyle]}>{this.props.rightText}</Text>
           </TouchableOpacity>
@@ -141,7 +142,8 @@ Header.defaultProps = {
   leftIconName: 'ios-arrow-back',
   title: '',
   rightType: '',
-  rightText: ''
+  rightText: '',
+  rightButtonDisabled: false,
 }
 
 const styles = StyleSheet.create({

@@ -62,7 +62,6 @@ class EditService extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      ArticleFocused: true,
       shouldUploadImgComponent: false,
       onInsertImage: false,
     }
@@ -125,18 +124,6 @@ class EditService extends Component {
     console.log('images list', this.insertImages)
   }
 
-  onFocusChanged = () => {
-    this.setState({
-      ArticleFocused: true,
-    })
-  }
-
-  onFocusLost = () => {
-    this.setState({
-      ArticleFocused: false
-    })
-  }
-
   onInsertImage = () => {
     this.setState({
       onInsertImage: true,
@@ -152,7 +139,6 @@ class EditService extends Component {
   renderKeyboardAwareToolBar() {
     return (
       <KeyboardAwareToolBar
-        show={this.state.ArticleFocused}
         initKeyboardHeight={-50}
       >
         <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center',alignItems: 'center',height: normalizeH(40), backgroundColor: '#F5F5F5'}}
@@ -188,8 +174,7 @@ class EditService extends Component {
                              containerStyle={styles.titleContainerStyle}
                              inputStyle={styles.titleInputStyle}
                              placeholder="输入标题"
-                             initValue={this.props.service.title}
-                             onFocus={this.onFocusLost}/>
+                             initValue={this.props.service.title}/>
           </View>
           <View style={styles.price}>
             <Text style={{fontSize: 17, color: '#AAAAAA', paddingLeft: normalizeW(20)}}>价格</Text>
@@ -200,14 +185,12 @@ class EditService extends Component {
                              inputStyle={styles.priceInputStyle}
                              placeholder="10000"
                              initValue={this.props.service.price}
-                             keyboardType='numeric'
-                             onFocus={this.onFocusLost}/>
+                             keyboardType='numeric'/>
           </View>
           <View>
             <ArticleEditor
               {...serviceContent}
               wrapHeight={contentHeight.height}
-              onFocus={this.onFocusChanged}
               placeholder="正文"
               onInsertImage = {this.state.onInsertImage}
               onInsertImageCallback={this.onInsertImageCallback}

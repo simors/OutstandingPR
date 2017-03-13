@@ -20,7 +20,6 @@ export default class CommonButton extends Component {
   }
 
   pressAction() {
-    // console.log("onPress", this.props.onPress)
     if (this.props.onPress) {
       this.props.onPress()
     }
@@ -29,7 +28,7 @@ export default class CommonButton extends Component {
   render() {
     return (
       <View style={[styles.container, this.props.containerStyle]}>
-        <TouchableOpacity style={[styles.defaultBtnStyle, this.props.buttonStyle]}
+        <TouchableOpacity style={[this.props.disabled? styles.defaultDisableBtnStyle: styles.defaultBtnStyle, this.props.buttonStyle]}
                           onPress={() => this.pressAction()}
                           disabled={this.props.disabled}>
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -56,6 +55,11 @@ const styles = StyleSheet.create({
     width: PAGE_WIDTH - normalizeW(34),
     height: normalizeH(50),
     backgroundColor: '#FF9D4E',
+  },
+  defaultDisableBtnStyle: {
+    width: PAGE_WIDTH - normalizeW(34),
+    height: normalizeH(50),
+    backgroundColor: '#AAAAAA',
   },
   defaultTitleStyle: {
     fontSize: 18,
