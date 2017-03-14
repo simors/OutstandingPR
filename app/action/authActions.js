@@ -257,6 +257,22 @@ export function fetchUsers(payload) {
   }
 }
 
+export function fetchUserFollowees(payload) {
+  return (dispatch, getState) => {
+    lcAuth.fetchUserFollowees(payload).then((result)=> {
+      let updateAction = createAction(AuthTypes.FETCH_USER_FOLLOWEES_SUCCESS)
+      dispatch(updateAction(result))
+      if (payload.success) {
+        payload.success(result)
+      }
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
+  }
+}
+
 export function followUser(payload) {
   return (dispatch, getState) => {
     lcAuth.followUser(payload).then((result) => {

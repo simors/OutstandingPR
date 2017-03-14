@@ -69,6 +69,7 @@ class SystemMessageBox extends Component {
             <ListView
               dataSource={this.props.dataSource}
               renderRow={(rowData) => this.renderSystemMsg(rowData)}
+              enableEmptySections={true}
             />
           </ScrollView>
         </View>

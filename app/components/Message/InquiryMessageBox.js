@@ -55,6 +55,7 @@ class InquiryMessageBox extends Component {
             <ListView
               dataSource={this.props.dataSource}
               renderRow={(rowData) => this.renderInquiryMsgBox(rowData)}
+              enableEmptySections={true}
             />
           </ScrollView>
         </View>

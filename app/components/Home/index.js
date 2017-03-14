@@ -27,10 +27,11 @@ import ImageGroupViewer from '../../components/common/ImageGroupViewer'
 import {getLastServices, getLastHelp} from '../../selector/publishSelector'
 import {fetchPublishes} from '../../action/publishAction'
 import MessageBell from '../common/MessageBell'
-import {activeUserId, activeUserInfo} from '../../selector/authSelector'
+import {activeUserId, activeUserInfo, isUserLogined} from '../../selector/authSelector'
 import CommonListView from '../common/CommonListView'
 import Toast from '../common/Toast'
 import {getCurrentLocation} from '../../action/locAction'
+import {fetchUserFollowees} from '../../action/authActions'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 const PAGE_HEIGHT=Dimensions.get('window').height
@@ -56,6 +57,8 @@ class Home extends Component {
       // this.props.fetchPublishes({isRefresh: true, type: 'service'})
       this.props.fetchPublishes({isRefresh: true, type: 'help'})
       this.props.getCurrentLocation()
+      // if(this.props.isLogin)
+        // this.props.fetchUserFollowees()
     })
   }
 
@@ -287,6 +290,7 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const isLogin = isUserLogined(state)
   let currentUser = activeUserId(state)
   let currentUserInfo = activeUserInfo(state)
   let city = getSelectCity(state) || '长沙'
@@ -304,6 +308,7 @@ const mapStateToProps = (state, ownProps) => {
   helpDataArray.push({itemType: 'itemBar'})
   helpDataArray = helpDataArray.concat(lastHelp)
   return {
+    isLogin: isLogin,
     city: city,
     currentUser: currentUser,
     hasNotice: 1,
@@ -318,7 +323,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchBanner,
   fetchPublishes,
-  getCurrentLocation
+  getCurrentLocation,
+  fetchUserFollowees
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

@@ -132,6 +132,7 @@ class MessageBox extends Component {
             <ListView
               dataSource={this.props.dataSource}
               renderRow={(rowData) => this.renderPrivateMsgBox(rowData)}
+              enableEmptySections={true}
             />
           </ScrollView>
         </View>

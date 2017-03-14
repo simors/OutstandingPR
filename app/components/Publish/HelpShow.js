@@ -68,6 +68,14 @@ class HelpShow extends Component {
     }
   }
 
+  followSuccessCallback = () => {
+    Toast.show("关注成功")
+  }
+
+  followErrorCallback = (error) => {
+    Toast.show(error.message)
+  }
+
   onFollow() {
     if(this.props.isFollow) {
       this.props.unFollowUser({
@@ -76,6 +84,8 @@ class HelpShow extends Component {
     } else {
       this.props.followUser({
         userId: this.props.userId,
+        success: this.followSuccessCallback,
+        error: this.followErrorCallback
       })
     }
   }
@@ -100,7 +110,7 @@ class HelpShow extends Component {
             View>
           <TouchableOpacity style={{marginRight: normalizeW(20)}} onPress={() =>{this.onFollow()}}>
             <Image
-              source={this.props.isFollow?require('../../assets/images/add_follow.png'): require('../../assets/images/followed.png')}
+              source={this.props.isFollow?require('../../assets/images/followed.png'): require('../../assets/images/add_follow.png')}
             />
           </TouchableOpacity>
         </View>
@@ -311,6 +321,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     isLogin: isLogin,
+    currentUser: currentUser,
     isFavorite: isFavorite,
     isFollow: isFollow,
     currentUserInfo: currentUserInfo,
