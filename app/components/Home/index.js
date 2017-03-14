@@ -58,7 +58,7 @@ class Home extends Component {
       this.props.fetchPublishes({isRefresh: true, type: 'help'})
       this.props.getCurrentLocation()
       // if(this.props.isLogin)
-        // this.props.fetchUserFollowees()
+      //   this.props.fetchUserFollowees()
     })
   }
 

@@ -126,7 +126,7 @@ class PersonalHomePage extends Component {
           <View style={styles.info}>
             <Text style={{fontSize: 17, marginTop: normalizeH(20)}}>{this.props.userInfo.nickname}</Text>
             <Text style={{fontSize: 12, marginTop: normalizeH(10), color: '#AAAAAA'}}>三小时前来过非凡</Text>
-            <View style={{flex: 1, flexDirection: 'row', marginTop: normalizeH(12)}}>
+            <View style={{flex: 1, flexDirection: 'row', marginBottom: normalizeH(10), alignItems: 'flex-end'}}>
               <View style={{alignItems: 'center', marginRight: normalizeW(40)}}>
                 <Text style={{fontSize: 17}}>5</Text>
                 <Text style={styles.tripText}>发布</Text>
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   info: {
     width: PAGE_WIDTH,
     backgroundColor: '#FFFFFF',
-    height: normalizeH(127),
+    // height: normalizeH(127),
     paddingLeft: normalizeW(20),
     marginBottom: normalizeH(10),
   },

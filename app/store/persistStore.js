@@ -4,6 +4,11 @@ import configureStore from '../store/configureStore'
 import * as authSelectors from '../selector/authSelector'
 import {become} from '../api/leancloud/auth'
 import {initMessageClient} from '../action/messageAction'
+import {fetchUserFollowees} from '../action/authActions'
+import * as AuthTypes from '../constants/authActionTypes'
+import {createAction} from 'redux-actions'
+
+
 
 
 export default function persist(store) {
@@ -18,7 +23,6 @@ export default function persist(store) {
 export function restoreFromPersistence() {
   return (dispatch, getState) => {
     if (authSelectors.isUserLogined(getState())) {
-      console.log('user login automatically')
       dispatch(verifyToken())
     } else {
       // Actions.LOGIN()
@@ -36,7 +40,10 @@ function verifyToken() {
       ...authSelectors.activeUserAndToken(getState())
     }
 
-    become(payload).then(() => {
+    become(payload).then((user) => {
+      let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
+      dispatch(loginAction({...user}))
+      dispatch(fetchUserFollowees())
       return dispatch(initMessageClient())
     }).then(() => {
       // Actions.HOME()

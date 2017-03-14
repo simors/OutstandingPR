@@ -166,12 +166,14 @@ class HelpShow extends Component {
               style={{marginLeft: normalizeW(40)}}
               source={this.props.isFavorite? require('../../assets/images/favorited.png'): require('../../assets/images/favorite.png')}
             />
+            <Text style={{marginLeft: normalizeW(40)}}>收藏</Text>
           </TouchableOpacity>
           <TouchableOpacity style={{flex: 1}} onPress={() => this.onReply()}>
             <Image
               style={{marginLeft: normalizeW(54)}}
               source={require('../../assets/images/message.png')}
             />
+            <Text style={{marginLeft: normalizeW(54)}}>留言</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.contacted} onPress={() => {this.enterChatroom()}}>
             <Image

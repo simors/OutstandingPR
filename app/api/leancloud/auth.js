@@ -1,13 +1,17 @@
 import AV from 'leancloud-storage'
 import {Map, List, Record} from 'immutable'
-import {UserInfo, UserDetail, HealthProfileRecord, HealthProfile} from '../../models/userModels'
+import {UserInfo} from '../../models/userModels'
 import ERROR from '../../constants/errorCode'
 import * as oPrs from './databaseOprs'
 import * as numberUtils from '../../util/numberUtils'
 
 export function become(payload) {
-  return AV.User.become(payload.token).then(() => {
-    // do nothing
+  return AV.User.become(payload.token).then((user) => {
+    let userInfo = UserInfo.fromLeancloudObject(user)
+    userInfo = userInfo.set('token', user.getSessionToken())
+    return {
+      userInfo: userInfo,
+    }
   }, (err) => {
     throw err
   })
@@ -342,13 +346,12 @@ export function fetchUserFollowees() {
   let query = AV.User.current().followeeQuery()
   query.include('followee')
   return query.find().then(function(results) {
-    let followees = []
+    let followeesMap = new Map()
     results.forEach((result)=>{
-      followees.push(UserInfo.fromLeancloudObject(result))
+      followeesMap = followeesMap.set(result.id, UserInfo.fromLeancloudObject(result))
     })
     return {
-      currentUserId: AV.User.current().id,
-      followees: new List(followees)
+      followees: followeesMap
     }
   }).catch((err) =>{
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]

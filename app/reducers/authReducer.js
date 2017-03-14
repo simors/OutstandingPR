@@ -22,14 +22,8 @@ export default function authReducer(state = initialState, action) {
       return handleProfileSubmitSuccess(state, action)
     case AuthTypes.ADD_USER_PROFILE:
       return handleAddUserProfile(state, action)
-    case AuthTypes.FETCH_USER_FOLLOWERS_SUCCESS:
-      return handleFetchUserFollowersSuccess(state, action)
-    case AuthTypes.FETCH_USER_FOLLOWERS_TOTAL_COUNT_SUCCESS:
-      return handleFetchUserFollowersTotalCountSuccess(state, action)
     case AuthTypes.FETCH_USER_FOLLOWEES_SUCCESS:
       return handleFetchUserFolloweesSuccess(state, action)
-    case AuthTypes.FETCH_USER_FAVORITEARTICLE_SUCCESS:
-      return handleFetchUserFavoriteArticleSuccess(state,action)
     case AuthTypes.ADD_HEALTH_PROFILE:
       return handleAddHealthProfile(state, action)
     case AuthTypes.ADD_USER_FOLLOWEE_SUCCESS:
@@ -81,30 +75,8 @@ function handleAddUserProfile(state, action) {
 }
 
 function handleFetchUserFolloweesSuccess(state, action) {
-  let currentUserId = action.payload.currentUserId
   let followees = action.payload.followees
-  state = state.setIn(['followees', currentUserId], followees)
-  return state
-}
-
-function handleFetchUserFollowersSuccess(state, action) {
-  let userId = action.payload.userId
-  let followers = action.payload.followers
-  state = state.setIn(['followers', userId], followers)
-  return state
-}
-
-function handleFetchUserFollowersTotalCountSuccess(state, action) {
-  let userId = action.payload.userId
-  let followersTotalCount = action.payload.followersTotalCount
-  state = state.setIn(['followersTotalCount', userId], followersTotalCount)
-  return state
-}
-
-function handleFetchUserFavoriteArticleSuccess(state,action){
-  let currentUserId = action.payload.currentUserId
-  let favoriteArticles = action.payload.favoriteArticles
-  state = state.setIn(['favoriteArticles',currentUserId],favoriteArticles)
+  state = state.set('followees', followees)
   return state
 }
 
@@ -170,17 +142,17 @@ function onRehydrate(state, action) {
       healthProfiles.clear()
     }
 
-    const followeesMap = Map(incoming.followees)
-    try {
-      for (let [userId, userInfo] of followeesMap) {
-        if (userId && userInfo) {
-          const userInfoRecord = new UserInfo({...userInfo})
-          state = state.setIn(['followees', userId], userInfoRecord)
-        }
-      }
-    } catch (e) {
-      followeesMap.clear()
-    }
+    // const followeesMap = Map(incoming.followees)
+    // try {
+    //   for (let [userId, userInfo] of followeesMap) {
+    //     if (userId && userInfo) {
+    //       const userInfoRecord = new UserInfo({...userInfo})
+    //       state = state.setIn(['followees', userId], userInfoRecord)
+    //     }
+    //   }
+    // } catch (e) {
+    //   followeesMap.clear()
+    // }
 
   }
   return state
