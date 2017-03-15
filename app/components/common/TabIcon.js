@@ -37,8 +37,8 @@ class TabIcon extends Component {
           }
         }}>
           <View style={[styles.container, {backgroundColor: '#FF9D4E'}]}>
-            <View>
-              <Text style={{color: 'white', fontSize: 40}}>+</Text>
+            <View style={{height: 50, justifyContent: 'center'}}>
+              <Text style={{color: 'white', fontSize: 35}}>+</Text>
             </View>
             <View style={styles.topLine}/>
           </View>
@@ -124,6 +124,7 @@ const styles = StyleSheet.create({
     width: PAGE_WIDTH / 3,
     alignItems: 'center',
     justifyContent: 'center',
+
   },
   topLine: {
     position: 'absolute',

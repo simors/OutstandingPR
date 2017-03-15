@@ -55,26 +55,6 @@ class PersonalHomePage extends Component {
     )
   }
 
-  renderComment() {
-    return(
-      <View style={{flexDirection: 'row', paddingLeft: normalizeW(15), borderBottomWidth: 1, borderBottomColor: '#F5F5F5'}}>
-        <TouchableOpacity>
-          <Image
-            style={{marginTop: normalizeH(10), marginLeft: normalizeW(5), marginRight: normalizeW(10), width: 40, height: 40, borderRadius: 20, overflow: 'hidden', borderWidth: 2, borderColor: '#FFFFFF'}}
-            source={{uri: 'https://dn-1bofhd4c.qbox.me/2346a8ded42e657d29b0.jpg'}}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity style={{flex: 1, marginTop: normalizeH(20)}}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: normalizeH(15)}}>
-            <Text style={{fontSize: 15, color: '#5A5A5A'}}>鲁嘻嘻</Text>
-            <Text style={{fontSize: 12, color: '#AAAAAA', marginRight: normalizeW(15)}}>30分钟前</Text>
-          </View>
-          <Text style={{marginBottom: normalizeH(15), fontSize: 15, color: '#5A5A5A'}}>有做过产品发布会的经验吗？</Text>
-        </TouchableOpacity>
-      </View>
-    )
-  }
-
   enterChatroom() {
     let members = []
     members.push(this.props.userId)
@@ -160,23 +140,14 @@ class PersonalHomePage extends Component {
             </TouchableOpacity>
 
           </View>
-          <View style={styles.comment}>
-            <View style={styles.itemHeader}>
-              <View style={{width: normalizeW(5), height: normalizeH(15), backgroundColor: THEME.colors.yellow, marginLeft: normalizeW(15)}}/>
-              <Text style={{fontSize: 17, color: '#5A5A5A', marginLeft: normalizeW(10)}}>留言 (5)</Text>
-            </View>
-            {this.renderComment()}
-            {this.renderComment()}
-          </View>
           </ScrollView>
         </View>
         <View style={styles.action}>
-          <TouchableOpacity>
+          <TouchableOpacity style={{marginLeft: normalizeW(30), alignItems: 'center', paddingLeft: normalizeW(10), paddingRight: normalizeW(10)}}>
             <Image
-              style={{marginLeft: normalizeW(40)}}
               source={require('../../assets/images/report.png')}
             />
-            <Text style={{marginLeft: normalizeW(40)}}>举报</Text>
+            <Text>举报</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.contacted} onPress={() => {this.enterChatroom()}}>
             <Image
@@ -246,11 +217,6 @@ const styles = StyleSheet.create({
     color: '#AAAAAA',
   },
   publush: {
-    width: PAGE_WIDTH,
-    backgroundColor: '#FFFFFF',
-    marginBottom: normalizeH(10),
-  },
-  comment: {
     width: PAGE_WIDTH,
     backgroundColor: '#FFFFFF',
     marginBottom: normalizeH(10),

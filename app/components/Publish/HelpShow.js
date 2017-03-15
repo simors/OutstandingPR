@@ -39,6 +39,10 @@ const PAGE_HEIGHT=Dimensions.get('window').height
 class HelpShow extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      currentCommentId: undefined,
+      currentCommentNickname: undefined,
+    }
   }
 
   componentWillMount() {
@@ -141,7 +145,13 @@ class HelpShow extends Component {
     }
   }
 
-  onReply = () => {
+  onReply = (comment) => {
+    if(comment) {
+      this.setState({
+        currentCommentId: comment.commentId,
+        currentCommentNickname: comment.commentUser,
+      })
+    }
     this.contentBar.setFocus()
   }
 
@@ -210,7 +220,7 @@ class HelpShow extends Component {
         publishId: this.props.helpInfo.objectId,
         userId: this.props.currentUserInfo.id,
         replyTo: this.props.helpInfo.userId,
-        commentId: undefined,
+        commentId: this.state.currentCommentId,
         submitType: PUBLISH_FORM_SUBMIT_TYPE.PUBLISH_COMMENT,
         success: this.submitSuccessCallback.bind(this),
         error: this.submitErrorCallback
@@ -229,7 +239,7 @@ class HelpShow extends Component {
           onSend={(content) => {
             this.sendReply(content)
           }}
-          placeholder={"输入文字信息"}
+          placeholder={this.state.currentCommentNickname? "回复：" + this.state.currentCommentNickname : "回复"}
         />
       </KeyboardAwareToolBar>
     )
@@ -247,12 +257,18 @@ class HelpShow extends Component {
                   style={{width: 40, height: 40, borderRadius: 20, marginTop: normalizeH(10), marginRight: normalizeW(10), marginLeft: normalizeW(15)}}
                 />
               </TouchableOpacity>
-              <TouchableOpacity style={{flex: 1, borderBottomColor: '#F5F5F5', borderBottomWidth: 1}} onPress={() => this.onReply()}>
+              <TouchableOpacity style={{flex: 1, borderBottomColor: '#F5F5F5', borderBottomWidth: 1}}
+                                onPress={() => this.onReply({commentId: value.objectId, commentUser: value.nickname})}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between',marginTop: normalizeH(23)}}>
-                  <Text style={{fontSize: 15, color: '#5A5A5A'}}>{value.nickname}</Text>
+                  <Text style={{fontSize: 15, color: 'rgba(86, 103, 143, 1)'}}>{value.nickname}</Text>
                   <Text style={{fontSize: 12, color: '#AAAAAA', marginRight: normalizeW(15)}}>{"30分钟以前"}</Text>
                 </View>
-                <Text style={{fontSize: 15, color: '#5A5A5A', marginTop: normalizeH(15)}}>{value.content}</Text>
+                <View style={{flexDirection: 'row', marginTop: normalizeH(15)}}>
+                  <Text style={{fontSize: 15, color: '#5A5A5A'}}>回复</Text>
+                  <Text style={{fontSize: 15, color: 'rgba(86, 103, 143, 1)'}}>{value.parentCommentUserName}</Text>
+                  <Text style={{fontSize: 15, color: '#5A5A5A'}}>：{value.content}</Text>
+                </View>
+
               </TouchableOpacity>
             </View>
           )
