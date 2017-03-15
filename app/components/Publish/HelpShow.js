@@ -94,7 +94,8 @@ class HelpShow extends Component {
     if(this.props.userId != this.props.currentUser) {
       return(
         <View style={{flexDirection: 'row',alignItems: 'center' , backgroundColor: '#F5F5F5'}}>
-          <TouchableOpacity style={{marginTop: normalizeH(15), marginLeft: normalizeW(10), marginRight: normalizeW(15), marginBottom: normalizeH(15)}}>
+          <TouchableOpacity style={{marginTop: normalizeH(15), marginLeft: normalizeW(10), marginRight: normalizeW(15), marginBottom: normalizeH(15)}}
+                            onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.userId})}>
             <Image
               style={{ width: 60, height: 60, borderRadius: 30, overflow: 'hidden', borderWidth: 2, borderColor: '#FFFFFF'}}
               source={this.props.userInfo.avatar? {uri: this.props.userInfo.avatar}: require('../../assets/images/defualt_user.png')}

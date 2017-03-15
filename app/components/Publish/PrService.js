@@ -185,7 +185,6 @@ class PrService extends Component {
                              containerStyle={styles.titleContainerStyle}
                              inputStyle={styles.titleInputStyle}
                              placeholder="输入标题"
-                             initValue="就读雅丽中学"
                              clearBtnStyle={{top: normalizeH(10)}}/>
           </View>
           <View style={styles.price}>
@@ -196,7 +195,6 @@ class PrService extends Component {
                              containerStyle={styles.priceContainerStyle}
                              inputStyle={styles.priceInputStyle}
                              placeholder="10000"
-                             initValue="10000"
                              keyboardType='numeric'/>
           </View>
           <View style={{flex: 1}}>

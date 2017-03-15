@@ -186,7 +186,6 @@ class PrHelp extends Component {
                              containerStyle={styles.titleContainerStyle}
                              inputStyle={styles.titleInputStyle}
                              placeholder="输入标题"
-                             initValue="就读雅丽中学"
                              clearBtnStyle={{top: normalizeH(10)}}/>
           </View>
           <View style={styles.price}>
@@ -197,7 +196,6 @@ class PrHelp extends Component {
                              containerStyle={styles.priceContainerStyle}
                              inputStyle={styles.priceInputStyle}
                              placeholder="10000"
-                             initValue="10000"
                              keyboardType='numeric'/>
           </View>
           <View>
@@ -210,7 +208,6 @@ class PrHelp extends Component {
               shouldUploadImgComponent={this.state.shouldUploadImgComponent}
               uploadImgComponentCallback={(leanImgUrls) => {this.uploadImgComponentCallback(leanImgUrls)}}
               getImages={(images) => this.getRichTextImages(images)}
-              initValue={[{type: 'COMP_TEXT', text: "亲爱的家长朋友，还在为孩子的读书问题烦恼吗？请联系138-8888-8888！"}, {width: 360, height: 240, type: 'COMP_IMG', url: 'https://dn-1bofhd4c.qbox.me/8b3ec625866c57cc8939.jpg', }]}
             />
 
           </View>

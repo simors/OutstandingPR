@@ -142,7 +142,7 @@ class PersonalHomePage extends Component {
               <View style={{flex: 1, alignItems: 'flex-end'}}>
                 <TouchableOpacity style={{marginRight: normalizeW(40)}} onPress={() =>{this.onFollow()}}>
                   <Image
-                    source={this.props.isFollow?require('../../assets/images/add_follow.png'): require('../../assets/images/followed.png')}
+                    source={this.props.isFollow?require('../../assets/images/followed.png'): require('../../assets/images/add_follow.png')}
                   />
                 </TouchableOpacity>
               </View>
@@ -176,6 +176,7 @@ class PersonalHomePage extends Component {
               style={{marginLeft: normalizeW(40)}}
               source={require('../../assets/images/report.png')}
             />
+            <Text style={{marginLeft: normalizeW(40)}}>举报</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.contacted} onPress={() => {this.enterChatroom()}}>
             <Image

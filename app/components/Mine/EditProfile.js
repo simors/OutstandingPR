@@ -141,7 +141,7 @@ class EditProfile extends Component {
         />
         <View style={styles.body}>
           <KeyboardAwareScrollView>
-            <TouchableOpacity style={styles.item}>
+            <View style={styles.item}>
               <View style={{flex: 1, marginLeft: normalizeW(20)}}>
                 <Text style={styles.itemText}>头像</Text>
               </View>
@@ -156,8 +156,8 @@ class EditProfile extends Component {
                 uploadImageCallback={(leanHeadImgUrl)=>{this.uploadImageCallback(leanHeadImgUrl)}}
               />
 
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.item}>
+            </View>
+            <View style={styles.item}>
               <View style={styles.itemView}>
                 <Text style={styles.itemText}>呢称</Text>
                 <CommonTextInput {...nicknameInput}
@@ -168,8 +168,8 @@ class EditProfile extends Component {
                                  validInput={this.validInput}
                                  placeholder="输入你在非凡的昵称"/>
               </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.item}>
+            </View>
+            <View style={styles.item}>
               <View style={styles.itemView}>
                 <Text style={styles.itemText}>姓名</Text>
                 <CommonTextInput {...nameInput}
@@ -180,8 +180,8 @@ class EditProfile extends Component {
                                  validInput={this.validInput}
                                  placeholder="真实姓名"/>
               </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.item, {marginTop: normalizeH(20)}]}>
+            </View>
+            <View style={[styles.item, {marginTop: normalizeH(20)}]}>
               <View style={styles.itemView}>
                 <Text style={styles.itemText}>所在城市</Text>
                 <View style={{flex: 1}}>
@@ -196,20 +196,20 @@ class EditProfile extends Component {
                 style={{marginRight: normalizeW(20)}}
                 source={require('../../assets/images/PinLeft_gray.png')}
               />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.item}>
+            </View>
+            <View style={styles.item}>
               <View style={styles.itemView}>
                 <Text style={[styles.itemText, {marginRight: 0}]}>出身年月</Text>
                 <DateTimeInput {...birthdayInput}
                                initValue={this.props.userInfo.birthday? this.props.userInfo.birthday: undefined}
-                               value="2016-05-18" PickerStyle={{justifyContent: 'flex-start', paddingLeft: 0, backgroundColor: '#FFFFFF', width: normalizeW(140), borderWidth: 0}}/>
+                               value="2016-05-18" PickerStyle={{justifyContent: 'flex-start', paddingLeft: 0, backgroundColor: '#FFFFFF', width: normalizeW(200), borderWidth: 0}}/>
               </View>
               <Image
                 style={{marginRight: normalizeW(20)}}
                 source={require('../../assets/images/PinLeft_gray.png')}
               />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.item}>
+            </View>
+            <View style={styles.item}>
               <View style={styles.itemView}>
                 <Text style={styles.itemText}>任职机构</Text>
                 <CommonTextInput {...organizationInput}
@@ -220,8 +220,8 @@ class EditProfile extends Component {
                                  validInput={this.validInput}
                                  placeholder="输入信息，更非凡"/>
               </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.item}>
+            </View>
+            <View style={styles.item}>
               <View style={styles.itemView}>
                 <Text style={styles.itemText}>职业</Text>
                 <CommonTextInput {...professionInput}
@@ -232,8 +232,8 @@ class EditProfile extends Component {
                                  validInput={this.validInput}
                                  placeholder="输入信息，更非凡"/>
               </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.item}>
+            </View>
+            <View style={styles.item}>
               <View style={styles.itemView}>
                 <Text style={styles.itemText}>所在行业</Text>
                 <CommonTextInput {...industryInput}
@@ -244,7 +244,7 @@ class EditProfile extends Component {
                                  validInput={this.validInput}
                                  placeholder="输入信息，更非凡"/>
               </View>
-            </TouchableOpacity>
+            </View>
           </KeyboardAwareScrollView>
         </View>
       </View>
