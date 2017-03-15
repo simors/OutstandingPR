@@ -27,10 +27,16 @@ export default class MessageImage extends React.Component {
     this.setState({imgModalShow: isShow})
   }
 
+  androidHardwareBackPress() {
+    this.toggleModal(false)
+  }
+
   renderImageModal(src) {
     return (
       <View>
-        <Modal visible={this.state.imgModalShow} transparent={false} animationType='fade'>
+        <Modal visible={this.state.imgModalShow}
+               transparent={false} animationType='fade'
+               onRequestClose={()=>{this.androidHardwareBackPress()}}>
           <View style={{width: PAGE_WIDTH, height: PAGE_HEIGHT}}>
             <Gallery
               style={{flex: 1, backgroundColor: 'black'}}

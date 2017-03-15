@@ -20,6 +20,7 @@ import {
 } from '../models/notifyModel'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import {messengerClient} from '../selector/messageSelector'
+import mime from '../util/mime-types'
 
 class TextMessage extends TypedMessage {
 }
@@ -478,7 +479,7 @@ function sendTextMessage(conversation, payload) {
 function sendImageMessage(conversation, payload) {
   let message = new ImageMessage()
   message.setText(payload.text)
-  let file = new AV.File(payload.fileName, {blob: {uri: payload.uri}})
+  let file = new AV.File(payload.fileName, {blob: {uri: payload.uri}}, mime.lookup(payload.uri))
   return file.save().then((savedFile)=> {
     message.setAttributes({
       'mediaId': savedFile.attributes.url
@@ -492,7 +493,7 @@ function sendImageMessage(conversation, payload) {
 function sendAudioMessage(conversation, payload) {
   let message = new AudioMessage()
   message.setText(payload.text)
-  let file = new AV.File(payload.fileName, {blob: {uri: payload.uri}})
+  let file = new AV.File(payload.fileName, {blob: {uri: payload.uri}}, mime.lookup(payload.uri))
   return file.save().then((savedFile)=> {
     message.setAttributes({
       'mediaId': savedFile.attributes.url,

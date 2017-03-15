@@ -3,6 +3,8 @@
  */
 import AV from 'leancloud-storage'
 import {Platform} from 'react-native'
+// import mime from 'mime-types'
+import mime from '../../util/mime-types'
 
 export function uploadFile(payload) {
   try {
@@ -17,8 +19,10 @@ export function uploadFile(payload) {
 }
 
 export function uploadLocalFile(payload) {
+  console.log("uploadLocalFile", payload)
   let uri = payload.fileUri
-  let file = new AV.File(payload.fileName, {blob: {uri}})
+  let mimeType = mime.lookup(uri)
+  let file = new AV.File(payload.fileName, {blob: {uri}}, mimeType)
   return file.save().then(function (savedFile) {
     let saved = {
       savedPos: savedFile.attributes.url
@@ -31,7 +35,8 @@ export function uploadLocalFile(payload) {
 
 export function uploadNetFile(payload) {
   let uri = payload.fileUri
-  let file = AV.File.withURL(payload.fileName, uri)
+  let mimeType = mime.lookup(uri)
+  let file = AV.File.withURL(payload.fileName, uri, mimeType)
   return file.save().then(function (savedFile) {
     let saved = {
       savedPos: savedFile.attributes.url

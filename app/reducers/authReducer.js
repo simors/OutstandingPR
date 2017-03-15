@@ -68,7 +68,6 @@ function handleProfileSubmitSuccess(state, action) {
 }
 
 function handleAddUserProfile(state, action) {
-  console.log("handleAddUserProfile ", action)
   let userInfo = action.payload.userInfo
   state = state.setIn(['profiles', userInfo.id], userInfo)
   return state
@@ -78,14 +77,6 @@ function handleFetchUserFolloweesSuccess(state, action) {
   let followees = action.payload.followees
   state = state.set('followees', followees)
   return state
-}
-
-function handleAddHealthProfile(state, action) {
-  let healthProfile = action.payload.result.healthProfile
-  // console.log("handleAddHealthProgfile healthProfile", healthProfile)
-  state = state.setIn(['healthProfiles', healthProfile.get('id')], healthProfile)
-  return state
-
 }
 
 function handleAddUserFollowee(state, action) {
