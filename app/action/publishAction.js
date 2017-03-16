@@ -14,6 +14,7 @@ export const PUBLISH_FORM_SUBMIT_TYPE = {
   UPDATE_SERVICE: 'UPDATE_SERVICE',
   UPDATE_HELP: 'UPDATE_HELP',
   PUBLISH_COMMENT: 'PUBLISH_COMMENT',
+  PUBLISH_SUGGESTION: 'PUBLISH_SUGGESTION'
 }
 
 export function publishFormData(payload) {
@@ -46,6 +47,9 @@ export function publishFormData(payload) {
         break
       case PUBLISH_FORM_SUBMIT_TYPE.PUBLISH_COMMENT:
         dispatch(handlePublishComment(payload, formData))
+        break
+      case PUBLISH_FORM_SUBMIT_TYPE.PUBLISH_SUGGESTION:
+        dispatch(handlePublishSuggestion(payload, formData))
         break
       default:
         break
@@ -125,7 +129,25 @@ function handleUpdateService(payload, formData) {
 
 function handleUpdateHelp(payload, formData) {
   return (dispatch, getState) => {
+    let updateHelpPayload = {
+      title: formData.helpName.text,
+      content: JSON.stringify(formData.helpContent.text),
+      imgGroup: payload.images,
+      price: formData.helpPrice.text,
+      publishId: payload.publishId,
+    }
 
+    lcPublish.updateHelp(updateHelpPayload).then((result) => {
+      if (payload.success) {
+        payload.success()
+      }
+      let publishAction = createAction(publishActionTypes.UPDATE_PUBLISH)
+      dispatch(publishAction({publish: result}))
+    }).catch((error) => {
+      if (payload.error) {
+        payload.error(error)
+      }
+    })
   }
 }
 
@@ -161,6 +183,14 @@ function handlePublishComment(payload, formData) {
         payload.error(error)
       }
     })
+  }
+}
+
+function handlePublishSuggestion(payload, formData) {
+  return (dispatch, getState) => {
+    if (payload.success) {
+      payload.success()
+    }
   }
 }
 

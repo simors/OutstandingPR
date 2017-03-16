@@ -22,40 +22,38 @@ import {normalizeH, normalizeW} from '../../util/Responsive'
 import {publishFormData, PUBLISH_FORM_SUBMIT_TYPE} from '../../action/publishAction'
 import THEME from '../../constants/theme'
 import ArticleEditor from '../common/ArticleEditor'
-import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
-import CommonButton from '../common/CommonButton'
-import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
+import {isUserLogined} from '../../selector/authSelector'
+import {inputFormOnDestroy} from '../../action/inputFormActions'
 
-
-const PAGE_WIDTH= Dimensions.get('window').width
-
-let serviceForm = Symbol('serviceForm')
-const serviceName = {
-  formKey: serviceForm,
-  stateKey: Symbol('serviceName'),
-  type: "serviceName",
+let rePublishHelpForm = Symbol('rePublishHelpForm')
+const helpName = {
+  formKey: rePublishHelpForm,
+  stateKey: Symbol('helpName'),
+  type: "helpName",
 }
-const servicePrice = {
-  formKey: serviceForm,
-  stateKey: Symbol('servicePrice'),
-  type: "servicePrice"
+const helpPrice = {
+  formKey: rePublishHelpForm,
+  stateKey: Symbol('helpPrice'),
+  type: "helpPrice"
 }
-const serviceContent = {
-  formKey: serviceForm,
-  stateKey: Symbol('serviceContent'),
-  type: "serviceContent"
+const helpContent = {
+  formKey: rePublishHelpForm,
+  stateKey: Symbol('helpContent'),
+  type: "helpContent"
 }
 
-const contentHeight = {
+const rteHeight = {
   ...Platform.select({
     ios: {
-      height: normalizeH(65 + 88),
+      height: normalizeH(64),
     },
     android: {
-      height: normalizeH(45 + 88)
+      height: normalizeH(44)
     }
   })
 }
+
+const wrapHeight = normalizeH(87)
 
 class EditHelp extends Component {
   constructor(props) {
@@ -63,17 +61,28 @@ class EditHelp extends Component {
     this.state = {
       shouldUploadImgComponent: false,
       onInsertImage: false,
+      extraHeight: rteHeight.height,
+      headerHeight: wrapHeight,
     }
+    this.isPublishing = false
     this.insertImages = []
     this.leanImgUrls = []
   }
 
-  submitSuccessCallback() {
-    Toast.show('发布成功')
-    Actions.pop()
+  componentWillUnmount() {
+    this.props.inputFormOnDestroy({formKey: rePublishHelpForm})
   }
 
-  submitErrorCallback(error) {
+  submitSuccessCallback = () => {
+    this.isPublishing = false
+    this.setState({
+      shouldUploadImgComponent: false
+    })
+    Toast.show('更新成功')
+    Actions.pop(2)
+  }
+
+  submitErrorCallback = (error) => {
     Toast.show(error.message)
   }
 
@@ -84,9 +93,9 @@ class EditHelp extends Component {
 
   onPublish() {
     this.props.publishFormData({
-      formKey: serviceForm,
-      submitType: PUBLISH_FORM_SUBMIT_TYPE.PUBLISH_SERVICE,
-      userId: this.props.userInfo.id,
+      formKey: rePublishHelpForm,
+      submitType: PUBLISH_FORM_SUBMIT_TYPE.UPDATE_HELP,
+      publishId: this.props.help.objectId,
       images: this.leanImgUrls,
       success: this.submitSuccessCallback,
       error: this.submitErrorCallback
@@ -94,62 +103,70 @@ class EditHelp extends Component {
   }
 
   onButtonPress() {
-    if (this.insertImages && this.insertImages.length) {
-      Toast.show('开始发布...', {
-        duration: 1000,
-        onHidden: ()=> {
-          this.setState({
-            shouldUploadImgComponent: true
-          })
+    if(this.props.isLogin) {
+      if (this.insertImages && this.insertImages.length) {
+        if (this.isPublishing) {
+          return
         }
-      })
+        this.isPublishing = true
+        Toast.show('开始发布...', {
+          duration: 1000,
+          onHidden: ()=> {
+            this.setState({
+              shouldUploadImgComponent: true
+            })
+          }
+        })
+      } else {
+        if (this.isPublishing) {
+          return
+        }
+        this.isPublishing = true
+        Toast.show('开始发布...', {
+          duration: 1000,
+          onHidden: ()=> {
+            this.onPublish()
+          }
+        })
+      }
     } else {
-      Toast.show('开始发布...', {
-        duration: 1000,
-        onHidden: ()=> {
-          this.onPublish()
-        }
-      })
+      Actions.LOGIN()
     }
   }
 
 
   getRichTextImages(images) {
     this.insertImages = images
-    console.log('images list', this.insertImages)
   }
 
-  onInsertImage = () => {
-    this.setState({
-      onInsertImage: true,
-    })
-  }
-
-  onInsertImageCallback = () => {
-    this.setState({
-      onInsertImage: false,
-    })
-  }
-
-  renderKeyboardAwareToolBar() {
+  renderArticleEditorToolbar() {
     return (
-      <KeyboardAwareToolBar
-        initKeyboardHeight={-50}
-      >
-        <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center',alignItems: 'center',height: normalizeH(40), backgroundColor: '#F5F5F5'}}
-                          onPress={this.onInsertImage}
-        >
-          <Image
-            style={{marginRight: normalizeW(10)}}
-            source={require('../../assets/images/add_picture.png')}
-          />
-          <Text style={{fontSize: 15, color: '#AAAAAA'}}>添加图片</Text>
+      <View style={this.isPublishing?{width: normalizeW(64), backgroundColor: '#AAAAAA'} : {width: normalizeW(64), backgroundColor: THEME.colors.yellow}}>
+        <TouchableOpacity onPress={() => {this.onButtonPress()}}
+                          style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+          <Text style={{fontSize: 15, color: 'white', lineHeight: 15}}>更新</Text>
         </TouchableOpacity>
-        <CommonButton title="发布"
-                      buttonStyle={{width: normalizeW(64), height: normalizeH(40)}}
-                      titleStyle={{fontSize: 15}}
-                      onPress={() => this.onButtonPress()}/>
-      </KeyboardAwareToolBar>
+      </View>
+    )
+  }
+
+  renderRichText(initValue) {
+    return (
+      <ArticleEditor
+        {...helpContent}
+        wrapHeight={this.state.extraHeight}
+        renderCustomToolbar={() => {return this.renderArticleEditorToolbar()}}
+        getImages={(images) => this.getRichTextImages(images)}
+        shouldUploadImgComponent={this.state.shouldUploadImgComponent}
+        uploadImgComponentCallback={(leanImgUrls)=> {
+          this.uploadImgComponentCallback(leanImgUrls)
+        }}
+        onFocusEditor={() => {this.setState({headerHeight: 0})}}
+        onBlurEditor={() => {this.setState({headerHeight: wrapHeight})}}
+        initValue={JSON.parse(initValue)}
+        placeholder=""
+
+      />
     )
   }
 
@@ -160,45 +177,39 @@ class EditHelp extends Component {
           leftType="icon"
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
-          title="发布公关服务"
+          title="发布"
+          rightType="text"
+          rightText="更新"
+          rightButtonDisabled= {this.isPublishing}
+          rightPress={() => this.onButtonPress()}
+          rightStyle= {this.isPublishing? {color: '#AAAAAA'}: {}}
         />
         <View style={styles.body}>
-          <View>
-            <CommonTextInput maxLength={36}
-                             {...serviceName}
-                             containerStyle={styles.titleContainerStyle}
-                             inputStyle={styles.titleInputStyle}
-                             placeholder="输入标题"
-                             initValue="就读雅丽中学"/>
+          <View style={{height: this.state.headerHeight, overflow: 'hidden'}}
+                onLayout={(event) => {this.setState({extraHeight: rteHeight.height + event.nativeEvent.layout.height})}}>
+            <View style={{borderBottomWidth: 1, borderBottomColor: '#E9E9E9', borderStyle: 'solid'}}>
+              <CommonTextInput maxLength={36}
+                               {...helpName}
+                               containerStyle={styles.titleContainerStyle}
+                               inputStyle={styles.titleInputStyle}
+                               placeholder="输入标题"
+                               clearBtnStyle={{top: normalizeH(10)}}
+                               initValue={this.props.help.title}/>
+            </View>
+            <View style={styles.price}>
+              <Text style={{fontSize: 17, color: '#AAAAAA', paddingLeft: normalizeW(20)}}>价格</Text>
+              <Text style={{marginLeft: normalizeW(38), fontSize: 20, color: THEME.colors.yellow}}>¥</Text>
+              <CommonTextInput maxLength={7}
+                               {...helpPrice}
+                               containerStyle={styles.priceContainerStyle}
+                               inputStyle={styles.priceInputStyle}
+                               initValue={this.props.help.price}
+                               placeholder="10000"
+                               keyboardType='numeric'/>
+            </View>
           </View>
-          <View style={styles.price}>
-            <Text style={{fontSize: 17, color: '#AAAAAA', paddingLeft: normalizeW(20)}}>价格</Text>
-            <Text style={{marginLeft: normalizeW(38), fontSize: 20, color: THEME.colors.yellow}}>¥</Text>
-            <CommonTextInput maxLength={7}
-                             {...servicePrice}
-                             containerStyle={styles.priceContainerStyle}
-                             inputStyle={styles.priceInputStyle}
-                             placeholder="10000"
-                             initValue="10000"
-                             keyboardType='numeric'/>
-          </View>
-          <View>
-            <ArticleEditor
-              {...serviceContent}
-              wrapHeight={contentHeight.height}
-              placeholder="正文"
-              onInsertImage = {this.state.onInsertImage}
-              onInsertImageCallback={this.onInsertImageCallback}
-              shouldUploadImgComponent={this.state.shouldUploadImgComponent}
-              uploadImgComponentCallback={(leanImgUrls) => {this.uploadImgComponentCallback(leanImgUrls)}}
-              getImages={(images) => this.getRichTextImages(images)}
-              initValue={[{type: 'COMP_TEXT', text: "亲爱的家长朋友，还在为孩子的读书问题烦恼吗？请联系138-8888-8888！"}, {width: 360, height: 240, type: 'COMP_IMG', url: 'https://dn-1BOFhd4c.qbox.me/1b44e365621221d5f45b.jpg', }]}
-            />
-
-          </View>
+          {this.renderRichText(this.props.help.content)}
         </View>
-        {this.renderKeyboardAwareToolBar()}
-
       </View>
 
     )
@@ -207,14 +218,13 @@ class EditHelp extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const isLogin = isUserLogined(state)
-  const userInfo = activeUserInfo(state)
   return {
     isLogin: isLogin,
-    userInfo: userInfo
   }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  inputFormOnDestroy,
   publishFormData,
 }, dispatch)
 
@@ -237,12 +247,9 @@ const styles = StyleSheet.create({
   },
   titleContainerStyle: {
     flex: 1,
-    height: normalizeH(44),
+    height: normalizeH(42),
     paddingLeft: 0,
     paddingRight: 0,
-    borderBottomWidth: 1,
-    borderStyle: 'solid',
-    borderBottomColor: '#E9E9E9',
   },
   titleInputStyle: {
     flex: 1,
@@ -251,6 +258,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     color: '#5A5A5A',
     fontFamily: 'PingFangSC-Semibold',
+    borderWidth: 0,
   },
   price: {
     flexDirection: 'row',
@@ -258,11 +266,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E9E9E9',
     borderStyle: 'solid',
-
   },
   priceContainerStyle: {
     flex: 1,
-    height: normalizeH(44),
+    height: normalizeH(42),
     paddingLeft: 0,
     paddingRight: 0,
   },

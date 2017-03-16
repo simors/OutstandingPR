@@ -16,12 +16,14 @@ import {bindActionCreators} from 'redux'
 import {Actions} from 'react-native-router-flux'
 import CommonTextInput from '../common/CommonTextInput'
 import Header from '../common/Header'
-import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
-import CommonButton from '../common/CommonButton'
 import ArticleEditor from '../common/ArticleEditor'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import Symbol from 'es6-symbol'
 import {inputFormOnDestroy} from '../../action/inputFormActions'
+import {publishFormData, PUBLISH_FORM_SUBMIT_TYPE} from '../../action/publishAction'
+import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
+import * as Toast from '../common/Toast'
+
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -47,51 +49,125 @@ const suggestionContent = {
   type: "suggestionContent",
 }
 
-const contentHeight = {
+const rteHeight = {
   ...Platform.select({
     ios: {
-      height: normalizeH(65 + 88),
+      height: normalizeH(64),
     },
     android: {
-      height: normalizeH(45 + 88)
+      height: normalizeH(44)
     }
   })
 }
+
+const wrapHeight = normalizeH(87)
 
 class Suggestion extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      shouldUploadImgComponent: false,
+      onInsertImage: false,
+      extraHeight: rteHeight.height,
+      headerHeight: wrapHeight,
     }
+    this.isPublishing = false
     this.insertImages = []
+    this.leanImgUrls = []
   }
 
   componentWillUnmount() {
     this.props.inputFormOnDestroy({formKey: suggestionForm})
   }
 
-  getRichTextImages(images) {
-    this.insertImages = images
-    console.log('images list', this.insertImages)
+  submitSuccessCallback =() => {
+    this.isPublishing = false
+    Toast.show('反馈成功')
+    Actions.pop()
   }
 
-  renderKeyboardAwareToolBar() {
+  submitErrorCallback =(error) => {
+    Toast.show(error.message)
+  }
+
+  uploadImgComponentCallback(leanImgUrls) {
+    this.leanImgUrls = leanImgUrls
+    this.onPublish()
+  }
+
+  onPublish() {
+    this.props.publishFormData({
+      formKey: suggestionForm,
+      submitType: PUBLISH_FORM_SUBMIT_TYPE.PUBLISH_SUGGESTION,
+      userId: this.props.userInfo.id,
+      images: this.leanImgUrls,
+      success: this.submitSuccessCallback,
+      error: this.submitErrorCallback
+    })
+  }
+
+  getRichTextImages(images) {
+    this.insertImages = images
+  }
+
+  onButtonPress() {
+    if(this.props.isLogin) {
+      if (this.insertImages && this.insertImages.length) {
+        if (this.isPublishing) {
+          return
+        }
+        this.isPublishing = true
+        Toast.show('开始发布...', {
+          duration: 1000,
+          onHidden: ()=> {
+            this.setState({
+              shouldUploadImgComponent: true
+            })
+          }
+        })
+      } else {
+        if (this.isPublishing) {
+          return
+        }
+        this.isPublishing = true
+        Toast.show('开始发布...', {
+          duration: 1000,
+          onHidden: ()=> {
+            this.onPublish()
+          }
+        })
+      }
+    } else {
+      Actions.LOGIN()
+    }
+  }
+
+  renderArticleEditorToolbar() {
     return (
-      <KeyboardAwareToolBar
-        initKeyboardHeight={-50}
-      >
-        <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center',alignItems: 'center',height: normalizeH(40), backgroundColor: '#F5F5F5'}}>
-          <Image
-            style={{marginRight: normalizeW(10)}}
-            source={require('../../assets/images/add_picture.png')}
-          />
-          <Text style={{fontSize: 15, color: '#AAAAAA'}}>添加图片</Text>
+      <View style={this.isPublishing?{width: normalizeW(64), backgroundColor: '#AAAAAA'} : {width: normalizeW(64), backgroundColor: THEME.colors.yellow}}>
+        <TouchableOpacity onPress={() => {this.onButtonPress()}}
+                          style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+          <Text style={{fontSize: 15, color: 'white', lineHeight: 15}}>发布</Text>
         </TouchableOpacity>
-        <CommonButton title="发布"
-                      buttonStyle={{width: normalizeW(64), height: normalizeH(40)}}
-                      titleStyle={{fontSize: 15}}
-                      onPress={() => this.onButtonPress()}/>
-      </KeyboardAwareToolBar>
+      </View>
+    )
+  }
+
+  renderRichText() {
+    return (
+      <ArticleEditor
+        {...suggestionContent}
+        wrapHeight={this.state.extraHeight}
+        renderCustomToolbar={() => {return this.renderArticleEditorToolbar()}}
+        getImages={(images) => this.getRichTextImages(images)}
+        shouldUploadImgComponent={this.state.shouldUploadImgComponent}
+        uploadImgComponentCallback={(leanImgUrls)=> {
+          this.uploadImgComponentCallback(leanImgUrls)
+        }}
+        onFocusEditor={() => {this.setState({headerHeight: 0})}}
+        onBlurEditor={() => {this.setState({headerHeight: wrapHeight})}}
+        placeholder="请详细描述使用中遇到的问题，并附上问题截图。诚挚邀请您加入用户体验俱乐部QQ群:312458688"
+      />
     )
   }
 
@@ -103,37 +179,34 @@ class Suggestion extends Component {
           leftIconName="ios-arrow-back"
           leftPress={() => Actions.pop()}
           title="意见反馈"
+          rightType="text"
+          rightText="发送"
+          rightButtonDisabled= {this.isPublishing}
+          rightPress={() => this.onButtonPress()}
+          rightStyle= {this.isPublishing? {color: '#AAAAAA'}: {}}
         />
         <View style={styles.body}>
-          <View>
-            <CommonTextInput maxLength={10}
-                             {...suggestionType}
-                             containerStyle={styles.titleContainerStyle}
-                             inputStyle={styles.titleInputStyle}
-                             placeholder="问题类型"/>
-          </View>
-          <TouchableOpacity style={styles.item}>
+          <View style={{height: this.state.headerHeight, overflow: 'hidden'}}
+                onLayout={(event) => {this.setState({extraHeight: rteHeight.height + event.nativeEvent.layout.height})}}>
+            <View style={{borderBottomWidth: 1, borderBottomColor: '#E9E9E9', borderStyle: 'solid'}}>
+              <CommonTextInput maxLength={36}
+                               {...suggestionType}
+                               containerStyle={styles.titleContainerStyle}
+                               inputStyle={styles.titleInputStyle}
+                               placeholder="问题类型"
+                               clearBtnStyle={{top: normalizeH(10)}}/>
+            </View>
             <View style={styles.itemView}>
               <Text style={styles.itemText}>联系方式</Text>
               <CommonTextInput {...contactInput}
-                               maxLength={8}
+                               maxLength={30}
                                containerStyle={styles.inputContainerStyle}
                                inputStyle={styles.inputStyle}
                                placeholder="手机号或邮箱（选填）"/>
             </View>
-          </TouchableOpacity>
-          <View>
-            <ArticleEditor
-              {...suggestionContent}
-              wrapHeight={contentHeight.height}
-              placeholder="正文"
-              getImages={(images) => this.getRichTextImages(images)}
-            />
-
           </View>
-
+          {this.renderRichText()}
         </View>
-        {this.renderKeyboardAwareToolBar()}
 
       </View>
     )
@@ -141,10 +214,15 @@ class Suggestion extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
-}
+  const isLogin = isUserLogined(state)
+  const userInfo = activeUserInfo(state)
+  return {
+    isLogin: isLogin,
+    userInfo: userInfo
+  }}
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  publishFormData,
   inputFormOnDestroy,
 }, dispatch)
 
@@ -176,12 +254,9 @@ const styles = StyleSheet.create({
   },
   titleContainerStyle: {
     flex: 1,
-    height: normalizeH(44),
+    height: normalizeH(42),
     paddingLeft: 0,
     paddingRight: 0,
-    borderBottomWidth: 1,
-    borderStyle: 'solid',
-    borderBottomColor: '#E9E9E9',
   },
   titleInputStyle: {
     flex: 1,
@@ -189,6 +264,7 @@ const styles = StyleSheet.create({
     paddingLeft: normalizeW(20),
     backgroundColor: '#FFFFFF',
     color: '#5A5A5A',
+    borderWidth: 0,
   },
   item: {
     flexDirection: 'row',
@@ -205,16 +281,19 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: normalizeW(10),
+    marginLeft: normalizeW(20),
+    borderBottomWidth: 1,
+    borderBottomColor: '#E9E9E9',
+    borderStyle: 'solid',
   },
   itemText: {
     fontSize: 17,
-    color: '#5A5A5A',
+    color: '#AAAAAA',
     width:normalizeW(87),
   },
   inputContainerStyle: {
     flex: 1,
-    height: normalizeH(44),
+    height: normalizeH(42),
     paddingLeft: 0,
     paddingRight: 0,
 

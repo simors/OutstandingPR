@@ -179,6 +179,25 @@ export function updateService(payload) {
     throw error
   })
 }
+export function updateHelp(payload) {
+  console.log("updateHelp")
+  var publish = AV.Object.createWithoutData('Publishes', payload.publishId)
+
+  publish.set('imgGroup', payload.imgGroup)
+  publish.set('title', payload.title)
+  publish.set('content', payload.content)
+  publish.set('price', payload.price)
+  publish.set('type', 'help')
+
+  return publish.save().then(function (result) {
+    let newPublish = result
+    newPublish.attributes.user = AV.User.current()
+    return Publish.fromLeancloudObject(newPublish)
+  }, function (error) {
+    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    throw error
+  })
+}
 
 export function getPublishedByUserId(payload) {
   let userId = payload.userId

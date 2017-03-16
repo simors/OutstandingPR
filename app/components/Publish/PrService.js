@@ -58,7 +58,6 @@ const rteHeight = {
 
 const wrapHeight = normalizeH(87)
 
-
 class PrService extends Component {
   constructor(props) {
     super(props)
@@ -67,7 +66,6 @@ class PrService extends Component {
       onInsertImage: false,
       extraHeight: rteHeight.height,
       headerHeight: wrapHeight,
-
     }
     this.isPublishing = false
     this.insertImages = []

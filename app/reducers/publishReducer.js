@@ -56,7 +56,6 @@ function handleUpdatePublish(state, action) {
     index= _list.findIndex((record) => {
       return publish.get('objectId') == record.objectId
     })
-    console.log("index", index)
     if (index != -1)
       _list = _list.set(index, publish)
   }
