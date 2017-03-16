@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -61,7 +62,6 @@
 		B01765FB0BAC486A99A039B5 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C0A6C641CF8446FACA22EFF /* libRNImagePicker.a */; };
 		B6811B1030BC46C4B39A0D96 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 563A1CD2F49A4AE3B544E1CE /* Foundation.ttf */; };
 		E7845D6C7CC34B1995B4B72E /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7D33246CA198436EB9DE23FC /* Ionicons.ttf */; };
-		E7C021369FC649E19D728A6A /* libAutoGrowTextInput.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DB6F62D85CFD4105B7E1E068 /* libAutoGrowTextInput.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -382,7 +382,6 @@
 		8AAD51544DBA03A2E6ECA294 /* Pods-OutstandingPR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OutstandingPR.release.xcconfig"; path = "Pods/Target Support Files/Pods-OutstandingPR/Pods-OutstandingPR.release.xcconfig"; sourceTree = "<group>"; };
 		C6A3B9A953D740D0AF1E69B1 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		D54785CE3D524B9DB0E99269 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
-		DB6F62D85CFD4105B7E1E068 /* libAutoGrowTextInput.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libAutoGrowTextInput.a; sourceTree = "<group>"; };
 		EF627051079A4ED29E6F3EDE /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		FE5364E4C4EB4B3FBB0A5BA6 /* libimageCropPicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libimageCropPicker.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -431,7 +430,6 @@
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				62BB3DD8F4F4498B85EB8EE8 /* libRNVectorIcons.a in Frameworks */,
-				E7C021369FC649E19D728A6A /* libAutoGrowTextInput.a in Frameworks */,
 				80A39C07E4EB45FCA4D106C5 /* libimageCropPicker.a in Frameworks */,
 				B01765FB0BAC486A99A039B5 /* libRNImagePicker.a in Frameworks */,
 				0C1BDF64FF3D375B095E11F6 /* libPods-OutstandingPR.a in Frameworks */,
