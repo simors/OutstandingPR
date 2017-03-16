@@ -19,10 +19,11 @@ import {
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import {AutoGrowingTextInput} from 'react-native-autogrow-textinput'
+import AutoGrowingTextInput from '../common/Input/AutoGrowingTextInput'
 import * as ImageUtil from '../../util/ImageUtil'
 import {initInputForm, inputFormUpdate} from '../../action/inputFormActions'
 import {getInputData} from '../../selector/inputFormSelector'
+import {em, normalizeW, normalizeH, normalizeBorder} from '../../util/Responsive'
 import ActionSheet from 'react-native-actionsheet'
 import * as Toast from './Toast'
 
@@ -32,6 +33,8 @@ const PAGE_HEIGHT = Dimensions.get('window').height
 const COMP_TEXT = 'COMP_TEXT'
 const COMP_IMG = 'COMP_IMG'
 
+const toolbarHeight = normalizeH(40)
+const androidStatusbarHeight = normalizeH(20)
 
 /****************************************************************
  *
@@ -46,12 +49,12 @@ const COMP_IMG = 'COMP_IMG'
  *
  **/
 
-export class ArticleEditor extends Component {
+class ArticleEditor extends Component {
   constructor(props) {
     super(props)
     this.state = {
       keyboardPadding: 0,
-      subComp: [this.renderTextInput("", 0, true)],
+      subComp: [this.renderTextInput("", 0, false)],
       imgWidth: 200,
       imgHeight: 200,
       cursor: 0,        // 光标所在组件的索引
@@ -59,10 +62,12 @@ export class ArticleEditor extends Component {
       editorHeight: new Animated.Value(0),
       scrollViewHeight: 0,
       contentHeight: 0,
+      showToolbar: false,
     }
-    this.comp = [this.renderTextInput("", 0, true)]
+    this.comp = [this.renderTextInput("", 0, false)]
     this.compHeight = 0
     this.keyboardHeight = 0
+    this.inputRef = []
   }
 
   componentDidMount() {
@@ -74,7 +79,7 @@ export class ArticleEditor extends Component {
       Keyboard.addListener('keyboardDidHide', this.keyboardWillHide)
     }
 
-    this.compHeight = PAGE_HEIGHT - this.props.wrapHeight - (Platform.OS === 'ios' ? 0 : 20)
+    this.compHeight = PAGE_HEIGHT - this.props.wrapHeight - (Platform.OS === 'ios' ? 0 : androidStatusbarHeight)
     this.setState({editorHeight: new Animated.Value(this.compHeight)})
 
     let initText = []
@@ -100,10 +105,15 @@ export class ArticleEditor extends Component {
   }
 
   componentWillReceiveProps(newProps) {
+    if (this.props.wrapHeight != newProps.wrapHeight) {
+      this.compHeight = PAGE_HEIGHT - newProps.wrapHeight - (Platform.OS === 'ios' ? 0 : androidStatusbarHeight)
+      this.setState({editorHeight: new Animated.Value(this.compHeight)})
+    }
+
     if (this.props.data != newProps.data) {
       this.comp = []
       if (!newProps.data) {
-        this.comp.push(this.renderTextInput("", 0, true))
+        this.comp.push(this.renderTextInput("", 0, false))
       } else {
         newProps.data.map((comp, index) => {
           if (comp.type === COMP_TEXT) {
@@ -119,13 +129,9 @@ export class ArticleEditor extends Component {
         this.props.getImages(this.getImageCollection(newProps.data))
       }
     }
-    // console.log('componentWillReceiveProps=======', newProps.shouldUploadImgComponent)
-    // console.log('componentWillReceiveProps=======', this.isUploadedImgComponent)
+
     if(newProps.shouldUploadImgComponent && !this.isUploadedImgComponent) {
       this.uploadImgComponent(newProps.data)
-    }
-    if (newProps.onInsertImage) {
-      this.insertImage()
     }
   }
 
@@ -140,7 +146,17 @@ export class ArticleEditor extends Component {
   }
 
   keyboardWillShow = (e) => {
-    let newEditorHeight = this.compHeight - e.endCoordinates.height
+    let isFocus = this.inputRef.find((input) => {
+      if (input.isFocused()) {
+        return true
+      }
+      return false
+    })
+    if (isFocus) {
+      this.setState({showToolbar: true})
+    }
+
+    let newEditorHeight = this.compHeight - e.endCoordinates.height - toolbarHeight
     Animated.timing(this.state.editorHeight, {
       toValue: newEditorHeight,
       duration: 210,
@@ -154,6 +170,12 @@ export class ArticleEditor extends Component {
   }
 
   keyboardWillHide = (e) => {
+    this.inputRef.forEach((input) => {
+      input.blur()
+    })
+    if (this.props.onBlurEditor) {
+      this.props.onBlurEditor()
+    }
     Animated.timing(this.state.editorHeight, {
       toValue: this.compHeight,
       duration: 210,
@@ -161,6 +183,7 @@ export class ArticleEditor extends Component {
 
     this.setState({
       keyboardPadding: 0,
+      showToolbar: false,
     })
   }
 
@@ -229,7 +252,6 @@ export class ArticleEditor extends Component {
 
   insertImage() {
     this.ActionSheet.show()
-    this.props.onInsertImageCallback()
   }
 
   uploadImgComponent(data) {
@@ -342,6 +364,11 @@ export class ArticleEditor extends Component {
   renderTextInput(content, index, autoFocus = false) {
     return (
       <AutoGrowingTextInput
+        ref={(o) => {
+          if (o && !this.inputRef.includes(o)) {
+            this.inputRef.push(o)
+          }
+        }}
         style={styles.InputStyle}
         placeholder={this.props.placeholder}
         editable={this.props.editable}
@@ -350,7 +377,10 @@ export class ArticleEditor extends Component {
         value={content}
         onChangeText={(text) => this.updateTextInput(index, text)}
         onFocus={() => {
-          this.setState({cursor: index})
+          if (this.props.onFocusEditor) {
+            this.props.onFocusEditor()
+          }
+          this.setState({cursor: index, showToolbar: true})
           if (Platform.OS != 'ios') {
             this.inputFocused("content_" + index)
           }
@@ -390,7 +420,33 @@ export class ArticleEditor extends Component {
     )
   }
 
-
+  renderEditToolView() {
+    return (
+      <View style={[styles.editToolView,
+        {
+          position: 'absolute',
+          left: 0,
+          bottom: this.state.keyboardPadding,
+          width: PAGE_WIDTH,
+          height: toolbarHeight,
+        }]}
+      >
+        <View style={{flex: 1, flexDirection: 'row'}}>
+          <View style={{flex: 1, backgroundColor: '#F5F5F5'}}>
+            <TouchableOpacity onPress={() => {this.insertImage()}}
+                              style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+              <Image
+                style={{width: 20, height: 20}}
+                source={require('../../assets/images/add_picture.png')}>
+              </Image>
+              <Text style={{fontSize: 15, color: '#AAAAAA', lineHeight: 15, marginLeft: normalizeW(10)}}>添加图片</Text>
+            </TouchableOpacity>
+          </View>
+          {this.props.renderCustomToolbar ? this.props.renderCustomToolbar() : <View/>}
+        </View>
+      </View>
+    )
+  }
 
   _handleActionSheetPress(index) {
     if(0 == index) { //拍照
@@ -441,29 +497,30 @@ export class ArticleEditor extends Component {
   render() {
     if (Platform.OS === 'ios') {
       return (
-        <View style={{width: PAGE_WIDTH, height: this.compHeight}}>
+        <View style={{width: PAGE_WIDTH, height: this.compHeight, backgroundColor: 'white'}}>
           <KeyboardAwareScrollView
             ref="scrollView"
             style={{flex: 1}}
             keyboardDismissMode="on-drag"
             automaticallyAdjustContentInsets={false}
-            keyboardShouldPersistTaps={"always"}
+            keyboardShouldPersistTaps="always"
             extraHeight={this.props.wrapHeight + 50}
           >
             {this.renderComponents()}
           </KeyboardAwareScrollView>
+          {this.state.showToolbar ? this.renderEditToolView() : <View/>}
           {this.renderActionSheet()}
         </View>
       )
     } else {
       return (
-        <View style={{width: PAGE_WIDTH, height: this.compHeight}}>
+        <View style={{width: PAGE_WIDTH, height: this.compHeight, backgroundColor: 'white'}}>
           <Animated.View style={{height: this.state.editorHeight}}>
             <ScrollView
               ref="scrollView"
               style={{flex: 1}}
               automaticallyAdjustContentInsets={false}
-              keyboardShouldPersistTaps={"always"}
+              keyboardShouldPersistTaps="always"
               onContentSizeChange={ (contentWidth, contentHeight) => {
                 this.setState({contentHeight: contentHeight })
               }}
@@ -475,6 +532,7 @@ export class ArticleEditor extends Component {
               {this.renderComponents()}
             </ScrollView>
           </Animated.View>
+          {this.state.showToolbar ? this.renderEditToolView() : <View/>}
           {this.renderActionSheet()}
         </View>
       )
@@ -509,7 +567,7 @@ const styles = StyleSheet.create({
   },
   InputStyle: {
     width: PAGE_WIDTH,
-    fontSize: 16,
+    fontSize: em(16),
     paddingTop: 10,
     paddingBottom: 10,
     paddingLeft: 15,
@@ -521,8 +579,8 @@ const styles = StyleSheet.create({
   editToolView: {
     flexDirection: 'row',
     backgroundColor: 'white',
-    borderRadius: 25,
-    overflow: 'hidden'
+    // borderRadius: 25,
+    // overflow: 'hidden'
   },
   imgInputStyle: {
     maxWidth: PAGE_WIDTH,

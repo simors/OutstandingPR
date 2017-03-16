@@ -47,16 +47,18 @@ const serviceContent = {
   type: "serviceContent"
 }
 
-const contentHeight = {
+const rteHeight = {
   ...Platform.select({
     ios: {
-      height: normalizeH(65 + 88),
+      height: normalizeH(64),
     },
     android: {
-      height: normalizeH(45 + 88)
+      height: normalizeH(44)
     }
   })
 }
+const wrapHeight = normalizeH(87)
+
 
 class PrHelp extends Component {
   constructor(props) {
@@ -64,8 +66,10 @@ class PrHelp extends Component {
     this.state = {
       shouldUploadImgComponent: false,
       onInsertImage: false,
-      publishButtonDisable: false
+      extraHeight: rteHeight.height,
+      headerHeight: wrapHeight,
     }
+    this.isPublishing = false
     this.insertImages = []
     this.leanImgUrls = []
   }
@@ -76,7 +80,7 @@ class PrHelp extends Component {
 
 
   submitSuccessCallback =() => {
-    this.setState({publishButtonDisable: false})
+    this.isPublishing = false
     Toast.show('发布成功')
     Actions.pop()
   }
@@ -102,32 +106,40 @@ class PrHelp extends Component {
   }
 
   onButtonPress() {
-    this.setState({
-      publishButtonDisable: true
-    })
-    if (this.insertImages && this.insertImages.length) {
-      Toast.show('开始发布...', {
-        duration: 1000,
-        onHidden: ()=> {
-          this.setState({
-            shouldUploadImgComponent: true
-          })
+    if(this.props.isLogin) {
+      if (this.insertImages && this.insertImages.length) {
+        if (this.isPublishing) {
+          return
         }
-      })
+        this.isPublishing = true
+        Toast.show('开始发布...', {
+          duration: 1000,
+          onHidden: ()=> {
+            this.setState({
+              shouldUploadImgComponent: true
+            })
+          }
+        })
+      } else {
+        if (this.isPublishing) {
+          return
+        }
+        this.isPublishing = true
+        Toast.show('开始发布...', {
+          duration: 1000,
+          onHidden: ()=> {
+            this.onPublish()
+          }
+        })
+      }
     } else {
-      Toast.show('开始发布...', {
-        duration: 1000,
-        onHidden: ()=> {
-          this.onPublish()
-        }
-      })
+      Actions.LOGIN()
     }
   }
 
 
   getRichTextImages(images) {
     this.insertImages = images
-    console.log('images list', this.insertImages)
   }
 
   onInsertImage = () => {
@@ -142,26 +154,32 @@ class PrHelp extends Component {
     })
   }
 
-  renderKeyboardAwareToolBar() {
+  renderArticleEditorToolbar() {
     return (
-      <KeyboardAwareToolBar
-        initKeyboardHeight={-50}
-      >
-        <TouchableOpacity style={{flex: 1, flexDirection: 'row', justifyContent: 'center',alignItems: 'center',height: normalizeH(40), backgroundColor: '#F5F5F5'}}
-                          onPress={this.onInsertImage}
-        >
-          <Image
-            style={{marginRight: normalizeW(10)}}
-            source={require('../../assets/images/add_picture.png')}
-          />
-          <Text style={{fontSize: 15, color: '#AAAAAA'}}>添加图片</Text>
+      <View style={this.isPublishing?{width: normalizeW(64), backgroundColor: '#AAAAAA'} : {width: normalizeW(64), backgroundColor: THEME.colors.yellow}}>
+        <TouchableOpacity onPress={() => {this.onButtonPress()}}
+                          style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+          <Text style={{fontSize: 15, color: 'white', lineHeight: 15}}>发布</Text>
         </TouchableOpacity>
-        <CommonButton title="发布"
-                      buttonStyle={{width: normalizeW(64), height: normalizeH(40)}}
-                      titleStyle={{fontSize: 15}}
-                      disabled={this.state.publishButtonDisable}
-                      onPress={() => this.onButtonPress()}/>
-      </KeyboardAwareToolBar>
+      </View>
+    )
+  }
+
+  renderRichText() {
+    return (
+      <ArticleEditor
+        {...serviceContent}
+        wrapHeight={this.state.extraHeight}
+        renderCustomToolbar={() => {return this.renderArticleEditorToolbar()}}
+        getImages={(images) => this.getRichTextImages(images)}
+        shouldUploadImgComponent={this.state.shouldUploadImgComponent}
+        uploadImgComponentCallback={(leanImgUrls)=> {
+          this.uploadImgComponentCallback(leanImgUrls)
+        }}
+        onFocusEditor={() => {this.setState({headerHeight: 0})}}
+        onBlurEditor={() => {this.setState({headerHeight: wrapHeight})}}
+        placeholder="找人脉，从这里开始…………"
+      />
     )
   }
 
@@ -175,45 +193,34 @@ class PrHelp extends Component {
           title="发布公关需求"
           rightType="text"
           rightText="发送"
-          rightButtonDisabled= {this.state.publishButtonDisable}
+          rightButtonDisabled= {this.isPublishing}
           rightPress={() => this.onButtonPress()}
-          rightStyle= {this.state.publishButtonDisable? {color: '#AAAAAA'}: {}}
+          rightStyle= {this.isPublishing? {color: '#AAAAAA'}: {}}
         />
         <View style={styles.body}>
-          <View>
-            <CommonTextInput maxLength={36}
-                             {...serviceName}
-                             containerStyle={styles.titleContainerStyle}
-                             inputStyle={styles.titleInputStyle}
-                             placeholder="输入标题"
-                             clearBtnStyle={{top: normalizeH(10)}}/>
+          <View style={{height: this.state.headerHeight, overflow: 'hidden'}}
+                onLayout={(event) => {this.setState({extraHeight: rteHeight.height + event.nativeEvent.layout.height})}}>
+            <View style={{borderBottomWidth: 1, borderBottomColor: '#E9E9E9', borderStyle: 'solid'}}>
+              <CommonTextInput maxLength={36}
+                               {...serviceName}
+                               containerStyle={styles.titleContainerStyle}
+                               inputStyle={styles.titleInputStyle}
+                               placeholder="输入标题"
+                               clearBtnStyle={{top: normalizeH(10)}}/>
+            </View>
+            <View style={styles.price}>
+              <Text style={{fontSize: 17, color: '#AAAAAA', paddingLeft: normalizeW(20)}}>价格</Text>
+              <Text style={{marginLeft: normalizeW(38), fontSize: 20, color: THEME.colors.yellow}}>¥</Text>
+              <CommonTextInput maxLength={7}
+                               {...servicePrice}
+                               containerStyle={styles.priceContainerStyle}
+                               inputStyle={styles.priceInputStyle}
+                               placeholder="10000"
+                               keyboardType='numeric'/>
+            </View>
           </View>
-          <View style={styles.price}>
-            <Text style={{fontSize: 17, color: '#AAAAAA', paddingLeft: normalizeW(20)}}>价格</Text>
-            <Text style={{marginLeft: normalizeW(38), fontSize: 20, color: THEME.colors.yellow}}>¥</Text>
-            <CommonTextInput maxLength={7}
-                             {...servicePrice}
-                             containerStyle={styles.priceContainerStyle}
-                             inputStyle={styles.priceInputStyle}
-                             placeholder="10000"
-                             keyboardType='numeric'/>
-          </View>
-          <View>
-            <ArticleEditor
-              {...serviceContent}
-              wrapHeight={contentHeight.height}
-              placeholder="正文"
-              onInsertImage = {this.state.onInsertImage}
-              onInsertImageCallback={this.onInsertImageCallback}
-              shouldUploadImgComponent={this.state.shouldUploadImgComponent}
-              uploadImgComponentCallback={(leanImgUrls) => {this.uploadImgComponentCallback(leanImgUrls)}}
-              getImages={(images) => this.getRichTextImages(images)}
-            />
-
-          </View>
+          {this.renderRichText()}
         </View>
-        {this.renderKeyboardAwareToolBar()}
-
       </View>
 
     )
@@ -253,12 +260,9 @@ const styles = StyleSheet.create({
   },
   titleContainerStyle: {
     flex: 1,
-    height: normalizeH(44),
+    height: normalizeH(42),
     paddingLeft: 0,
     paddingRight: 0,
-    borderBottomWidth: 1,
-    borderStyle: 'solid',
-    borderBottomColor: '#E9E9E9',
   },
   titleInputStyle: {
     flex: 1,
@@ -267,6 +271,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     color: '#5A5A5A',
     fontFamily: 'PingFangSC-Semibold',
+    borderWidth: 0,
   },
   price: {
     flexDirection: 'row',
@@ -278,7 +283,7 @@ const styles = StyleSheet.create({
   },
   priceContainerStyle: {
     flex: 1,
-    height: normalizeH(44),
+    height: normalizeH(42),
     paddingLeft: 0,
     paddingRight: 0,
   },
