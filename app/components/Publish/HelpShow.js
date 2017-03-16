@@ -231,7 +231,7 @@ class HelpShow extends Component {
   renderKeyboardAwareToolBar() {
     return (
       <KeyboardAwareToolBar
-        initKeyboardHeight={-50}
+        initKeyboardHeight={-100}
       >
         <ToolBarContent
           label={"发送"}

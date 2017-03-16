@@ -220,7 +220,7 @@ class ServiceShow extends Component {
   renderKeyboardAwareToolBar() {
     return (
       <KeyboardAwareToolBar
-        initKeyboardHeight={-50}
+        initKeyboardHeight={-100}
       >
         <ToolBarContent
           label={"发送"}
@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
     height: normalizeH(49),
     backgroundColor: 'rgba(250, 250, 250, 0.9)',
     borderTopWidth: 1,
-    borderTopColor: '#AAAAAA'
+    borderTopColor: '#AAAAAA',
   },
   contacted: {
     height: normalizeH(49),
