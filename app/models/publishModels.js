@@ -47,8 +47,10 @@ export class Publish extends PublishRecord {
       record.set('status', attrs.status)
       if(attrs.lastRefreshAt) {
         record.set('lastRefreshAt', attrs.lastRefreshAt.valueOf())
-      } else {
+      } else if(lcObj.createdAt) {
         record.set('lastRefreshAt', lcObj.createdAt.valueOf())
+      } else {
+        record.set('lastRefreshAt', lcObj.updatedAt.valueOf())
       }
       if(lcObj.createdAt)
         record.set('createdAt', lcObj.createdAt.valueOf())
