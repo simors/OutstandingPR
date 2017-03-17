@@ -20,6 +20,12 @@ import {normalizeW, normalizeH} from '../../util/Responsive'
 import {persistor} from '../../store/persistStore'
 import * as Toast from '../../components/common/Toast'
 import {activeUserInfo} from '../../selector/authSelector'
+import Popup from '@zzzkk2009/react-native-popup'
+import RNRestart from 'react-native-restart'
+import {userLogOut} from '../../action/authActions'
+
+
+
 
 
 class Setting extends Component {
@@ -28,23 +34,53 @@ class Setting extends Component {
   }
 
   clearApplication() {
-    Actions.POPUP({
+    Popup.confirm({
       title: '提示',
-      content: ['确认清除缓存？'],
-      comfirmAction: () => {
-        Actions.pop()
-        persistor.purge()
-        Toast.show('清除成功')
+      content: '确认清除缓存？',
+      ok: {
+        text: '确定',
+        style: {color: THEME.colors.yellow},
+        callback: ()=>{
+          Actions.pop()
+          persistor.purge()
+          Toast.show('清除成功，应用重启！')
+          setTimeout(() => {
+            RNRestart.Restart()
+          }, 1000)
+        }
+      },
+      cancel: {
+        text: '取消',
+        callback: ()=>{
+          // console.log('cancel')
+        }
       }
     })
   }
 
-  onButtonPress = () => {
-    persistor.purge(['AUTH'])
-    Toast.show('清除成功')
-    setTimeout(() => {
-      Actions.LOGIN()
-    }, 2000)
+  clearUserInfo() {
+    Popup.confirm({
+      title: '提示',
+      content: '确认退出登录吗？',
+      ok: {
+        text: '确定',
+        style: {color: THEME.colors.yellow},
+        callback: ()=>{
+          this.props.userLogOut({
+            success: () => {
+              Toast.show('登出成功')
+              Actions.HOME({type: 'reset'})
+            }
+          })
+        }
+      },
+      cancel: {
+        text: '取消',
+        callback: ()=>{
+          // console.log('cancel')
+        }
+      }
+    })
   }
 
   render() {
@@ -110,12 +146,10 @@ class Setting extends Component {
           <View style={styles.exit}>
             <CommonButton
               title="退出登录"
-              onPress={() => this.onButtonPress()}
+              onPress={() => this.clearUserInfo()}
             />
           </View>
-
         </View>
-
       </View>
     )
   }
@@ -129,6 +163,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 const mapDispatchToProps = (dispatch) => bindActionCreators({
+  userLogOut,
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Setting)

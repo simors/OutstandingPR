@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.beefe.picker.PickerViewPackage;
 import com.facebook.react.ReactApplication;
+import com.avishayil.rnrestart.ReactNativeRestartPackage;
 import com.zachary.reactnative.leancloudsdk.AvOsCloudPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.facebook.react.ReactNativeHost;
@@ -30,6 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactNativeRestartPackage(),
             new AvOsCloudPackage(),
             new RNDeviceInfo(),
             new PickerViewPackage(),

@@ -17,6 +17,14 @@ export function become(payload) {
   })
 }
 
+export function logOut(payload) {
+  return AV.User.logOut().then(() => {
+    // do nothing
+  }, (err) => {
+    throw err
+  })
+}
+
 /**
  * 用户名和密码登录
  * @param payload
@@ -44,8 +52,6 @@ export function loginWithPwd(payload) {
  * @returns {IPromise<U>|*|AV.Promise}
  */
 export function register(payload) {
-  console.log("register entry")
-
   let user = new AV.User()
   user.set('type', 'normal')
   user.setUsername(payload.phone)
@@ -67,15 +73,15 @@ export function register(payload) {
         },
         increArgs: {}
       }
-      console.log("register updatePayload", updatePayload)
-
       oPrs.updateObj(updatePayload)
     })
     let userInfo = UserInfo.fromLeancloudObject(loginedUser)
+    let token = user.getSessionToken()
+    userInfo = userInfo.set('token', token)
     modifyMobilePhoneVerified({id: loginedUser.id})
     return {
       userInfo: userInfo,
-      token: user.getSessionToken()
+      token: token,
     }
   }, (err) => {
     err.message = ERROR[err.code] ? ERROR[err.code] : ERROR[9999]

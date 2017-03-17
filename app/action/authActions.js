@@ -7,6 +7,8 @@ import * as lcAuth from '../api/leancloud/auth'
 import {UserInfo} from '../models/userModels'
 import {activeUserId, activeUserInfo} from '../selector/authSelector'
 import * as AVUtils from '../util/AVUtils'
+import {closeMessageClient} from './messageAction'
+
 
 
 export const INPUT_FORM_SUBMIT_TYPE = {
@@ -357,6 +359,20 @@ export function unFollowUser(payload) {
         payload.error(error)
       }
     })
+  }
+}
+
+export function userLogOut(payload) {
+  return (dispatch, getState) => {
+    lcAuth.logOut({})
+    dispatch(createAction(AuthTypes.LOGIN_OUT)({}))
+    dispatch(closeMessageClient({}))
+    AVUtils.updateDeviceUserInfo({
+      removeUser: true
+    })
+    if (payload.success) {
+      payload.success()
+    }
   }
 }
 
