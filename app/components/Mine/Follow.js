@@ -31,13 +31,13 @@ class Follow extends Component {
 
   renderItem(rowData) {
     return(
-      <View style={styles.userInfoView}>
-        <TouchableOpacity onPress={() => {Actions.PERSONAL_HOMEPAGE({userId: rowData.id})}}>
+      <TouchableOpacity style={styles.userInfoView} onPress={() => {Actions.PERSONAL_HOMEPAGE({userId: rowData.id})}}>
+        <View>
           <Image
             style={{width: 50, height: 50, borderRadius: 25, marginTop: normalizeH(20), marginRight: normalizeW(15),marginLeft: normalizeW(15)}}
             source={rowData.avatar? {uri: rowData.avatar} : require('../../assets/images/defualt_user40.png')}
           />
-        </TouchableOpacity>
+        </View>
         <View style={{flex: 1}}>
           <Text style={{fontSize: 17, marginTop: normalizeH(28), }}>{rowData.nickname}</Text>
           <Text style={{fontSize: 12, color: '#5A5A5A', marginTop: normalizeH(5)}}>大活动策划</Text>
@@ -46,7 +46,7 @@ class Follow extends Component {
             <Text style={{fontSize: 12, color: '#AAAAAA',marginLeft: normalizeW(50)}}>三天前来过</Text>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
 
