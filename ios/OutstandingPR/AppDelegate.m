@@ -12,6 +12,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import "RCTBaiduMapViewManager.h"
+#import "RCTPushNotificationManager.h"
 
 @implementation AppDelegate
 

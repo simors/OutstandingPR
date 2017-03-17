@@ -34,6 +34,7 @@ import SystemMessageBox from '../components/Message/SystemMessageBox'
 import PublishNotifyView from '../components/Message/PublishNotifyView'
 import Chatroom from '../components/Chatroom'
 import SelectCity from '../components/Home/SelectCity'
+import NicknameView from '../components/Login/NicknameView'
 
 const styles = StyleSheet.create({
   container: {
@@ -80,6 +81,7 @@ export const scenes = Actions.create(
       <Scene key="PUBLISH_NOTIFY" component={PublishNotifyView} />
       <Scene key="CHATROOM" component={Chatroom} />
       <Scene key="SELECT_CITY" component={SelectCity} />
+      <Scene key="NICKNAME_VIEW" component={NicknameView} />
 
 
       <Scene key="HOME" tabs hideNavBar tabBarStyle={styles.tabBarStyle}>

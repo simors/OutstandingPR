@@ -5,10 +5,13 @@ import {getInputFormData, isInputFormValid, getInputData, isInputValid} from '..
 import {initMessageClient, notifyUserFollow} from '../action/messageAction'
 import * as lcAuth from '../api/leancloud/auth'
 import {UserInfo} from '../models/userModels'
+import {activeUserId, activeUserInfo} from '../selector/authSelector'
+import * as AVUtils from '../util/AVUtils'
 
 
 export const INPUT_FORM_SUBMIT_TYPE = {
   REGISTER: 'REGISTER',
+  SET_NICKNAME: 'SET_NICKNAME',
   GET_SMS_CODE: 'GET_SMS_CODE',
   RESET_PWD_SMS_CODE: 'RESET_PWD_SMS_CODE',
   LOGIN_WITH_SMS: 'LOGIN_WITH_SMS',
@@ -39,6 +42,9 @@ export function submitFormData(payload) {
         break
       case INPUT_FORM_SUBMIT_TYPE.MODIFY_PASSWORD:
         dispatch(handleResetPwdSmsCode(payload, formData))
+        break
+      case INPUT_FORM_SUBMIT_TYPE.SET_NICKNAME:
+        dispatch(handleSetNickname(payload, formData))
         break
       case INPUT_FORM_SUBMIT_TYPE.PROFILE_SUBMIT:
         dispatch(handleProfileSubmit(payload, formData))
@@ -120,6 +126,10 @@ function handleRegister(payload, formData) {
 
     lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
       dispatch(registerWithPhoneNum(payload, formData))
+      dispatch(initMessageClient(payload))
+      AVUtils.updateDeviceUserInfo({
+        userId: activeUserId(getState())
+      })
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
@@ -185,10 +195,36 @@ function handleResetPwdSmsCode(payload, formData) {
   }
 }
 
+function handleSetNickname(payload, formData) {
+  console.log("handleSetNickname", payload)
+  console.log("handleSetNickname", formData)
+  return (dispatch, getState) => {
+    let form = {
+      userId: activeUserId(getState()),
+      nickname: formData.nicknameInput.text,
+    }
+    lcAuth.setUserNickname(form).then((result) => {
+      if (result.errcode == 0 ) {
+        if (payload.success) {
+          payload.success()
+        }
+      } else {
+        if (payload.error) {
+          payload.error({message: '设置昵称失败，请重试'})
+        }
+      }
+    }).then(() => {
+      let user = activeUserInfo(getState())
+      lcAuth.become({token: user.token}).then((userInfo) => {
+        let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
+        dispatch(loginAction({...userInfo}))
+      })
+    })
+  }
+}
+
 function handleProfileSubmit(payload, formData) {
   return (dispatch, getState) => {
-    console.log('handleProfileSubmit formData=', formData)
-    console.log('handleProfileSubmit payload=', payload)
     let profilePayload = {
       userId: payload.id,
       avatar: formData.avatarInput.text,
