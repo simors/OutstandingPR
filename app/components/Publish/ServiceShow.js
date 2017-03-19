@@ -169,13 +169,15 @@ class ServiceShow extends Component {
   }
 
   onReply = (comment) => {
-    if(comment) {
-      this.setState({
-        currentCommentId: comment.commentId,
-        currentCommentNickname: comment.commentUser,
-      })
+    if(comment.commentUserId != this.props.currentUser) {
+      if(comment) {
+        this.setState({
+          currentCommentId: comment.commentId,
+          currentCommentNickname: comment.commentUser,
+        })
+      }
+      this.contentBar.setFocus()
     }
-    this.contentBar.setFocus()
   }
   onFavorite() {
     if(this.props.isFavorite) {
@@ -247,7 +249,7 @@ class ServiceShow extends Component {
                 />
               </TouchableOpacity>
               <TouchableOpacity style={{flex: 1, borderBottomColor: '#F5F5F5', borderBottomWidth: 1}}
-                                onPress={() => this.onReply({commentId: value.objectId, commentUser: value.nickname})}>
+                                onPress={() => this.onReply({commentId: value.objectId, commentUser: value.nickname, commentUserId: value.userId})}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between',marginTop: normalizeH(23)}}>
                   <Text style={{fontSize: 15, color: 'rgba(86, 103, 143, 1)'}}>{value.nickname}</Text>
                   <Text style={{fontSize: 12, color: '#AAAAAA', marginRight: normalizeW(15)}}>{"30分钟以前"}</Text>
