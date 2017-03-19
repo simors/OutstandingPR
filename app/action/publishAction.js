@@ -164,7 +164,6 @@ function handlePublishComment(payload, formData) {
       return
     }
     lcPublish.publishComments(publishCommentPayload).then((result) => {
-      console.log("lcPublish.publishComments return", result)
       if (payload.success) {
         payload.success()
       }

@@ -252,7 +252,6 @@ class ServiceShow extends Component {
     if (this.props.publishComments) {
       return (
         this.props.publishComments.map((value, key)=> {
-          console.log("publishComments", value)
           return (
             <View key={key} style={{flexDirection: 'row', width: PAGE_WIDTH, height: normalizeH(83)}} >
               <TouchableOpacity onPress={() => this.onAvatarClick(value.userId)}>
