@@ -236,13 +236,21 @@ class ServiceShow extends Component {
     )
   }
 
+  onAvatarClick(userId) {
+    if(this.props.currentUser == userId) {
+      Actions.PROFILE()
+    } else {
+      Actions.PERSONAL_HOMEPAGE({userId: userId})
+    }
+  }
+
   renderComments() {
     if (this.props.publishComments) {
       return (
         this.props.publishComments.map((value, key)=> {
           return (
             <View key={key} style={{flexDirection: 'row', width: PAGE_WIDTH, height: normalizeH(83)}} >
-              <TouchableOpacity onPress={() => Actions.PERSONAL_HOMEPAGE({userId: value.userId})}>
+              <TouchableOpacity onPress={() => this.onAvatarClick(value.userId)}>
                 <Image
                   source={{uri: value.avatar}}
                   style={{width: 40, height: 40, borderRadius: 20, marginTop: normalizeH(10), marginRight: normalizeW(10), marginLeft: normalizeW(15)}}
