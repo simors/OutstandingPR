@@ -35,9 +35,6 @@ export class Publish extends PublishRecord {
       record.set('geoPoint', attrs.geoPoint)
       record.set('position', attrs.position)
       record.set('userId', attrs.user.id)
-      record.set('avatar', user.get('avatar'))
-      record.set('nickname', user.get('nickname'))
-      record.set('profession', user.get('profession'))
       record.set('title', attrs.title)
       record.set('content', attrs.content)
       record.set('imgGroup', attrs.imgGroup)
@@ -45,6 +42,11 @@ export class Publish extends PublishRecord {
       record.set('price', attrs.price)
       record.set('commentCnt', attrs.commentCnt)
       record.set('status', attrs.status)
+      if(user) {
+        record.set('avatar', user.get('avatar'))
+        record.set('nickname', user.get('nickname'))
+        record.set('profession', user.get('profession'))
+      }
       if(attrs.lastRefreshAt) {
         record.set('lastRefreshAt', attrs.lastRefreshAt.valueOf())
       } else if(lcObj.createdAt) {

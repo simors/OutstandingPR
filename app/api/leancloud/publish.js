@@ -219,7 +219,6 @@ export function getPublishedByUserId(payload) {
     error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
     throw error
   })
-
 }
 
 export function fetchPublishes(payload) {
@@ -228,7 +227,13 @@ export function fetchPublishes(payload) {
   query.equalTo('status', 1)
 
   let isRefresh = payload.isRefresh
-  let lastRefreshAt = payload.lastRefreshAt
+  let lastRefreshAt = undefined
+  if(payload.lastRefreshAt) {
+    lastRefreshAt = new Date(payload.lastRefreshAt)
+  } else {
+    lastRefreshAt = new Date()
+  }
+
   if (!isRefresh && lastRefreshAt) { //分页查询
     query.lessThan('lastRefreshAt', new Date(lastRefreshAt))
   }
