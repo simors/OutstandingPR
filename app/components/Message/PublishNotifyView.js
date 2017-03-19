@@ -48,7 +48,7 @@ class PublishNotifyView extends Component {
           <TouchableOpacity style={styles.personView} onPress={() => Actions.PERSONAL_HOMEPAGE({userId: notice.userId})}>
             <Image style={{width: 50, height: 50}} source={{uri: notice.avatar}}/>
           </TouchableOpacity>
-          <TouchableOpacity style={{}} onPress={() => Actions.SERVICE_SHOW({publishId: notice.publishId, userId: notice.userId})}>
+          <TouchableOpacity style={{}} onPress={() => Actions.SERVICE_SHOW({publishId: notice.publishId})}>
             <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(25)}}>{notice.nickname + ' 给您留言了'}</Text>
             <Text style={{fontSize: 12, color: '#AAAAAA', marginTop: normalizeH(12)}}>{notice.text + '['+ notice.timestamp + ']'}</Text>
           </TouchableOpacity>

@@ -77,7 +77,7 @@ class Home extends Component {
 
   renderService(rowData, rowId) {
     return(
-      <TouchableOpacity key={rowId} style={styles.serviceView} onPress={() => Actions.SERVICE_SHOW({publishId: rowData.objectId, userId: rowData.userId})}>
+      <TouchableOpacity key={rowId} style={styles.serviceView} onPress={() => Actions.SERVICE_SHOW({publishId: rowData.objectId})}>
         <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(15)}}>{rowData.title}</Text>
         <View style={{flexDirection: 'row', marginTop: normalizeH(12)}}>
           <Text style={{fontSize: 15, color: '#5A5A5A'}}>{rowData.nickname}</Text>

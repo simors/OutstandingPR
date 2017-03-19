@@ -118,7 +118,7 @@ class Published extends Component {
   onItemShow(rowData) {
     console.log("onItemShow rowData", rowData)
     if(this.state.selectedItem == 'service') {
-      Actions.SERVICE_SHOW({publishId: rowData.objectId, userId: rowData.userId})
+      Actions.SERVICE_SHOW({publishId: rowData.objectId})
     } else if(this.state.selectedItem == 'help') {
       Actions.HELP_SHOW({publishId: rowData.objectId, userId: rowData.userId})
     }

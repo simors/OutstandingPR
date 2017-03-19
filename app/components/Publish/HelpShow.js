@@ -31,6 +31,7 @@ import {publishFormData, PUBLISH_FORM_SUBMIT_TYPE, fetchPublishCommentByPublishI
 import {getUserInfoById, followUser, unFollowUser} from '../../action/authActions'
 import {getPublishComments, getPublishById, getIsFavorite} from '../../selector/publishSelector'
 import dismissKeyboard from 'react-native-dismiss-keyboard'
+import {getConversationTime} from '../../util/numberUtils'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -48,7 +49,7 @@ class HelpShow extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(()=>{
       if(this.props.isLogin) {
-        this.props.getUserInfoById({userId: this.props.userId})
+        this.props.getUserInfoById({userId: this.props.helpInfo.userId})
         this.props.fetchPublishCommentByPublishId({publishId: this.props.publishId})
       }else {
         Actions.LOGIN()
@@ -57,7 +58,7 @@ class HelpShow extends Component {
   }
 
   renderEdit() {
-    if(this.props.userId == this.props.currentUser) {
+    if(this.props.helpInfo.userId == this.props.currentUser) {
       return(
         <View style={styles.edit} >
           <TouchableOpacity onPress={() => Actions.EDIT_HELP({help: this.props.helpInfo})}>
@@ -83,11 +84,11 @@ class HelpShow extends Component {
   onFollow() {
     if(this.props.isFollow) {
       this.props.unFollowUser({
-        userId: this.props.userId,
+        userId: this.props.helpInfo.userId,
       })
     } else {
       this.props.followUser({
-        userId: this.props.userId,
+        userId: this.props.helpInfo.userId,
         success: this.followSuccessCallback,
         error: this.followErrorCallback
       })
@@ -95,11 +96,11 @@ class HelpShow extends Component {
   }
 
   renderPersonalInfo() {
-    if(this.props.userId != this.props.currentUser) {
+    if(this.props.helpInfo.userId != this.props.currentUser) {
       return(
         <View style={{flexDirection: 'row',alignItems: 'center' , backgroundColor: '#F5F5F5'}}>
           <TouchableOpacity style={{marginTop: normalizeH(15), marginLeft: normalizeW(10), marginRight: normalizeW(15), marginBottom: normalizeH(15)}}
-                            onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.userId})}>
+                            onPress={() => Actions.PERSONAL_HOMEPAGE({userId: this.props.helpInfo.userId})}>
             <Image
               style={{ width: 60, height: 60, borderRadius: 30, overflow: 'hidden', borderWidth: 2, borderColor: '#FFFFFF'}}
               source={this.props.userInfo.avatar? {uri: this.props.userInfo.avatar}: require('../../assets/images/defualt_user.png')}
@@ -130,7 +131,7 @@ class HelpShow extends Component {
 
   enterChatroom() {
     let members = []
-    members.push(this.props.userId)
+    members.push(this.props.helpInfo.userId)
     members.push(this.props.currentUser)
     if (!this.props.isLogin) {
       Actions.LOGIN()
@@ -146,16 +147,19 @@ class HelpShow extends Component {
   }
 
   onReply = (comment) => {
-    if(comment.commentUserId != this.props.currentUser) {
-      if(comment) {
-        this.setState({
-          currentCommentId: comment.commentId,
-          currentCommentNickname: comment.commentUser,
-        })
+    if(comment) {
+      this.setState({
+        currentCommentId: comment.commentId,
+        currentCommentNickname: comment.commentUser,
+      })
+      if(comment.commentUserId != this.props.currentUser) {
+        this.contentBar.setFocus()
       }
+    } else {
       this.contentBar.setFocus()
     }
   }
+
 
   onFavorite() {
     if(this.props.isFavorite) {
@@ -171,7 +175,7 @@ class HelpShow extends Component {
   }
 
   renderAction() {
-    if(this.props.userId != this.props.currentUser) {
+    if(this.props.helpInfo.userId != this.props.currentUser) {
       return(
         <View style={styles.action}>
           <TouchableOpacity onPress={() => {this.onFavorite()}}>
@@ -271,7 +275,7 @@ class HelpShow extends Component {
                                 onPress={() => this.onReply({commentId: value.objectId, commentUser: value.nickname, commentUserId: value.userId})}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between',marginTop: normalizeH(23)}}>
                   <Text style={{fontSize: 15, color: 'rgba(86, 103, 143, 1)'}}>{value.nickname}</Text>
-                  <Text style={{fontSize: 12, color: '#AAAAAA', marginRight: normalizeW(15)}}>{"30分钟以前"}</Text>
+                  <Text style={{fontSize: 12, color: '#AAAAAA', marginRight: normalizeW(15)}}>{getConversationTime(value.createdAt)}</Text>
                 </View>
                 <View style={{flexDirection: 'row', marginTop: normalizeH(15)}}>
                   <Text style={{fontSize: 15, color: '#5A5A5A'}}>回复</Text>
@@ -303,7 +307,7 @@ class HelpShow extends Component {
             />
           </TouchableOpacity>
         </View>
-        <View style={this.props.userId == this.props.currentUser? {height: PAGE_HEIGHT - normalizeH(65)} : {height: PAGE_HEIGHT - normalizeH(49) - normalizeH(65)}}>
+        <View style={this.props.helpInfo.userId == this.props.currentUser? {height: PAGE_HEIGHT - normalizeH(65)} : {height: PAGE_HEIGHT - normalizeH(49) - normalizeH(65)}}>
           <ScrollView>
             <View style={styles.titleView}>
               <Text style={styles.title}>{this.props.helpInfo.title}</Text>
@@ -342,11 +346,11 @@ const mapStateToProps = (state, ownProps) => {
   let currentUser = activeUserId(state)
   let currentUserInfo = activeUserInfo(state)
   const isLogin = isUserLogined(state)
-  const userInfo = userInfoById(state, ownProps.userId)
   let publishComments = getPublishComments(state, ownProps.publishId)
   let helpInfo = getPublishById(state, ownProps.publishId)
   let isFavorite = getIsFavorite(state, ownProps.publishId)
-  let isFollow = isUserFollowed(state, ownProps.userId)
+  const userInfo = userInfoById(state, helpInfo.userId)
+  let isFollow = isUserFollowed(state, helpInfo.userId)
 
   return {
     isLogin: isLogin,

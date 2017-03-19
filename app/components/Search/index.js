@@ -137,7 +137,7 @@ class Search extends Component {
             source={rowData.avatar? {uri: rowData.avatar} : require('../../assets/images/defualt_user40.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={{flex: 1}} onPress={() => Actions.SERVICE_SHOW({publishId: rowData.objectId, userId: rowData.userId})}>
+        <TouchableOpacity style={{flex: 1}} onPress={() => Actions.SERVICE_SHOW({publishId: rowData.objectId})}>
           <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(20)}}>{rowData.title}</Text>
           <View style={{flexDirection: 'row', marginTop: normalizeH(12)}}>
             <Text style={{fontSize: 15, color: '#5A5A5A'}}>{rowData.nickname}</Text>
