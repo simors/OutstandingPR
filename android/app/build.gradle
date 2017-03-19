@@ -92,6 +92,7 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -110,6 +111,11 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "4g"
+    }
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
@@ -127,7 +133,6 @@ android {
 
 dependencies {
     compile project(':react-native-restart')
-    compile project(':zzzkk2009/react-native-leancloud-sdk')
     compile project(':react-native-device-info')
     compile project(':react-native-picker')
     compile project(':react-native-image-picker')
@@ -137,6 +142,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
     compile project(':zzzkk2009-react-native-baidu-map')
+    compile project(':zzzkk2009-react-native-leancloud-sdk')
 }
 
 // Run this once to be able to run the application with BUCK
