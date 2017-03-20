@@ -256,7 +256,7 @@ class ServiceShow extends Component {
             <View key={key} style={{flexDirection: 'row', width: PAGE_WIDTH, height: normalizeH(83)}} >
               <TouchableOpacity onPress={() => this.onAvatarClick(value.userId)}>
                 <Image
-                  source={{uri: value.avatar}}
+                  source={value.avatar? {uri: value.avatar} : require('../../assets/images/defualt_user40.png')}
                   style={{width: 40, height: 40, borderRadius: 20, marginTop: normalizeH(10), marginRight: normalizeW(10), marginLeft: normalizeW(15)}}
                 />
               </TouchableOpacity>

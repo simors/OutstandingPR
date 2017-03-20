@@ -8,7 +8,6 @@ import {Publish, PublishComment} from '../../models/publishModels'
 import {Geolocation} from '../../components/common/BaiduMap'
 
 export function publishService(payload) {
-  console.log("publishService")
   let Publishes = AV.Object.extend('Publishes')
   let publish = new Publishes()
   let now = new Date()

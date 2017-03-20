@@ -188,7 +188,7 @@ class EditProfile extends Component {
                   <RegionPicker {...cityInput}
                                 initValue={this.props.userInfo.city? this.props.userInfo.city: '长沙'}
                                 containerStyle={{paddingRight:0, paddingLeft: 0}}
-                                inputStyle={{width: normalizeW(160), height: normalizeH(44), fontSize: 16, backgroundColor: '#fff', borderWidth: 0, paddingLeft: 0,}}
+                                inputStyle={{width: normalizeW(160), height: normalizeH(44), fontSize: 16, color: '#5A5A5A', backgroundColor: '#fff', borderWidth: 0, paddingLeft: 0,}}
                   />
                 </View>
               </View>
