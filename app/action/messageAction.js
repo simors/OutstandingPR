@@ -156,6 +156,10 @@ export function closeMessageClient(payload) {
 export function createConversation(payload) {
   return (dispatch, getState) => {
     dispatch(createLcConversation(payload)).then((conversation) => {
+      if (!conversation) {
+        console.log('create conversation failed.')
+        return
+      }
       dispatch(onCreateConversation(conversation))
       dispatch(enterConversation({conversationId: conversation.id}))
       if (payload.success) {
@@ -316,17 +320,11 @@ function createLcConversation(payload) {
       console.log('leancloud Messenger init failed, can\'t get client')
       return undefined
     }
-    if (payload.type === msgTypes.INQUIRY_CONVERSATION) {
-      let wuaiSysDoctor = payload.members.includes(msgTypes.WUAI_SYSTEM_DOCTOR)
-      if (!wuaiSysDoctor) {
-        payload.members.push(msgTypes.WUAI_SYSTEM_DOCTOR)    // 为了区分问诊或私信的会话，如果是问诊的会话，则插入系统医生所为会话参与者
-      }
-    }
     return client.createConversation({
       members: payload.members,
       name: payload.name,
       unique: true,
-      type: payload.type,   // 会话的类型，可以是问诊（INQUIRY_CONVERSATION），或私信（PERSONAL_CONVERSATION）
+      type: payload.type,   // 会话的类型，私信（PERSONAL_CONVERSATION）
       status: 1,
     }).then((conversation) => {
       return Conversation.fromLeancloudConversation(conversation)

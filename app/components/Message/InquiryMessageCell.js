@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {INQUIRY_CONVERSATION, PERSONAL_CONVERSATION, WUAI_SYSTEM_DOCTOR} from '../../constants/messageActionTypes'
+import {PERSONAL_CONVERSATION, WUAI_SYSTEM_DOCTOR} from '../../constants/messageActionTypes'
 import {fetchDoctorGroup} from '../../action/doctorAction'
 import {activeUserId} from '../../selector/authSelector'
 import {getDoctorByGroupUserId} from '../../selector/doctorSelector'

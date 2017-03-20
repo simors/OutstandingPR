@@ -90,7 +90,11 @@ function handleLoginWithPwd(payload, formData) {
       }
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
       dispatch(loginAction({...userInfo}))
+    }).then(() => {
       dispatch(initMessageClient(payload))
+      AVUtils.updateDeviceUserInfo({
+        userId: activeUserId(getState())
+      })
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
@@ -128,10 +132,6 @@ function handleRegister(payload, formData) {
 
     lcAuth.verifySmsCode(verifyRegSmsPayload).then(() => {
       dispatch(registerWithPhoneNum(payload, formData))
-      dispatch(initMessageClient(payload))
-      AVUtils.updateDeviceUserInfo({
-        userId: activeUserId(getState())
-      })
     }).catch((error) => {
       if (payload.error) {
         payload.error(error)
@@ -198,8 +198,6 @@ function handleResetPwdSmsCode(payload, formData) {
 }
 
 function handleSetNickname(payload, formData) {
-  console.log("handleSetNickname", payload)
-  console.log("handleSetNickname", formData)
   return (dispatch, getState) => {
     let form = {
       userId: activeUserId(getState()),
@@ -220,6 +218,11 @@ function handleSetNickname(payload, formData) {
       lcAuth.become({token: user.token}).then((userInfo) => {
         let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
         dispatch(loginAction({...userInfo}))
+      }).then(() => {
+        dispatch(initMessageClient(payload))
+        AVUtils.updateDeviceUserInfo({
+          userId: activeUserId(getState())
+        })
       })
     })
   }
