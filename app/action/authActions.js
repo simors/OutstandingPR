@@ -229,14 +229,14 @@ function handleProfileSubmit(payload, formData) {
   return (dispatch, getState) => {
     let profilePayload = {
       userId: payload.id,
-      avatar: formData.avatarInput.text,
-      birthday: formData.birthdayInput.text,
-      city: formData.cityInput.text,
-      industry: formData.industryInput.text,
-      name: formData.nameInput.text,
-      nickname: formData.nicknameInput.text,
-      organization: formData.organizationInput.text,
-      profession: formData.professionInput.text,
+      avatar: formData.avatarInput && formData.avatarInput.text,
+      birthday: formData.birthdayInput && formData.birthdayInput.text,
+      city: formData.cityInput && formData.cityInput.text,
+      industry: formData.industryInput && formData.industryInput.text,
+      name: formData.nameInput && formData.nameInput.text,
+      nickname: formData.nicknameInput && formData.nicknameInput.text,
+      organization: formData.organizationInput && formData.organizationInput.text,
+      profession: formData.professionInput && formData.professionInput.text,
     }
     lcAuth.profileSubmit(profilePayload).then((profile) => {
       if (payload.success) {
