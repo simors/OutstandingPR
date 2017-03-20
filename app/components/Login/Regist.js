@@ -8,6 +8,7 @@ import {
   Text,
   Image,
   Dimensions,
+  ScrollView,
   Platform
 } from 'react-native'
 import {connect} from 'react-redux'
@@ -24,9 +25,6 @@ import THEME from '../../constants/theme'
 import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import * as Toast from '../common/Toast'
 import {isInputValid} from '../../selector/inputFormSelector'
-
-
-
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -98,34 +96,36 @@ class Regist extends Component {
           title="注 册"
         />
         <View style={styles.body}>
-          <View style={styles.logo}>
-            <Image source={require('../../assets/images/logo.png')}/>
-          </View>
-          <View style={styles.phone}>
-            <PhoneInput {...phoneInput}/>
-          </View>
-          <View style={styles.smsAuthCode}>
-            <SmsAuthCodeInput {...smsAuthCodeInput}
-                              getSmsAuCode={() => {return this.smsCode()}}
-                              reset={this.props.phoneValid}
-            />
-          </View>
-          <View style={styles.password}>
-            <PasswordInput {...passwordInput}/>
-          </View>
-          <View style={styles.loginIn}>
-            <CommonButton
-              title="注 册"
-              onPress={this.onButtonPress}
-            />
-          </View>
-          <View style={styles.agreementView}>
-            <Image
-              style={{marginRight: 6}}
-              source={require('../../assets/images/select.png')}
-            />
-            <Text style={styles.agreement} onPress={() => {}}>服务条款及协议</Text>
-          </View>
+          <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="always">
+            <View style={styles.logo}>
+              <Image source={require('../../assets/images/logo.png')}/>
+            </View>
+            <View style={styles.phone}>
+              <PhoneInput {...phoneInput}/>
+            </View>
+            <View style={styles.smsAuthCode}>
+              <SmsAuthCodeInput {...smsAuthCodeInput}
+                                getSmsAuCode={() => {return this.smsCode()}}
+                                reset={this.props.phoneValid}
+              />
+            </View>
+            <View style={styles.password}>
+              <PasswordInput {...passwordInput}/>
+            </View>
+            <View style={styles.loginIn}>
+              <CommonButton
+                title="注 册"
+                onPress={this.onButtonPress}
+              />
+            </View>
+            <View style={styles.agreementView}>
+              <Image
+                style={{marginRight: 6}}
+                source={require('../../assets/images/select.png')}
+              />
+              <Text style={styles.agreement} onPress={() => {}}>服务条款及协议</Text>
+            </View>
+          </ScrollView>
         </View>
 
       </View>

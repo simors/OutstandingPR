@@ -8,6 +8,7 @@ import {
   Text,
   Image,
   Dimensions,
+  ScrollView,
   Platform
 } from 'react-native'
 import {connect} from 'react-redux'
@@ -78,22 +79,24 @@ class Login extends Component {
           rightPress={() => Actions.REGIST()}
         />
         <View style={styles.body}>
-          <View style={styles.logo}>
-            <Image source={require('../../assets/images/logo.png')}/>
-          </View>
-          <View style={styles.phone}>
-            <PhoneInput {...phoneInput}/>
-          </View>
-          <View style={styles.password}>
-            <PasswordInput {...passwordInput}/>
-          </View>
-          <View style={styles.loginIn}>
-            <CommonButton
-              title="登 录"
-              onPress={() => this.onButtonPress()}
-            />
-          </View>
-          <Text style={styles.forgetPwd} onPress={() => Actions.FORGETPWD()}>忘记密码？</Text>
+          <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="always">
+            <View style={styles.logo}>
+              <Image source={require('../../assets/images/logo.png')}/>
+            </View>
+            <View style={styles.phone}>
+              <PhoneInput {...phoneInput}/>
+            </View>
+            <View style={styles.password}>
+              <PasswordInput {...passwordInput}/>
+            </View>
+            <View style={styles.loginIn}>
+              <CommonButton
+                title="登 录"
+                onPress={() => this.onButtonPress()}
+              />
+            </View>
+            <Text style={styles.forgetPwd} onPress={() => Actions.FORGETPWD()}>忘记密码？</Text>
+          </ScrollView>
         </View>
       </View>
     )
