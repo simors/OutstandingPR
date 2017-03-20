@@ -77,7 +77,8 @@ class Home extends Component {
 
   renderService(rowData, rowId) {
     return(
-      <TouchableOpacity key={rowId} style={styles.serviceView} onPress={() => Actions.SERVICE_SHOW({publishId: rowData.objectId})}>
+      <TouchableOpacity key={rowId} style={styles.serviceView}
+                        onPress={() => {this.props.isLogin? Actions.SERVICE_SHOW({publishId: rowData.objectId}): Actions.LOGIN()}}>
         <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(15)}}>{rowData.title}</Text>
         <View style={{flexDirection: 'row', marginTop: normalizeH(12)}}>
           <Text style={{fontSize: 15, color: '#5A5A5A'}}>{rowData.nickname}</Text>
@@ -113,7 +114,8 @@ class Home extends Component {
             source={rowData.avatar? {uri: rowData.avatar} : require('../../assets/images/defualt_user40.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={{flex: 1}} onPress={() => Actions.HELP_SHOW({publishId: rowData.objectId, userId: rowData.userId})}>
+        <TouchableOpacity style={{flex: 1}}
+                          onPress={() => {this.props.isLogin? Actions.HELP_SHOW({publishId: rowData.objectId, userId: rowData.userId}): Actions.LOGIN()}}>
           <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(20)}}>{rowData.title}</Text>
           <View style={{flexDirection: 'row', marginTop: normalizeH(12)}}>
             <Text style={{fontSize: 15, color: '#5A5A5A'}}>{rowData.nickname}</Text>

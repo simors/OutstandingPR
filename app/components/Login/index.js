@@ -24,6 +24,7 @@ import {normalizeH, normalizeW} from '../../util/Responsive'
 import {submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import THEME from '../../constants/theme'
 import {inputFormOnDestroy} from '../../action/inputFormActions'
+import dismissKeyboard from 'react-native-dismiss-keyboard'
 
 const PAGE_WIDTH=Dimensions.get('window').width
 
@@ -72,7 +73,7 @@ class Login extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
+          leftPress={() => {dismissKeyboard();Actions.pop()}}
           title="登 录"
           rightType="text"
           rightText="快速注册"

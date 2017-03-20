@@ -25,6 +25,7 @@ import THEME from '../../constants/theme'
 import {submitInputData, submitFormData, INPUT_FORM_SUBMIT_TYPE} from '../../action/authActions'
 import * as Toast from '../common/Toast'
 import {isInputValid} from '../../selector/inputFormSelector'
+import dismissKeyboard from 'react-native-dismiss-keyboard'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -92,7 +93,7 @@ class Regist extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
+          leftPress={() => {dismissKeyboard();Actions.pop()}}
           title="注 册"
         />
         <View style={styles.body}>

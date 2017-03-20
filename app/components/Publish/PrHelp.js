@@ -26,6 +26,8 @@ import KeyboardAwareToolBar from '../common/KeyboardAwareToolBar'
 import CommonButton from '../common/CommonButton'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import {inputFormOnDestroy} from '../../action/inputFormActions'
+import dismissKeyboard from 'react-native-dismiss-keyboard'
+
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -106,6 +108,7 @@ class PrHelp extends Component {
   }
 
   onButtonPress() {
+    dismissKeyboard()
     if(this.props.isLogin) {
       if (this.insertImages && this.insertImages.length) {
         if (this.isPublishing) {
@@ -189,7 +192,7 @@ class PrHelp extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
+          leftPress={() => {dismissKeyboard(); Actions.pop()}}
           title="发布公关需求"
           rightType="text"
           rightText="发送"

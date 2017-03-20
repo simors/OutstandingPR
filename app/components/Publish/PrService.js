@@ -24,6 +24,8 @@ import THEME from '../../constants/theme'
 import ArticleEditor from '../common/ArticleEditor'
 import {isUserLogined, activeUserInfo} from '../../selector/authSelector'
 import {inputFormOnDestroy} from '../../action/inputFormActions'
+import dismissKeyboard from 'react-native-dismiss-keyboard'
+
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -103,6 +105,7 @@ class PrService extends Component {
   }
 
   onButtonPress() {
+    dismissKeyboard()
     if(this.props.isLogin) {
       if (this.insertImages && this.insertImages.length) {
         if (this.isPublishing) {
@@ -173,7 +176,7 @@ class PrService extends Component {
         <Header
           leftType="icon"
           leftIconName="ios-arrow-back"
-          leftPress={() => Actions.pop()}
+          leftPress={() => {dismissKeyboard(); Actions.pop()}}
           title="发布公关服务"
           rightType="text"
           rightText="发送"

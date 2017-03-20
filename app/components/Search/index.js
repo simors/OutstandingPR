@@ -27,6 +27,7 @@ import CommonTextInput from '../common/CommonTextInput'
 import {normalizeH, normalizeW} from '../../util/Responsive'
 import THEME from '../../constants/theme'
 import {getInputData} from '../../selector/inputFormSelector'
+import {isUserLogined} from '../../selector/authSelector'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -137,7 +138,8 @@ class Search extends Component {
             source={rowData.avatar? {uri: rowData.avatar} : require('../../assets/images/defualt_user40.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={{flex: 1}} onPress={() => Actions.SERVICE_SHOW({publishId: rowData.objectId})}>
+        <TouchableOpacity style={{flex: 1}}
+                          onPress={() => {this.props.isLogin? Actions.SERVICE_SHOW({publishId: rowData.objectId}): Actions.LOGIN()}}>
           <Text style={{fontSize: 17, color: '#5A5A5A', marginTop: normalizeH(20)}}>{rowData.title}</Text>
           <View style={{flexDirection: 'row', marginTop: normalizeH(12)}}>
             <Text style={{fontSize: 15, color: '#5A5A5A'}}>{rowData.nickname}</Text>
@@ -193,10 +195,12 @@ class Search extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
+  const isLogin = isUserLogined(state)
   let searchKey = getInputData(state, searchKeyInput.formKey, searchKeyInput.stateKey)
   let service = getSearchedServices(state, searchKey.text)
   let help = getSearchedHelp(state, searchKey.text)
   return {
+    isLogin: isLogin,
     searchKey: searchKey.text,
     serviceDataSource: serviceDs.cloneWithRows(service),
     helpDataSource: helpDs.cloneWithRows(help),
