@@ -7,7 +7,7 @@ import {initMessageClient} from '../action/messageAction'
 import {fetchUserFollowees} from '../action/authActions'
 import * as AuthTypes from '../constants/authActionTypes'
 import {createAction} from 'redux-actions'
-
+import * as AVUtils from '../util/AVUtils'
 
 
 
@@ -43,10 +43,13 @@ function verifyToken() {
     become(payload).then((user) => {
       let loginAction = createAction(AuthTypes.LOGIN_SUCCESS)
       dispatch(loginAction({...user}))
+      return user
+    }).then((user) => {
+      dispatch(initMessageClient())
+      AVUtils.updateDeviceUserInfo({
+        userId: user.userInfo.id
+      })
       dispatch(fetchUserFollowees())
-      return dispatch(initMessageClient())
-    }).then(() => {
-      // Actions.HOME()
     }).catch((error) => {
       console.log('verify token error:', error)
     })

@@ -162,7 +162,9 @@ class Published extends Component {
     }
   }
 
-  onRefreshPublish(publishId, lastRefreshAt) {
+  onRefreshPublish(publishId, lastRefreshAt, status) {
+    if(!status)
+      return
     let nowTime = new Date()
     if((nowTime - lastRefreshAt) >= 5*60*1000) {
       this.props.updatePublishRefreshTime({
@@ -172,7 +174,10 @@ class Published extends Component {
     }
   }
 
-  getRefreshButtonStyle(lastRefreshAt) {
+  getRefreshButtonStyle(lastRefreshAt, status) {
+    if(!status)
+      return styles.unRefresh
+
     let nowTime = new Date()
     if((nowTime - lastRefreshAt) >= 5*60*1000) {
       return styles.refresh
@@ -188,9 +193,9 @@ class Published extends Component {
     )
   }
 
-  renderRefresh(publishId, lastRefreshAt) {
+  renderRefresh(publishId, lastRefreshAt, status) {
     return(
-      <TouchableOpacity style={this.getRefreshButtonStyle(lastRefreshAt)} onPress={() => {this.onRefreshPublish(publishId, lastRefreshAt)}}>
+      <TouchableOpacity style={this.getRefreshButtonStyle(lastRefreshAt, status)} onPress={() => {this.onRefreshPublish(publishId, lastRefreshAt, status)}}>
         <Image
           source={require('../../assets/images/refresh.png')}
         />
@@ -208,6 +213,7 @@ class Published extends Component {
   }
 
   renderItem(rowData) {
+    console.log("renderItem rowData", rowData)
     return(
       <TouchableOpacity style={styles.serviceView} onPress={() => {this.onItemShow(rowData)}}>
           <View style={styles.title}>
@@ -233,7 +239,7 @@ class Published extends Component {
         </View>
         <View style={styles.button}>
           {this.renderItemStatus(rowData.status, rowData.objectId)}
-          {this.renderRefresh(rowData.objectId, rowData.lastRefreshAt)}
+          {this.renderRefresh(rowData.objectId, rowData.lastRefreshAt, rowData.status)}
         </View>
       </TouchableOpacity>
     )
