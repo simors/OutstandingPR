@@ -9,6 +9,7 @@ import {
   Image,
   Dimensions,
   ScrollView,
+  KeyboardAvoidingView,
   Platform
 } from 'react-native'
 import {connect} from 'react-redux'
@@ -80,7 +81,7 @@ class Login extends Component {
           rightPress={() => Actions.REGIST()}
         />
         <View style={styles.body}>
-          <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="always">
+          <KeyboardAvoidingView behavior='position'>
             <View style={styles.logo}>
               <Image source={require('../../assets/images/logo.png')}/>
             </View>
@@ -97,7 +98,7 @@ class Login extends Component {
               />
             </View>
             <Text style={styles.forgetPwd} onPress={() => Actions.FORGETPWD()}>忘记密码？</Text>
-          </ScrollView>
+          </KeyboardAvoidingView>
         </View>
       </View>
     )

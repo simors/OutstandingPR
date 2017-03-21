@@ -9,6 +9,7 @@ import {
   Image,
   Dimensions,
   ScrollView,
+  KeyboardAvoidingView,
   Platform
 } from 'react-native'
 import {connect} from 'react-redux'
@@ -97,7 +98,7 @@ class Regist extends Component {
           title="注 册"
         />
         <View style={styles.body}>
-          <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="always">
+          <KeyboardAvoidingView behavior='position'>
             <View style={styles.logo}>
               <Image source={require('../../assets/images/logo.png')}/>
             </View>
@@ -126,7 +127,7 @@ class Regist extends Component {
               />
               <Text style={styles.agreement} onPress={() => {}}>服务条款及协议</Text>
             </View>
-          </ScrollView>
+          </KeyboardAvoidingView>
         </View>
 
       </View>
