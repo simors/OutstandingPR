@@ -141,17 +141,19 @@ class ServiceShow extends Component {
           <TouchableOpacity style={{marginLeft: normalizeW(30), paddingLeft: normalizeW(10)}} onPress={() => {this.onFavorite()}}>
             <View style={{alignItems: 'center'}}>
               <Image
+                style={{marginTop: normalizeH(7), marginBottom: normalizeH(3)}}
                 source={this.props.isFavorite? require('../../assets/images/favorited.png'): require('../../assets/images/favorite.png')}
               />
-              <Text>收藏</Text>
+              <Text style={{fontSize: 10}}>收藏</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={{flex: 1, marginLeft: normalizeW(54), alignItems: 'flex-start'}} onPress={() => this.onReply()}>
             <View style={{alignItems: 'center'}}>
               <Image
+                style={{marginTop: normalizeH(8), marginBottom: normalizeH(2)}}
                 source={require('../../assets/images/message.png')}
               />
-              <Text>留言</Text>
+              <Text style={{fontSize: 10}}>留言</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.contacted} onPress={() => {this.enterChatroom()}}>

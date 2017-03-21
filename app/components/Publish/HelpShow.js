@@ -178,19 +178,23 @@ class HelpShow extends Component {
     if(this.props.helpInfo.userId != this.props.currentUser) {
       return(
         <View style={styles.action}>
-          <TouchableOpacity onPress={() => {this.onFavorite()}}>
-            <Image
-              style={{marginLeft: normalizeW(40)}}
-              source={this.props.isFavorite? require('../../assets/images/favorited.png'): require('../../assets/images/favorite.png')}
-            />
-            <Text style={{marginLeft: normalizeW(40)}}>收藏</Text>
+          <TouchableOpacity style={{marginLeft: normalizeW(30), paddingLeft: normalizeW(10)}} onPress={() => {this.onFavorite()}}>
+            <View style={{alignItems: 'center'}}>
+              <Image
+                style={{marginTop: normalizeH(7), marginBottom: normalizeH(3)}}
+                source={this.props.isFavorite? require('../../assets/images/favorited.png'): require('../../assets/images/favorite.png')}
+              />
+              <Text style={{fontSize: 10}}>收藏</Text>
+            </View>
           </TouchableOpacity>
-          <TouchableOpacity style={{flex: 1}} onPress={() => this.onReply()}>
-            <Image
-              style={{marginLeft: normalizeW(54)}}
-              source={require('../../assets/images/message.png')}
-            />
-            <Text style={{marginLeft: normalizeW(54)}}>留言</Text>
+          <TouchableOpacity style={{flex: 1, marginLeft: normalizeW(54), alignItems: 'flex-start'}} onPress={() => this.onReply()}>
+            <View style={{alignItems: 'center'}}>
+              <Image
+                style={{marginTop: normalizeH(8), marginBottom: normalizeH(2)}}
+                source={require('../../assets/images/message.png')}
+              />
+              <Text style={{fontSize: 10}}>留言</Text>
+            </View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.contacted} onPress={() => {this.enterChatroom()}}>
             <Image
@@ -199,6 +203,7 @@ class HelpShow extends Component {
             <Text style={{marginLeft: normalizeW(9), fontSize: 15, color: '#FFFFFF'}}>私信</Text>
           </TouchableOpacity>
         </View>
+
       )
     } else {
       return (
