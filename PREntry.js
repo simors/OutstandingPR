@@ -14,6 +14,8 @@ import {store} from './app/store/persistStore'
 import {scenes} from './app/scenes/scenes'
 import AV from 'leancloud-storage'
 import * as LC_CONFIG from './app/constants/appConfig'
+import Raven from 'raven-js'
+require('raven-js/plugins/react-native')(Raven)
 
 const RouterWithRedux = connect()(Router)
 
@@ -31,6 +33,8 @@ const KM_PRO = {
 AV.init(
   __DEV__ ? KM_Dev : KM_PRO
 )
+
+Raven.config('https://500e7d8d1d9a4fd2a2407d4c1edd4b69@sentry.io/150128', { release: 'version_01' }).install();
 
 export default class PREntry extends Component {
   constructor(props) {

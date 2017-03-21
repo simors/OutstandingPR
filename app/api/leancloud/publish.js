@@ -39,6 +39,9 @@ export function publishService(payload) {
       }, function (error) {
         error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
         throw error
+      }).catch((error) => {
+        error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+        throw error
       })
     } else {
       publish.set('user', user)

@@ -8,6 +8,7 @@ import * as lcPublish from '../api/leancloud/publish'
 import {getInputFormData, isInputFormValid} from '../selector/inputFormSelector'
 import {notifyPublishComment} from './messageAction'
 
+
 export const PUBLISH_FORM_SUBMIT_TYPE = {
   PUBLISH_SERVICE: 'PUBLISH_SERVICE',
   PUBLISH_HELP: 'PUBLISH_HELP',

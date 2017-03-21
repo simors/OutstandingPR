@@ -105,7 +105,6 @@ class PrService extends Component {
   }
 
   onButtonPress() {
-    dismissKeyboard()
     if(this.props.isLogin) {
       if (this.insertImages && this.insertImages.length) {
         if (this.isPublishing) {
