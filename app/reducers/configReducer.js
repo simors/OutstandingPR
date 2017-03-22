@@ -11,6 +11,8 @@ export default function configReducer(state = initialState, action) {
       return handleUpdateConfigBanners(state, action)
     case ConfigActionTypes.UPDATE_GEO_LOCATION:
       return handleUpdateGeolocation(state, action)
+    case ConfigActionTypes.UPDATE_CONFIG_CITIES:
+      return handleUpdateCities(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -41,6 +43,12 @@ function handleUpdateGeolocation(state, action) {
     streetNumber: position.streetNumber,
   })
   state = state.set('location', location)
+  return state
+}
+
+function handleUpdateCities(state, action) {
+  let cities = action.payload.cities
+  state = state.set('cities', cities)
   return state
 }
 

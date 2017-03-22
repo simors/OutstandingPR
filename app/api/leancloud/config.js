@@ -28,6 +28,15 @@ export function getBanner(payload) {
   })
 }
 
+export function getAllCitiesInfo(payload) {
+  return AV.Cloud.run('prGetAllCityMap', payload).then((result) => {
+    return  result
+  }).catch((error) => {
+    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    throw error
+  })
+}
+
 
 
 

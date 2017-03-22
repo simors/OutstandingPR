@@ -89,3 +89,10 @@ export function getSelectCity(state) {
     return selectCity
   return undefined
 }
+
+export function getBaiduCityMap(state) {
+  let cityMap = state.CONFIG.cities
+  if(cityMap)
+    return cityMap
+  return undefined
+}
