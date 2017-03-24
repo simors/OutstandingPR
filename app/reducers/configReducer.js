@@ -13,6 +13,8 @@ export default function configReducer(state = initialState, action) {
       return handleUpdateGeolocation(state, action)
     case ConfigActionTypes.UPDATE_CONFIG_CITIES:
       return handleUpdateCities(state, action)
+    case ConfigActionTypes.UPDATE_CONFIG_AREAINFO:
+      return handleUpdateAreaInfo(state, action)
     case REHYDRATE:
       return onRehydrate(state, action)
     default:
@@ -49,6 +51,12 @@ function handleUpdateGeolocation(state, action) {
 function handleUpdateCities(state, action) {
   let cities = action.payload.cities
   state = state.set('cities', cities)
+  return state
+}
+
+function handleUpdateAreaInfo(state, action) {
+  let areaInfo = action.payload.areaInfo
+  state = state.set('areaInfo', areaInfo)
   return state
 }
 

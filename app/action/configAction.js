@@ -33,3 +33,16 @@ export function fetchCitiesInfo(payload) {
   }
 }
 
+export function fetchAreaInfo(payload) {
+  return (dispatch, getState) => {
+    lcConfig.getAreaInfo(payload).then((result) => {
+      let updateAreaInfoAction = createAction(ConfigActionTypes.UPDATE_CONFIG_AREAINFO)
+      dispatch(updateAreaInfoAction({areaInfo: result}))
+    }).catch((error) => {
+      if(payload.error){
+        payload.error(error)
+      }
+    })
+  }
+}
+

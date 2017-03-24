@@ -96,3 +96,10 @@ export function getBaiduCityMap(state) {
     return cityMap
   return undefined
 }
+
+export function getAreaInfo(state) {
+  let areaInfo = state.CONFIG.areaInfo
+  if(areaInfo)
+    return areaInfo
+  return undefined
+}

@@ -7,6 +7,7 @@ import {
   Text,
   View,
   Platform,
+  AppState,
 } from 'react-native';
 import {Provider, connect} from 'react-redux'
 import {Router} from 'react-native-router-flux'
@@ -16,6 +17,8 @@ import AV from 'leancloud-storage'
 import * as LC_CONFIG from './app/constants/appConfig'
 import Raven from 'raven-js'
 require('raven-js/plugins/react-native')(Raven)
+import {handleAppStateChange} from './app/util/AppStateUtils'
+import * as AVUtils from './app/util/AVUtils'
 
 const RouterWithRedux = connect()(Router)
 
@@ -43,6 +46,16 @@ export default class PREntry extends Component {
 
   componentDidMount() {
     console.disableYellowBox = true
+
+    AppState.addEventListener('change', handleAppStateChange);
+    // 通知初始化
+    AVUtils.configurePush(
+      __DEV__ ? KM_Dev : KM_PRO
+    )
+  }
+
+  componentWillUnmount() {
+    AppState.removeEventListener('change', handleAppStateChange);
   }
 
   render() {

@@ -42,6 +42,7 @@ export const Config = Record({
   location: undefined,
   selectCity: undefined,
   cities: undefined,
+  areaInfo: undefined,
 }, 'Config')
 
 

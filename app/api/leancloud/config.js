@@ -37,6 +37,67 @@ export function getAllCitiesInfo(payload) {
   })
 }
 
+export function getAreaInfo(payload) {
+  return AV.Cloud.run('prGetProviceList', payload).then((result) => {
+    let areaInfo = []
+    let provinceArray = result
+    if(provinceArray && provinceArray.length > 1) {
+      provinceArray.forEach((province) => {
+        let pData = {}
+        let pName = province.area_name
+        pData[pName] = []
+        AV.Cloud.run('prGetSubAreaList', {areaCode: province.area_code}).then((result) => {
+          let cityArray = result
+          if(cityArray && cityArray.length > 0) {
+            cityArray.forEach((city) => {
+              let cData = {}
+              let cName = city.area_name
+              cData[cName] = []
+              AV.Cloud.run('prGetSubAreaList', {areaCode: city.area_code}).then((result) => {
+                let areaArray = result
+                if(areaArray && areaArray.length > 0) {
+                  areaArray.forEach((area) => {
+                    cData[cName].push(area.area_name)
+                  })
+                }
+              }).catch((error) => {
+                error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+                throw error
+              })
+              pData[pName].push(cData)
+            })
+          }
+        }).catch((error) => {
+          error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+          throw error
+        })
+        areaInfo.push(pData)
+      })
+    }
+    return areaInfo
+  }).catch((error) => {
+    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    throw error
+  })
+}
+
+export function getProviceList(payload) {
+  return AV.Cloud.run('prGetProviceList', payload).then((result) => {
+    return result
+  }).catch((error) => {
+    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    throw error
+  })
+}
+
+export function getSubAreaList(payload) {
+  return AV.Cloud.run('prGetSubAreaList', payload).then((result) => {
+    return result
+  }).catch((error) => {
+    error.message = ERROR[error.code] ? ERROR[error.code] : ERROR[9999]
+    throw error
+  })
+}
 
 
 

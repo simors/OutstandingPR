@@ -11,6 +11,7 @@ import {
   Platform,
   ScrollView,
   TouchableOpacity,
+  InteractionManager,
 } from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -27,6 +28,7 @@ import * as Toast from '../common/Toast'
 import ImageInput from '../common/Input/ImageInput'
 import RegionPicker from '../common/Input/RegionPicker'
 import {inputFormOnDestroy} from '../../action/inputFormActions'
+import {fetchAreaInfo} from '../../action/configAction'
 
 
 const PAGE_WIDTH=Dimensions.get('window').width
@@ -88,6 +90,11 @@ class EditProfile extends Component {
     this.state = {
       shouldUploadImage: false
     }
+  }
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      this.props.fetchAreaInfo()
+    })
   }
 
   componentWillUnmount() {
@@ -186,6 +193,7 @@ class EditProfile extends Component {
                 <Text style={styles.itemText}>所在城市</Text>
                 <View style={{flex: 1}}>
                   <RegionPicker {...cityInput}
+                                level={3}
                                 initValue={this.props.userInfo.city? this.props.userInfo.city: '长沙'}
                                 containerStyle={{paddingRight:0, paddingLeft: 0}}
                                 inputStyle={{width: normalizeW(160), height: normalizeH(44), fontSize: 16, color: '#5A5A5A', backgroundColor: '#fff', borderWidth: 0, paddingLeft: 0,}}
@@ -260,7 +268,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
   submitFormData,
-  inputFormOnDestroy
+  inputFormOnDestroy,
+  fetchAreaInfo
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProfile)

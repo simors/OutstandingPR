@@ -16,6 +16,7 @@ import Picker from 'react-native-picker'
 import {initInputForm, inputFormUpdate} from '../../../action/inputFormActions'
 import {getInputData} from '../../../selector/inputFormSelector'
 import {em, normalizeW, normalizeH, normalizeBorder} from '../../../util/Responsive'
+import {getAreaInfo} from '../../../selector/configSelector'
 import './region/province.json'
 import './region/city.json'
 import './region/area.json'
@@ -118,30 +119,33 @@ class RegionPicker extends Component {
   }
 
   showPicker() {
-    Picker.init({
-      pickerConfirmBtnText: '确认',
-      pickerCancelBtnText: '取消',
-      pickerConfirmBtnColor: [245, 106, 35, 1],
-      pickerCancelBtnColor: [245, 106, 35, 1],
-      pickerTitleText: '请选择地区',
-      pickerData: this.pickerData,
-      wheelFlex: [1, 1, 1],
-      onPickerConfirm: data => {
-        console.log(data);
-        let text = ""
-        data.map((value, index) => {
-          text += value
-        })
-        this.updateInput(text)
-      },
-      onPickerCancel: data => {
-        console.log(data);
-      },
-      onPickerSelect: data => {
-        console.log(data);
-      }
-    })
-    Picker.show()
+    if(this.props.areaInfo && this.props.areaInfo.length > 0) {
+      Picker.init({
+        pickerConfirmBtnText: '确认',
+        pickerCancelBtnText: '取消',
+        pickerConfirmBtnColor: [245, 106, 35, 1],
+        pickerCancelBtnColor: [245, 106, 35, 1],
+        pickerTitleText: '请选择地区',
+        pickerData: this.pickerData,
+        // pickerData: this.props.areaInfo,
+        wheelFlex: [1, 1, 1],
+        onPickerConfirm: data => {
+          console.log(data);
+          let text = ""
+          data.map((value, index) => {
+            text += value
+          })
+          this.updateInput(text)
+        },
+        onPickerCancel: data => {
+          console.log(data);
+        },
+        onPickerSelect: data => {
+          console.log(data);
+        }
+      })
+      Picker.show()
+    }
   }
 
   render() {
@@ -181,7 +185,9 @@ RegionPicker.defaultProps = {
 
 const mapStateToProps = (state, ownProps) => {
   let inputData = getInputData(state, ownProps.formKey, ownProps.stateKey)
+  let areaInfo = getAreaInfo(state)
   return {
+    areaInfo: areaInfo,
     data: inputData.text
   }
 }

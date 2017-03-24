@@ -84,7 +84,7 @@ class PrHelp extends Component {
   submitSuccessCallback =() => {
     this.isPublishing = false
     Toast.show('发布成功')
-    Actions.pop()
+    Actions.pop(2)
   }
 
   submitErrorCallback =(error) => {
