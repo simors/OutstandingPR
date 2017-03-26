@@ -81,7 +81,7 @@ class EditService extends Component {
       shouldUploadImgComponent: false
     })
     Toast.show('更新成功')
-    Actions.pop(2)
+    Actions.pop({popNum: 2})
   }
 
   submitErrorCallback = (error) => {
